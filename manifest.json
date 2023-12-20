@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "치즈 나이프",
+  "version": "1.0.2",
+  "description": "치지직에 유용한 기능과 도구를 추가합니다.",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "homepage_url": "https://github.com/jebibot/cheese-knife",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.chzzk.naver.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "web/*"
+      ],
+      "matches": [
+        "*://*.chzzk.naver.com/*"
+      ]
+    }
+  ],
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "js": [
+        "web/main.js"
+      ],
+      "css": [
+        "web/main.css"
+      ],
+      "matches": [
+        "*://*.chzzk.naver.com/*"
+      ],
+      "exclude_globs": [
+        "*://api.chzzk.naver.com/*"
+      ]
+    }
+  ]
+}

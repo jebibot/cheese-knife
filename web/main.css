@@ -1,0 +1,55 @@
+.knife-sharpen video {
+  filter: url(#filterSharpen);
+}
+
+.knife-preview {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  margin: 0 1rem;
+  width: 300px;
+  background-color: #2a2c31;
+  color: #dfe2ea;
+  font-weight: 600;
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 1000;
+  opacity: 0;
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  pointer-events: none;
+}
+
+.knife-preview-thumbnail {
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.knife-preview-info {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.knife-preview-category {
+  margin-right: 0.2rem;
+  color: #697183;
+}
+
+.knife-stats-overlay {
+  display: flex;
+  align-items: flex-start;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: #18181b;
+  color: white;
+}
+
+.knife-stats-overlay > button {
+  color: white;
+  font-weight: bold;
+}
