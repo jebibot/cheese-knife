@@ -9,7 +9,6 @@ chrome.storage.local
   .get({
     config: {
       preview: true,
-      disableClickToPlay: true,
       arrowSeek: true,
       hideDonation: false,
       chatColor: true,

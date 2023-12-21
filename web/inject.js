@@ -645,8 +645,8 @@ const enablePlayerFeatures = async (node, tries = 0) => {
   }
   const isLive = !node.className.includes("vod_");
   const pzp = node.querySelector(".pzp-pc");
-  const clickObserver = pzp?.__vue__?._clickObserver;
-  if (clickObserver == null) {
+  const vue = pzp?.__vue__;
+  if (vue == null) {
     if (tries > 500) {
       return;
     }
@@ -654,13 +654,6 @@ const enablePlayerFeatures = async (node, tries = 0) => {
       enablePlayerFeatures(node, tries + 1)
     );
   }
-
-  const originalOnClick = clickObserver._onClick;
-  clickObserver._onClick = (e) => {
-    if (!config.disableClickToPlay) {
-      originalOnClick.call(clickObserver, e);
-    }
-  };
 
   if (isLive) {
     cloneButton(
