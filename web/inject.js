@@ -460,6 +460,7 @@ const enablePlayerFeatures = async (node, tries = 0) => {
     );
   }
 
+  viewModeButton = pzp.querySelector(".pzp-pc-viewmode-button");
   cloneButton(
     viewModeButton,
     "PIP 모드",
@@ -604,41 +605,6 @@ const seek = (backward) => {
     }
   }
 };
-
-document.body.addEventListener("keydown", (e) => {
-  if (
-    e.target.tagName === "INPUT" ||
-    e.target.tagName === "TEXTAREA" ||
-    e.target?.contentEditable === "true"
-  ) {
-    return;
-  }
-  switch (e.key) {
-    case "f":
-      if (pzpVue != null) {
-        if (pzpVue.fullscreen) {
-          pzpVue.$store.dispatch("exitFullscreen");
-        } else {
-          pzpVue.$store.dispatch("requestFullscreen");
-        }
-      }
-      break;
-    case "m":
-      if (pzpVue != null) {
-        pzpVue.muted = !pzpVue.muted;
-      }
-      break;
-    case "t":
-      viewModeButton?.click();
-      break;
-    case "ArrowLeft":
-      seek(true);
-      break;
-    case "ArrowRight":
-      seek(false);
-      break;
-  }
-});
 
 function functionThatReturnsTrue() {
   return true;
@@ -927,6 +893,43 @@ const addChatProcessor = async (node, tries = 0) => {
     );
   }
 };
+
+document.body.addEventListener("keydown", (e) => {
+  if (
+    e.target.tagName === "INPUT" ||
+    e.target.tagName === "TEXTAREA" ||
+    e.target?.contentEditable === "true"
+  ) {
+    return;
+  }
+  switch (e.key) {
+    case "f":
+      if (config.hotkey && pzpVue != null) {
+        if (pzpVue.fullscreen) {
+          pzpVue.$store.dispatch("exitFullscreen");
+        } else {
+          pzpVue.$store.dispatch("requestFullscreen");
+        }
+      }
+      break;
+    case "m":
+      if (config.hotkey && pzpVue != null) {
+        pzpVue.muted = !pzpVue.muted;
+      }
+      break;
+    case "t":
+      if (config.hotkey) {
+        viewModeButton?.click();
+      }
+      break;
+    case "ArrowLeft":
+      seek(true);
+      break;
+    case "ArrowRight":
+      seek(false);
+      break;
+  }
+});
 
 (async () => {
   await Promise.all([enablePreview(), attachBodyObserver()]);

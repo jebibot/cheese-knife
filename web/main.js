@@ -11,6 +11,7 @@ if (
             preview: true,
             updateSidebar: true,
             popupPlayer: true,
+            hotkey: true,
             arrowSeek: true,
             hideDonation: false,
             leftSideChat: false,
