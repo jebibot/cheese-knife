@@ -451,14 +451,36 @@ const waitFor = (query) => {
 };
 rootObserver.observe(root, { childList: true, subtree: true });
 
+const numberFormatter = new Intl.NumberFormat("ko-KR");
+const padNumber = (n, len) => n.toString().padStart(len, "0");
+const formatTimestamp = (t) => {
+  t = Math.floor(t / 1000);
+  const h = Math.floor(t / 3600);
+  const m = Math.floor(t / 60) % 60;
+  const s = t % 60;
+  return h
+    ? `${h}:${padNumber(m, 2)}:${padNumber(s, 2)}`
+    : `${m}:${padNumber(s, 2)}`;
+};
 const enablePreview = async () => {
   const preview = document.createElement("div");
   preview.classList.add("knife-preview");
   document.body.appendChild(preview);
 
-  const thumbnail = document.createElement("img");
+  const thumbnail = document.createElement("div");
   thumbnail.classList.add("knife-preview-thumbnail");
   preview.appendChild(thumbnail);
+
+  const img = document.createElement("img");
+  thumbnail.appendChild(img);
+
+  const uptime = document.createElement("div");
+  uptime.classList.add("knife-preview-uptime");
+  thumbnail.appendChild(uptime);
+
+  const viewers = document.createElement("div");
+  viewers.classList.add("knife-preview-viewers");
+  thumbnail.appendChild(viewers);
 
   const info = document.createElement("div");
   info.classList.add("knife-preview-info");
@@ -507,7 +529,13 @@ const enablePreview = async () => {
       if (info == null) {
         return;
       }
-      thumbnail.src = info.liveImageUrl?.replace("{type}", 480) || "";
+      img.src = info.liveImageUrl?.replace("{type}", 480) || "";
+      uptime.textContent = info.openDate
+        ? formatTimestamp(Date.now() - new Date(info.openDate).getTime())
+        : "";
+      viewers.textContent = info.concurrentUserCount
+        ? `${numberFormatter.format(info.concurrentUserCount)}명`
+        : "";
       category.textContent = info.liveCategoryValue || "";
       title.textContent = info.liveTitle || "";
 
@@ -613,7 +641,6 @@ const addStatsMenu = () => {
     document.getElementById("live_player_layout").appendChild(overlay);
 
     const content = document.createElement("div");
-    const numberFormatter = new Intl.NumberFormat("ko-KR");
     const update = () => {
       const info = window.__getLiveInfo?.();
       if (info == null) {
