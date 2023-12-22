@@ -3,6 +3,17 @@ if (
   !location.pathname.startsWith("/chat/") &&
   !location.pathname.startsWith("/donation/")
 ) {
+  const initConfig = (config) => {
+    if (!config.rememberVolume) {
+      window.localStorage.removeItem("knife-volume");
+    }
+    if (config.leftSideChat) {
+      document.body.classList.add("knife-left-side-chat");
+    } else {
+      document.body.classList.remove("knife-left-side-chat");
+    }
+  };
+
   window.addEventListener("message", async (e) => {
     switch (e.data.type) {
       case "getConfig":
@@ -13,15 +24,12 @@ if (
             popupPlayer: true,
             hotkey: true,
             arrowSeek: true,
+            rememberVolume: true,
             hideDonation: false,
             leftSideChat: false,
           },
         });
-        if (config.leftSideChat) {
-          document.body.classList.add("knife-left-side-chat");
-        } else {
-          document.body.classList.remove("knife-left-side-chat");
-        }
+        initConfig(config);
         window.postMessage({ type: "config", config }, location.origin);
         break;
     }
@@ -30,11 +38,7 @@ if (
   chrome.storage.local.onChanged.addListener((changes) => {
     if (changes.config != null) {
       const config = changes.config.newValue;
-      if (config.leftSideChat) {
-        document.body.classList.add("knife-left-side-chat");
-      } else {
-        document.body.classList.remove("knife-left-side-chat");
-      }
+      initConfig(config);
       window.postMessage({ type: "config", config }, location.origin);
     }
   });
