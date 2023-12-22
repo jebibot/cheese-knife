@@ -637,7 +637,7 @@ FPS: ${info.fps}
   license.parentNode.insertBefore(stats, license);
 };
 
-let hls;
+let corePlayer;
 let seeking = false;
 const enablePlayerFeatures = async (node, tries = 0) => {
   if (node == null) {
@@ -685,10 +685,7 @@ const enablePlayerFeatures = async (node, tries = 0) => {
 
   addStatsMenu();
 
-  hls = isLive ? await getPlayer(pzp) : null;
-  if (hls != null) {
-    patchPlayer(hls);
-  }
+  corePlayer = isLive ? await getPlayer(pzp) : null;
 };
 
 const getPlayer = async (pzp, tries = 0) => {
@@ -697,8 +694,8 @@ const getPlayer = async (pzp, tries = 0) => {
     playerHeader,
     (state) => state._corePlayer != null
   );
-  const hls = player?._corePlayer?.player?._mediaController?._hls;
-  if (hls?.streamController == null) {
+  const corePlayer = player?._corePlayer;
+  if (corePlayer == null) {
     if (tries > 500) {
       return;
     }
@@ -706,10 +703,10 @@ const getPlayer = async (pzp, tries = 0) => {
       getPlayer(pzp, tries + 1)
     );
   }
-  return hls;
+  return corePlayer;
 };
 
-const patchPlayer = (hls) => {
+const patchHls = (hls) => {
   if (hls.knifePatched) {
     return;
   }
@@ -755,8 +752,10 @@ let oldMaxBufferSize;
 let oldMaxBufferLength;
 let oldMaxMaxBufferLength;
 const setSeeking = (value) => {
+  const hls = corePlayer?.player?._mediaController?._hls;
   if (hls?.config != null && seeking !== value) {
     seeking = value;
+    patchHls(hls);
     if (value) {
       oldBackBufferLength = hls.config.backBufferLength;
       oldMaxBufferSize = hls.config.maxBufferSize;
