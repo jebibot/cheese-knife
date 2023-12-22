@@ -312,20 +312,36 @@ FPS: ${info.fps}
   license.parentNode.insertBefore(stats, license);
 };
 
+let pzpVue;
+let viewModeButton;
 const enablePlayerFeatures = async (node, tries = 0) => {
   if (node == null) {
     return;
   }
   const isLive = !node.className.includes("vod_");
   const pzp = node.querySelector(".pzp-pc");
-  const vue = pzp?.__vue__;
-  if (vue == null) {
+  pzpVue = pzp?.__vue__;
+  if (pzpVue == null) {
     if (tries > 500) {
       return;
     }
     return new Promise((r) => setTimeout(r, 50)).then(() =>
       enablePlayerFeatures(node, tries + 1)
     );
+  }
+
+  const container = node.querySelector(
+    '[class^="live_information_video_container__"]'
+  );
+  const setLiveWide = await findReactState(
+    container,
+    (state) =>
+      state[0]?.length === 1 &&
+      state[1]?.length === 2 &&
+      state[1]?.[1]?.key === "isLiveWide"
+  );
+  if (window.top !== window) {
+    setLiveWide?.[0](true);
   }
 
   if (isLive) {
@@ -342,7 +358,7 @@ const enablePlayerFeatures = async (node, tries = 0) => {
   }
 
   cloneButton(
-    pzp.querySelector(".pzp-pc-viewmode-button"),
+    viewModeButton,
     "PIP 모드",
     '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><path fill="#fff" d="M27 9c.55 0 1 .45 1 1v7h-2v-6H10v14h6v2H9c-.55 0-1-.45-1-1V10c0-.55.45-1 1-1h18Zm0 10c.55 0 1 .45 1 1v6c0 .55-.45 1-1 1h-8c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h8Zm-1 2h-6v4h6v-4Z"/></svg>',
     () => {
@@ -487,6 +503,23 @@ document.body.addEventListener("keydown", (e) => {
     return;
   }
   switch (e.key) {
+    case "f":
+      if (pzpVue != null) {
+        if (pzpVue.fullscreen) {
+          pzpVue.$store.dispatch("exitFullscreen");
+        } else {
+          pzpVue.$store.dispatch("requestFullscreen");
+        }
+      }
+      break;
+    case "m":
+      if (pzpVue != null) {
+        pzpVue.muted = !pzpVue.muted;
+      }
+      break;
+    case "t":
+      viewModeButton?.click();
+      break;
     case "ArrowLeft":
       seek(true);
       break;
@@ -733,6 +766,14 @@ const addChatProcessor = async (node, tries = 0) => {
       addChatProcessor(node, tries + 1)
     );
   }
+
+  const foldButton = chattingContainer.querySelector(
+    '[class*="live_chatting_header_fold__"] > [class^="live_chatting_header_button__"]'
+  );
+  if (window.top !== window) {
+    foldButton?.click();
+  }
+
   if (chatController.knifePatched) {
     return;
   }
@@ -758,11 +799,7 @@ const addChatProcessor = async (node, tries = 0) => {
   };
 
   if ("documentPictureInPicture" in window) {
-    chattingContainer
-      .querySelector(
-        '[class*="live_chatting_header_fold__"] > [class^="live_chatting_header_button__"]'
-      )
-      ?.addEventListener("click", closePip);
+    foldButton?.addEventListener("click", closePip);
     cloneButton(
       chattingContainer.querySelector(
         '[class*="live_chatting_header_menu__"] > [class^="live_chatting_header_button__"]'
