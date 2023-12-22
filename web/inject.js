@@ -590,6 +590,8 @@ const cloneButton = (button, name, iconSvg, onClick, after = false) => {
   button.parentNode.insertBefore(b, after ? button.nextSibling : button);
 };
 
+let corePlayer;
+let seeking = false;
 const addStatsMenu = () => {
   const license = document.getElementById("license");
   if (license == null) {
@@ -617,10 +619,19 @@ const addStatsMenu = () => {
       if (info == null) {
         return;
       }
+      let codec;
+      const hls = corePlayer?.player?._mediaController?._hls;
+      if (hls != null) {
+        const level = hls.levels?.[hls.currentLevel];
+        if (level != null) {
+          codec = `${level.videoCodec},${level.audioCodec}`;
+        }
+      }
       content.innerText = `해상도: ${info.resolution}
 비트레이트: ${numberFormatter.format(info.bitrate)} kbps
 FPS: ${info.fps}
-지연 시간: ${numberFormatter.format(info.latency)} ms\n`;
+지연 시간: ${numberFormatter.format(info.latency)} ms
+코덱: ${codec || "알 수 없음"}`;
     };
     update();
     const updateInterval = setInterval(update, 1000);
@@ -637,8 +648,6 @@ FPS: ${info.fps}
   license.parentNode.insertBefore(stats, license);
 };
 
-let corePlayer;
-let seeking = false;
 const enablePlayerFeatures = async (node, tries = 0) => {
   if (node == null) {
     return;
