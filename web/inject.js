@@ -489,7 +489,11 @@ const seek = (backward) => {
     if (video.currentTime - 5 < video.buffered.start(0)) {
       video.currentTime = video.buffered.start(0) + 1;
     } else {
-      video.currentTime -= 5;
+      if (pzpVue != null) {
+        pzpVue.$store.dispatch("seekBackward");
+      } else {
+        video.currentTime -= 5;
+      }
     }
     setSeeking(true);
   } else {
@@ -500,7 +504,11 @@ const seek = (backward) => {
       video.currentTime = video.buffered.end(video.buffered.length - 1) - 1;
       setSeeking(false);
     } else {
-      video.currentTime += 5;
+      if (pzpVue != null) {
+        pzpVue.$store.dispatch("seekForward");
+      } else {
+        video.currentTime += 5;
+      }
       setSeeking(true);
     }
   }
