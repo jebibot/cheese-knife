@@ -11,12 +11,16 @@ chrome.storage.local
       preview: true,
       arrowSeek: true,
       hideDonation: false,
+      leftSideChat: false,
     },
     t: 0,
   })
   .then(({ config, t }) => {
     for (const c in config) {
       const checkbox = document.getElementById(c);
+      if (checkbox == null) {
+        continue;
+      }
       checkbox.checked = config[c];
       checkbox.addEventListener("change", (e) => {
         config[e.target.id] = e.target.checked;

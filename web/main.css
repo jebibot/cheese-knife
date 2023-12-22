@@ -6,6 +6,10 @@ body {
   filter: url(#filterSharpen);
 }
 
+.knife-left-side-chat [class^="live_chatting_container__"] {
+  order: -1;
+}
+
 .knife-preview {
   position: absolute;
   top: 0;

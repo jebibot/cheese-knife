@@ -11,8 +11,14 @@ if (
             preview: true,
             arrowSeek: true,
             hideDonation: false,
+            leftSideChat: false,
           },
         });
+        if (config.leftSideChat) {
+          document.body.classList.add("knife-left-side-chat");
+        } else {
+          document.body.classList.remove("knife-left-side-chat");
+        }
         window.postMessage({ type: "config", config }, location.origin);
         break;
     }
@@ -20,13 +26,13 @@ if (
 
   chrome.storage.local.onChanged.addListener((changes) => {
     if (changes.config != null) {
-      window.postMessage(
-        {
-          type: "config",
-          config: changes.config.newValue,
-        },
-        location.origin
-      );
+      const config = changes.config.newValue;
+      if (config.leftSideChat) {
+        document.body.classList.add("knife-left-side-chat");
+      } else {
+        document.body.classList.remove("knife-left-side-chat");
+      }
+      window.postMessage({ type: "config", config }, location.origin);
     }
   });
 
