@@ -295,19 +295,12 @@ const addStatsMenu = () => {
       if (info == null) {
         return;
       }
-      let codec;
-      const hls = corePlayer?.player?._mediaController?._hls;
-      if (hls != null) {
-        const level = hls.levels?.[hls.currentLevel];
-        if (level != null) {
-          codec = `${level.videoCodec},${level.audioCodec}`;
-        }
-      }
+      const codecs = corePlayer?._currentCodecs;
       content.innerText = `해상도: ${info.resolution}
 비트레이트: ${numberFormatter.format(info.bitrate)} kbps
 FPS: ${info.fps}
 지연 시간: ${numberFormatter.format(info.latency)} ms
-코덱: ${codec || "알 수 없음"}`;
+코덱: ${codecs ? `${codecs.video},${codecs.audio}` : "알 수 없음"}`;
     };
     update();
     const updateInterval = setInterval(update, 1000);
