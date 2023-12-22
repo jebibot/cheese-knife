@@ -11,7 +11,6 @@ chrome.storage.local
       preview: true,
       arrowSeek: true,
       hideDonation: false,
-      chatColor: true,
     },
     t: 0,
   })

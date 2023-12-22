@@ -11,7 +11,6 @@ if (
             preview: true,
             arrowSeek: true,
             hideDonation: false,
-            chatColor: true,
           },
         });
         window.postMessage({ type: "config", config }, location.origin);
