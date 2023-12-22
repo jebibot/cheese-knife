@@ -9,6 +9,7 @@ if (
         const { config } = await chrome.storage.local.get({
           config: {
             preview: true,
+            updateSidebar: true,
             arrowSeek: true,
             hideDonation: false,
             leftSideChat: false,

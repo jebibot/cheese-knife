@@ -119,8 +119,8 @@ const enablePreview = async () => {
   const title = document.createElement("span");
   info.appendChild(title);
 
-  const headerSection = await waitFor("section");
-  if (headerSection == null) {
+  const sidebar = await waitFor("#navigation");
+  if (sidebar == null) {
     return;
   }
 
@@ -178,12 +178,12 @@ const enablePreview = async () => {
     });
   };
 
-  const items = headerSection.querySelectorAll("a");
+  const items = sidebar.querySelectorAll("a");
   for (const item of items) {
     addPreviewListener(item);
   }
 
-  const headerSectionObserver = new MutationObserver((mutations) => {
+  const sidebarObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((n) => {
         if (n.querySelectorAll == null) {
@@ -196,10 +196,22 @@ const enablePreview = async () => {
       });
     });
   });
-  headerSectionObserver.observe(headerSection, {
+  sidebarObserver.observe(sidebar, {
     childList: true,
     subtree: true,
   });
+
+  const updateSidebar = (
+    await findReactState(
+      sidebar,
+      (state) => state.tag === 8 && state.destroy == null
+    )
+  )?.create;
+  setInterval(() => {
+    if (config.updateSidebar) {
+      updateSidebar?.();
+    }
+  }, 30000);
 };
 
 let pipWindow;
