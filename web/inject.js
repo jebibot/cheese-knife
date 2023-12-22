@@ -815,7 +815,11 @@ const seek = (backward) => {
 };
 
 document.body.addEventListener("keydown", (e) => {
-  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
+  if (
+    e.target.tagName === "INPUT" ||
+    e.target.tagName === "TEXTAREA" ||
+    e.target?.contentEditable === "true"
+  ) {
     return;
   }
   switch (e.key) {
