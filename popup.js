@@ -10,6 +10,7 @@ chrome.storage.local
     config: {
       preview: true,
       updateSidebar: true,
+      popupPlayer: true,
       arrowSeek: true,
       hideDonation: false,
       leftSideChat: false,

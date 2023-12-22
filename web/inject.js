@@ -88,6 +88,72 @@ const formatTimestamp = (t) => {
     ? `${h}:${padNumber(m, 2)}:${padNumber(s, 2)}`
     : `${m}:${padNumber(s, 2)}`;
 };
+
+let zIndex = 1000;
+const createPopupPlayer = (url, left, top) => {
+  const popup = document.createElement("div");
+  popup.classList.add("knife-popup");
+  popup.style.left = `${left}px`;
+  popup.style.top = `${top}px`;
+  popup.style.zIndex = `${zIndex++}`;
+
+  const player = document.createElement("iframe");
+  player.classList.add("knife-popup-player");
+  player.src = url;
+  player.allowFullscreen = true;
+  player.allow = "autoplay; encrypted-media; picture-in-picture";
+  popup.appendChild(player);
+
+  const dragArea = document.createElement("div");
+  dragArea.classList.add("knife-popup-drag-area");
+  popup.appendChild(dragArea);
+
+  let x = 0;
+  let y = 0;
+  let dx = 0;
+  let dy = 0;
+  dragArea.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    popup.style.zIndex = `${zIndex++}`;
+    x = e.clientX;
+    y = e.clientY;
+
+    const onMouseMove = (e) => {
+      e.preventDefault();
+      document.body.classList.add("knife-dragging");
+      dx = e.clientX - x;
+      dy = e.clientY - y;
+      x = e.clientX;
+      if (popup.offsetTop + dy < 0) {
+        popup.style.top = "0";
+      } else {
+        y = e.clientY;
+        popup.style.top = `${popup.offsetTop + dy}px`;
+      }
+      popup.style.left = `${popup.offsetLeft + dx}px`;
+    };
+    const onMouseUp = () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      document.body.classList.remove("knife-dragging");
+    };
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  });
+
+  const button = document.createElement("button");
+  button.classList.add("knife-popup-close-button");
+  button.title = "닫기";
+  button.textContent = "X";
+  button.addEventListener("click", () => {
+    player.src = "about:blank";
+    popup.remove();
+  });
+  popup.appendChild(button);
+
+  return popup;
+};
+
 const enablePreview = async () => {
   const preview = document.createElement("div");
   preview.classList.add("knife-preview");
@@ -176,6 +242,22 @@ const enablePreview = async () => {
         preview.style.opacity = "0";
       }, 500);
     });
+    item.addEventListener("dragstart", (e) => {
+      if (!config.popupPlayer) {
+        return;
+      }
+      document.body.classList.add("knife-dragging");
+      item.style.opacity = "0.8";
+
+      const rect = item.getBoundingClientRect();
+      e.dataTransfer.effectAllowed = "copy";
+      e.dataTransfer.setDragImage(item, e.clientX - rect.x, e.clientY - rect.y);
+      e.dataTransfer.setData("knife-data", item.href);
+    });
+    item.addEventListener("dragend", () => {
+      item.style.opacity = "";
+      document.body.classList.remove("knife-dragging");
+    });
   };
 
   const items = sidebar.querySelectorAll("a");
@@ -243,6 +325,22 @@ const attachBodyObserver = async () => {
     });
   });
   layoutBodyObserver.observe(layoutBody, { childList: true });
+
+  layoutBody.addEventListener("drop", (e) => {
+    const url = e.dataTransfer.getData("knife-data");
+    if (url == null || !config.popupPlayer) {
+      return;
+    }
+    e.preventDefault();
+    const rect = layoutBody.getBoundingClientRect();
+    layoutBody.appendChild(
+      createPopupPlayer(url, e.clientX - rect.x - 320, e.clientY - rect.y - 12)
+    );
+  });
+  layoutBody.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+
   await enableFeatures(layoutBody.querySelector("section"));
 };
 
