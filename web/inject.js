@@ -384,13 +384,25 @@ class ColorAdjuster {
   }
 }
 
+const getReactFiber = (node) => {
+  if (node == null) {
+    return;
+  }
+  return Object.entries(node).find(([k]) => k.startsWith("__reactFiber$"))?.[1];
+};
+
+const getReactProps = (node) => {
+  if (node == null) {
+    return;
+  }
+  return Object.entries(node).find(([k]) => k.startsWith("__reactProps$"))?.[1];
+};
+
 const findReactState = async (node, criteria, tries = 0) => {
   if (node == null) {
     return;
   }
-  let fiber = Object.entries(node).find(([k]) =>
-    k.startsWith("__reactFiber$")
-  )[1];
+  let fiber = getReactFiber(node);
   if (fiber == null) {
     if (tries > 500) {
       return;
@@ -576,6 +588,14 @@ const enablePreview = async () => {
   });
 };
 
+let pipWindow;
+const closePip = () => {
+  if (pipWindow != null) {
+    pipWindow.close();
+    pipWindow = null;
+  }
+};
+
 const attachBodyObserver = async () => {
   const enableFeatures = async (node) =>
     Promise.all([
@@ -589,6 +609,7 @@ const attachBodyObserver = async () => {
   const layoutBodyObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((n) => {
+        closePip();
         if (n.tagName === "SECTION") {
           enableFeatures(n);
         }
@@ -614,6 +635,8 @@ const cloneButton = (button, name, iconSvg, onClick, after = false) => {
   const icon = b.querySelector(".pzp-ui-icon");
   if (icon != null) {
     icon.innerHTML = iconSvg;
+  } else {
+    b.innerHTML = iconSvg;
   }
   button.parentNode.insertBefore(b, after ? button.nextSibling : button);
 };
@@ -859,6 +882,226 @@ document.body.addEventListener("keydown", (e) => {
   }
 });
 
+function functionThatReturnsTrue() {
+  return true;
+}
+
+function functionThatReturnsFalse() {
+  return false;
+}
+
+function createSyntheticEvent(Interface) {
+  function SyntheticBaseEvent(
+    reactName,
+    reactEventType,
+    targetInst,
+    nativeEvent
+  ) {
+    this._reactName = reactName;
+    this._targetInst = targetInst;
+    this.type = reactEventType;
+    this.nativeEvent = nativeEvent;
+    this.target = nativeEvent.target;
+    this.currentTarget = null;
+
+    for (const propName of Interface) {
+      this[propName] = nativeEvent[propName];
+    }
+
+    if (nativeEvent.defaultPrevented) {
+      this.isDefaultPrevented = functionThatReturnsTrue;
+    } else {
+      this.isDefaultPrevented = functionThatReturnsFalse;
+    }
+    this.isPropagationStopped = functionThatReturnsFalse;
+    return this;
+  }
+
+  Object.assign(SyntheticBaseEvent.prototype, {
+    preventDefault: function () {
+      this.defaultPrevented = true;
+      const event = this.nativeEvent;
+      if (!event) {
+        return;
+      }
+      event.preventDefault();
+      this.isDefaultPrevented = functionThatReturnsTrue;
+    },
+    stopPropagation: function () {
+      const event = this.nativeEvent;
+      if (!event) {
+        return;
+      }
+      event.stopPropagation();
+      this.isPropagationStopped = functionThatReturnsTrue;
+    },
+    persist: function () {},
+    isPersistent: functionThatReturnsTrue,
+  });
+  return SyntheticBaseEvent;
+}
+
+const EventInterface = [
+  "eventPhase",
+  "bubbles",
+  "cancelable",
+  "timeStamp",
+  "defaultPrevented",
+  "isTrusted",
+];
+const SyntheticEvent = createSyntheticEvent(EventInterface);
+
+const UIEventInterface = [...EventInterface, "view", "detail"];
+const SyntheticUIEvent = createSyntheticEvent(UIEventInterface);
+
+const MouseEventInterface = [
+  ...UIEventInterface,
+  "screenX",
+  "screenY",
+  "clientX",
+  "clientY",
+  "pageX",
+  "pageY",
+  "ctrlKey",
+  "shiftKey",
+  "altKey",
+  "metaKey",
+  "getModifierState",
+  "button",
+  "buttons",
+  "relatedTarget",
+  "movementX",
+  "movementY",
+];
+const SyntheticMouseEvent = createSyntheticEvent(MouseEventInterface);
+
+const FocusEventInterface = [...UIEventInterface, "relatedTarget"];
+const SyntheticFocusEvent = createSyntheticEvent(FocusEventInterface);
+
+const KeyboardEventInterface = [
+  "key",
+  "code",
+  "location",
+  "ctrlKey",
+  "shiftKey",
+  "altKey",
+  "metaKey",
+  "repeat",
+  "locale",
+  "getModifierState",
+  "charCode",
+  "keyCode",
+  "which",
+];
+const SyntheticKeyboardEvent = createSyntheticEvent(KeyboardEventInterface);
+
+const handlePipEvent = (e) => {
+  let reactEventType = e.type;
+  let reactName;
+  let SyntheticEventCtor = SyntheticEvent;
+  switch (e.type) {
+    case "keypress":
+      reactName = "onKeyPress";
+      SyntheticEventCtor = SyntheticKeyboardEvent;
+      break;
+    case "keydown":
+      reactName = "onKeyDown";
+      SyntheticEventCtor = SyntheticKeyboardEvent;
+      break;
+    case "keyup":
+      reactName = "onKeyUp";
+      SyntheticEventCtor = SyntheticKeyboardEvent;
+      break;
+    case "input":
+      reactName = "onInput";
+      break;
+    case "click":
+      reactName = "onClick";
+      SyntheticEventCtor = SyntheticMouseEvent;
+      break;
+    case "focusin":
+      reactName = "onFocus";
+      reactEventType = "focus";
+      SyntheticEventCtor = SyntheticFocusEvent;
+      break;
+    case "focusout":
+      reactName = "onBlur";
+      reactEventType = "blur";
+      SyntheticEventCtor = SyntheticFocusEvent;
+      break;
+    default:
+      return;
+  }
+
+  let target = e.target;
+  let instance;
+  let event;
+  while (target != null) {
+    instance = getReactFiber(target);
+    if (instance != null) {
+      break;
+    }
+    target = target.parentNode;
+  }
+  while (instance != null) {
+    const props = getReactProps(instance.stateNode);
+    const listener = props?.[reactName];
+    if (listener != null && (reactName !== "onClick" || !props.disabled)) {
+      if (event == null) {
+        event = new SyntheticEventCtor(reactName, reactEventType, instance, e);
+      }
+      event.currentTarget = instance.stateNode;
+      listener.call(undefined, event);
+    }
+    instance = instance.return;
+  }
+};
+
+const enterChatPip = async (container) => {
+  const parent = container.parentNode;
+  pipWindow = await window.documentPictureInPicture.requestWindow({
+    width: container.clientWidth,
+    height: container.clientHeight,
+  });
+  [...document.styleSheets].forEach((styleSheet) => {
+    try {
+      const cssRules = [...styleSheet.cssRules]
+        .map((rule) => rule.cssText)
+        .join("");
+      const style = document.createElement("style");
+      style.textContent = cssRules;
+      pipWindow.document.head.appendChild(style);
+    } catch (e) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.type = styleSheet.type;
+      link.media = styleSheet.media;
+      link.href = styleSheet.href;
+      pipWindow.document.head.appendChild(link);
+    }
+  });
+  container.style.height = "100vh";
+  container.style.width = "100%";
+  pipWindow.document.body.append(container);
+  pipWindow.addEventListener(
+    "unload",
+    () => {
+      container.style.height = "";
+      container.style.width = "";
+      parent.append(container);
+      closePip();
+    },
+    { once: true }
+  );
+  pipWindow.document.body.addEventListener("keypress", handlePipEvent);
+  pipWindow.document.body.addEventListener("keydown", handlePipEvent);
+  pipWindow.document.body.addEventListener("keyup", handlePipEvent);
+  pipWindow.document.body.addEventListener("input", handlePipEvent);
+  pipWindow.document.body.addEventListener("click", handlePipEvent);
+  pipWindow.document.body.addEventListener("focusin", handlePipEvent);
+  pipWindow.document.body.addEventListener("focusout", handlePipEvent);
+};
+
 const colorAdjuster = new ColorAdjuster("#141517");
 const addChatProcessor = async (node, tries = 0) => {
   if (node == null || node.className.includes("vod_")) {
@@ -912,6 +1155,36 @@ const addChatProcessor = async (node, tries = 0) => {
     });
   });
   chatObserver.observe(chattingContainer, { childList: true, subtree: true });
+
+  const originalSetVisibility = chatController.setVisibility;
+  chatController.setVisibility = (visible) => {
+    if (!visible && pipWindow != null) {
+      return;
+    }
+    originalSetVisibility.call(chatController, visible);
+  };
+
+  if ("documentPictureInPicture" in window) {
+    chattingContainer
+      .querySelector(
+        '[class*="live_chatting_header_fold__"] > [class^="live_chatting_header_button__"]'
+      )
+      ?.addEventListener("click", closePip);
+    cloneButton(
+      chattingContainer.querySelector(
+        '[class*="live_chatting_header_menu__"] > [class^="live_chatting_header_button__"]'
+      ),
+      "채팅창 팝업",
+      '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 32 32"><path fill="currentColor" d="M18 8c-.55 0-1 .45-1 1s.45 1 1 1h2.58l-6.29 6.29c-.39.39-.39 1.02 0 1.42s1.03.39 1.42 0L22 11.42V14c0 .55.45 1 1 1s1-.45 1-1V9c0-.55-.45-1-1-1h-5Zm-7.5 1A2.5 2.5 0 0 0 8 11.5v10a2.5 2.5 0 0 0 2.5 2.5h10a2.5 2.5 0 0 0 2.5-2.5V18c0-.55-.45-1-1-1s-1 .45-1 1v3.5c0 .27-.23.5-.5.5h-10c-.28 0-.5-.23-.5-.5v-10c0-.28.22-.5.5-.5H14c.55 0 1-.45 1-1s-.45-1-1-1h-3.5Z"/></svg>',
+      () => {
+        if (pipWindow != null) {
+          closePip();
+        } else {
+          enterChatPip(chattingContainer);
+        }
+      }
+    );
+  }
 };
 
 (async () => {
