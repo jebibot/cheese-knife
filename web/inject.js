@@ -328,7 +328,7 @@ const attachBodyObserver = async () => {
 
   layoutBody.addEventListener("drop", (e) => {
     const url = e.dataTransfer.getData("knife-data");
-    if (url == null || !config.popupPlayer) {
+    if (!url || !config.popupPlayer) {
       return;
     }
     e.preventDefault();
