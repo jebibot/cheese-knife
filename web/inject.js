@@ -197,12 +197,13 @@ const enablePreview = async () => {
     if (url.hostname !== "chzzk.naver.com") {
       return;
     }
-    const uid = url.pathname.split("/").pop();
     item.addEventListener("mouseover", async () => {
       if (!config.preview) {
         return;
       }
       clearTimeout(previewTimeout);
+      const url = new URL(item.href);
+      const uid = url.pathname.split("/").pop();
       let info = liveInfo[uid];
       if (info === undefined) {
         const res = await fetch(
