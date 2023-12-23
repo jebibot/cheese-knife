@@ -1,3 +1,4 @@
+(() => {
 const getReactFiber = (node) => {
   if (node == null) {
     return;
@@ -910,7 +911,7 @@ document.body.addEventListener("keydown", (e) => {
   if (
     e.target.tagName === "INPUT" ||
     e.target.tagName === "TEXTAREA" ||
-    e.target?.contentEditable === "true"
+    e.target.contentEditable === "true"
   ) {
     return;
   }
@@ -946,4 +947,5 @@ document.body.addEventListener("keydown", (e) => {
 (async () => {
   await Promise.all([enablePreview(), attachBodyObserver()]);
   rootObserver.disconnect();
+})();
 })();
