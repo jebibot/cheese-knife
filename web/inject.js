@@ -481,17 +481,6 @@ const enablePlayerFeatures = async (node, tries = 0) => {
   addStatsMenu();
 
   corePlayer = isLive ? await getPlayer(pzp) : null;
-
-  corePlayer?.addEventListener("volumechange", () => {
-    if (corePlayer.volume === 0.3) {
-      const volume = window.localStorage.getItem("knife-volume");
-      if (volume != null) {
-        corePlayer.volume = Number(volume);
-      }
-    } else if (config.rememberVolume) {
-      window.localStorage.setItem("knife-volume", corePlayer.volume);
-    }
-  });
 };
 
 const getPlayer = async (pzp, tries = 0) => {

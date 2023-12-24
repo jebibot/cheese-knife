@@ -4,9 +4,6 @@ if (
   !location.pathname.startsWith("/donation/")
 ) {
   const initConfig = (config) => {
-    if (!config.rememberVolume) {
-      window.localStorage.removeItem("knife-volume");
-    }
     if (config.leftSideChat) {
       document.body.classList.add("knife-left-side-chat");
     } else {
@@ -24,7 +21,6 @@ if (
             popupPlayer: true,
             hotkey: true,
             arrowSeek: true,
-            rememberVolume: true,
             hideDonation: false,
             leftSideChat: false,
           },
