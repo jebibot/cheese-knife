@@ -155,7 +155,44 @@ const createPopupPlayer = (url, left, top) => {
   return popup;
 };
 
-const enablePreview = async () => {
+const attachLayoutObserver = async () => {
+  const init = async (node) => {
+    const sidebar = node.querySelector("#navigation");
+    if (sidebar == null) {
+      return;
+    }
+    try {
+      initSidebarFeatures(sidebar);
+    } catch (e) {}
+    try {
+      await refreshSidebar(sidebar);
+    } catch (e) {}
+  };
+  const layoutWrap = await waitFor('[class^="layout_wrap__"]');
+  if (layoutWrap == null) {
+    return;
+  }
+
+  const layoutObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((n) => {
+        if (n.querySelector == null) {
+          return;
+        }
+        init(n);
+      });
+    });
+  });
+  layoutObserver.observe(layoutWrap, { childList: true });
+
+  await init(layoutWrap);
+};
+
+const initSidebarFeatures = (sidebar) => {
+  if (sidebar == null) {
+    return;
+  }
+
   const preview = document.createElement("div");
   preview.classList.add("knife-preview");
   document.body.appendChild(preview);
@@ -186,14 +223,10 @@ const enablePreview = async () => {
   const title = document.createElement("span");
   info.appendChild(title);
 
-  const sidebar = await waitFor("#navigation");
-  if (sidebar == null) {
-    return;
-  }
-
+  let lastPreview;
   let previewTimeout;
   const liveInfo = {};
-  const addPreviewListener = (item) => {
+  const addListeners = (item) => {
     const url = new URL(item.href);
     if (url.hostname !== "chzzk.naver.com") {
       return;
@@ -205,6 +238,10 @@ const enablePreview = async () => {
       clearTimeout(previewTimeout);
       const url = new URL(item.href);
       const uid = url.pathname.split("/").pop();
+      if (uid === lastPreview) {
+        return;
+      }
+      lastPreview = uid;
       let info = liveInfo[uid];
       if (info === undefined) {
         const res = await fetch(
@@ -241,6 +278,7 @@ const enablePreview = async () => {
     item.addEventListener("mouseout", () => {
       clearTimeout(previewTimeout);
       previewTimeout = setTimeout(() => {
+        lastPreview = null;
         preview.style.opacity = "0";
       }, 500);
     });
@@ -264,7 +302,7 @@ const enablePreview = async () => {
 
   const items = sidebar.querySelectorAll("a");
   for (const item of items) {
-    addPreviewListener(item);
+    addListeners(item);
   }
 
   const sidebarObserver = new MutationObserver((mutations) => {
@@ -275,7 +313,7 @@ const enablePreview = async () => {
         }
         const items = n.tagName === "A" ? [n] : n.querySelectorAll("a");
         for (const item of items) {
-          addPreviewListener(item);
+          addListeners(item);
         }
       });
     });
@@ -284,16 +322,18 @@ const enablePreview = async () => {
     childList: true,
     subtree: true,
   });
+};
 
-  const updateSidebar = (
-    await findReactState(
-      sidebar,
-      (state) => state.tag === 8 && state.destroy == null
-    )
-  )?.create;
-  setInterval(() => {
+let refrestInterval;
+const refreshSidebar = async (sidebar) => {
+  clearInterval(refrestInterval);
+  refrestInterval = setInterval(async () => {
     if (config.updateSidebar) {
-      updateSidebar?.();
+      const sidebarEffect = await findReactState(
+        sidebar,
+        (state) => state.tag === 8 && state.destroy == null
+      );
+      sidebarEffect?.create?.();
     }
   }, 30000);
 };
@@ -307,11 +347,8 @@ const closePip = () => {
 };
 
 const attachBodyObserver = async () => {
-  const enableFeatures = async (node) =>
-    Promise.all([
-      await enablePlayerFeatures(node),
-      await addChatProcessor(node),
-    ]);
+  const init = async (node) =>
+    Promise.all([await initPlayerFeatures(node), await initChatFeatures(node)]);
   const layoutBody = await waitFor("#layout-body");
   if (layoutBody == null) {
     return;
@@ -321,7 +358,7 @@ const attachBodyObserver = async () => {
       mutation.addedNodes.forEach((n) => {
         closePip();
         if (n.tagName === "SECTION") {
-          enableFeatures(n);
+          init(n);
         }
       });
     });
@@ -343,28 +380,30 @@ const attachBodyObserver = async () => {
     e.preventDefault();
   });
 
-  await enableFeatures(layoutBody.querySelector("section"));
+  await init(layoutBody.querySelector("section"));
 };
 
 const cloneButton = (button, name, iconSvg, onClick, after = false) => {
   if (button == null) {
     return;
   }
-  const b = button.cloneNode(true);
-  b.ariaLabel = name;
-  b.setAttribute("label", name);
-  b.addEventListener("click", onClick);
-  const tooltip = b.querySelector(".pzp-pc-ui-button__tooltip");
-  if (tooltip != null) {
-    tooltip.innerText = ` ${name} `;
-  }
-  const icon = b.querySelector(".pzp-ui-icon");
-  if (icon != null) {
-    icon.innerHTML = iconSvg;
-  } else {
-    b.innerHTML = iconSvg;
-  }
-  button.parentNode.insertBefore(b, after ? button.nextSibling : button);
+  try {
+    const b = button.cloneNode(true);
+    b.ariaLabel = name;
+    b.setAttribute("label", name);
+    b.addEventListener("click", onClick);
+    const tooltip = b.querySelector(".pzp-pc-ui-button__tooltip");
+    if (tooltip != null) {
+      tooltip.innerText = ` ${name} `;
+    }
+    const icon = b.querySelector(".pzp-ui-icon");
+    if (icon != null) {
+      icon.innerHTML = iconSvg;
+    } else {
+      b.innerHTML = iconSvg;
+    }
+    button.parentNode.insertBefore(b, after ? button.nextSibling : button);
+  } catch (e) {}
 };
 
 let corePlayer;
@@ -419,7 +458,7 @@ FPS: ${info.fps}
 
 let pzpVue;
 let viewModeButton;
-const enablePlayerFeatures = async (node, tries = 0) => {
+const initPlayerFeatures = async (node, tries = 0) => {
   if (node == null) {
     return;
   }
@@ -431,23 +470,25 @@ const enablePlayerFeatures = async (node, tries = 0) => {
       return;
     }
     return new Promise((r) => setTimeout(r, 50)).then(() =>
-      enablePlayerFeatures(node, tries + 1)
+      initPlayerFeatures(node, tries + 1)
     );
   }
 
-  const container = node.querySelector(
-    '[class^="live_information_video_container__"]'
-  );
-  const setLiveWide = await findReactState(
-    container,
-    (state) =>
-      state[0]?.length === 1 &&
-      state[1]?.length === 2 &&
-      state[1]?.[1]?.key === "isLiveWide"
-  );
-  if (window.top !== window) {
-    setLiveWide?.[0](true);
-  }
+  try {
+    const container = node.querySelector(
+      '[class^="live_information_video_container__"]'
+    );
+    const setLiveWide = await findReactState(
+      container,
+      (state) =>
+        state[0]?.length === 1 &&
+        state[1]?.length === 2 &&
+        state[1]?.[1]?.key === "isLiveWide"
+    );
+    if (window.top !== window) {
+      setLiveWide?.[0](true);
+    }
+  } catch (e) {}
 
   if (isLive) {
     cloneButton(
@@ -478,7 +519,9 @@ const enablePlayerFeatures = async (node, tries = 0) => {
     }
   );
 
-  addStatsMenu();
+  try {
+    addStatsMenu();
+  } catch (e) {}
 
   corePlayer = isLive ? await getPlayer(pzp) : null;
 };
@@ -777,7 +820,9 @@ const handlePipEvent = (e) => {
         event = new SyntheticEventCtor(reactName, reactEventType, instance, e);
       }
       event.currentTarget = instance.stateNode;
-      listener.call(undefined, event);
+      try {
+        listener.call(undefined, event);
+      } catch (e) {}
     }
     instance = instance.return;
   }
@@ -828,7 +873,7 @@ const enterChatPip = async (container) => {
   pipWindow.document.body.addEventListener("focusout", handlePipEvent);
 };
 
-const addChatProcessor = async (node, tries = 0) => {
+const initChatFeatures = async (node, tries = 0) => {
   if (node == null || node.className.includes("vod_")) {
     return;
   }
@@ -842,7 +887,7 @@ const addChatProcessor = async (node, tries = 0) => {
       return;
     }
     return new Promise((r) => setTimeout(r, 50)).then(() =>
-      addChatProcessor(node, tries + 1)
+      initChatFeatures(node, tries + 1)
     );
   }
 
@@ -934,7 +979,7 @@ document.body.addEventListener("keydown", (e) => {
 });
 
 (async () => {
-  await Promise.all([enablePreview(), attachBodyObserver()]);
+  await Promise.all([attachLayoutObserver(), attachBodyObserver()]);
   rootObserver.disconnect();
 })();
 })();
