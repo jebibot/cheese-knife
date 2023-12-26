@@ -13,7 +13,7 @@ const getReactProps = (node) => {
   return Object.entries(node).find(([k]) => k.startsWith("__reactProps$"))?.[1];
 };
 
-const findReactState = async (node, criteria, tries = 0) => {
+const findReactState = async (node, criteria, raw = false, tries = 0) => {
   if (node == null) {
     return;
   }
@@ -23,7 +23,7 @@ const findReactState = async (node, criteria, tries = 0) => {
       return;
     }
     return new Promise((r) => setTimeout(r, 50)).then(() =>
-      findReactState(node, criteria, tries + 1)
+      findReactState(node, criteria, raw, tries + 1)
     );
   }
   fiber = fiber.return;
@@ -31,7 +31,7 @@ const findReactState = async (node, criteria, tries = 0) => {
     let state = fiber.memoizedState;
     while (state != null) {
       if (state.memoizedState != null && criteria(state.memoizedState)) {
-        return state.memoizedState;
+        return raw ? state : state.memoizedState;
       }
       state = state.next;
     }
@@ -364,6 +364,26 @@ const initSidebarFeatures = (sidebar) => {
     addListeners(item);
   }
 
+  const restoreSidebarState = async () => {
+    const following = await findReactState(
+      sidebar,
+      (state) => Array.isArray(state) && typeof state[0] !== "function",
+      true
+    );
+    const followingShown = following.next;
+    const recommended = followingShown.next;
+    const recommendedShown = recommended.next;
+    const followingExpanded = recommendedShown.next;
+    const recommendedExpanded = followingExpanded.next;
+    if (followingExpanded.memoizedState) {
+      followingShown.queue.dispatch(following.memoizedState);
+    }
+    if (recommendedExpanded.memoizedState) {
+      recommendedShown.queue.dispatch(recommended.memoizedState);
+    }
+  };
+
+  let debounceTimeout;
   const sidebarObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((n) => {
@@ -375,6 +395,10 @@ const initSidebarFeatures = (sidebar) => {
           addListeners(item);
         }
       });
+      if (mutation.removedNodes.length > 0) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(restoreSidebarState, 100);
+      }
     });
   });
   sidebarObserver.observe(sidebar, {
