@@ -39,6 +39,32 @@ const findReactState = async (node, criteria, tries = 0) => {
   }
 };
 
+const findReactContext = async (node, criteria, tries = 0) => {
+  if (node == null) {
+    return;
+  }
+  let fiber = getReactFiber(node);
+  if (fiber == null) {
+    if (tries > 500) {
+      return;
+    }
+    return new Promise((r) => setTimeout(r, 50)).then(() =>
+      findReactContext(node, criteria, tries + 1)
+    );
+  }
+  fiber = fiber.return;
+  while (fiber != null) {
+    let context = fiber.dependencies?.firstContext;
+    while (context != null) {
+      if (context.memoizedValue != null && criteria(context.memoizedValue)) {
+        return context.memoizedValue;
+      }
+      context = context.next;
+    }
+    fiber = fiber.return;
+  }
+};
+
 let config = {};
 window.addEventListener("message", (e) => {
   switch (e.data.type) {
@@ -155,8 +181,14 @@ const createPopupPlayer = (url, left, top) => {
   return popup;
 };
 
+let routeNavigator;
 const attachLayoutObserver = async () => {
   const init = async (node) => {
+    try {
+      initHeaderFeatures(
+        node.tagName === "H1" ? node : node.querySelector("h1")
+      );
+    } catch (e) {}
     const sidebar = node.querySelector("#navigation");
     if (sidebar == null) {
       return;
@@ -186,6 +218,33 @@ const attachLayoutObserver = async () => {
   layoutObserver.observe(layoutWrap, { childList: true });
 
   await init(layoutWrap);
+
+  try {
+    routeNavigator = (
+      await findReactContext(
+        layoutWrap.parentNode,
+        (context) => context.navigator != null
+      )
+    )?.navigator;
+  } catch (e) {}
+};
+
+const initHeaderFeatures = (header) => {
+  if (header == null) {
+    return;
+  }
+  const explore = document.createElement("a");
+  explore.classList.add("knife-explore");
+  explore.href = "/lives";
+  explore.textContent = "탐색";
+  explore.addEventListener("click", (e) => {
+    if (routeNavigator != null) {
+      e.preventDefault();
+      setFilter?.(null);
+      routeNavigator.push("/lives");
+    }
+  });
+  header.appendChild(explore);
 };
 
 const initSidebarFeatures = (sidebar) => {
@@ -347,8 +406,22 @@ const closePip = () => {
 };
 
 const attachBodyObserver = async () => {
-  const init = async (node) =>
-    Promise.all([await initPlayerFeatures(node), await initChatFeatures(node)]);
+  const init = async (node) => {
+    if (node == null) {
+      return;
+    }
+    const features = [];
+    if (node.className.startsWith("live_")) {
+      features.push(initPlayerFeatures(node, true));
+      features.push(initChatFeatures(node));
+    } else if (node.className.startsWith("vod_")) {
+      features.push(initPlayerFeatures(node, false));
+    } else if (node.className.startsWith("lives_")) {
+      features.push(initLivesFeatures(node));
+    }
+    return Promise.all(features);
+  };
+
   const layoutBody = await waitFor("#layout-body");
   if (layoutBody == null) {
     return;
@@ -357,9 +430,7 @@ const attachBodyObserver = async () => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((n) => {
         closePip();
-        if (n.tagName === "SECTION") {
-          init(n);
-        }
+        init(n.tagName === "SECTION" ? n : n.querySelector("section"));
       });
     });
   });
@@ -381,6 +452,100 @@ const attachBodyObserver = async () => {
   });
 
   await init(layoutBody.querySelector("section"));
+};
+
+let setFilter;
+const initLivesFeatures = async (node) => {
+  const list = node.querySelector("ul");
+  if (list == null) {
+    return;
+  }
+
+  const res = await fetch("https://api.multichzzk.tv/categories");
+  if (!res.ok) {
+    return;
+  }
+  const liveCategories = (await res.json()) || [];
+
+  let currentCategory;
+  const applyFilter = (item) => {
+    if (
+      currentCategory != null &&
+      (item.querySelector('[class^="video_card_category__"]')?.textContent ||
+        "") !== currentCategory
+    ) {
+      item.style.display = "none";
+    } else {
+      item.style.display = "";
+    }
+  };
+  setFilter = (category) => {
+    currentCategory = category;
+    for (const c of liveCategories) {
+      c.button?.classList.toggle("knife-category-active", c.name === category);
+    }
+    for (const item of list.querySelectorAll("li")) {
+      applyFilter(item);
+    }
+  };
+
+  const categories = document.createElement("div");
+  categories.classList.add("knife-categories");
+  categories.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    categories.scrollLeft += e.deltaY;
+  });
+  node.prepend(categories);
+
+  for (const c of liveCategories) {
+    const button = document.createElement("button");
+    c.button = button;
+    button.classList.add("knife-category");
+    button.title = c.name || "없음";
+    button.addEventListener("click", () => {
+      let category;
+      const url = new URL(location.href);
+      if (c.name !== currentCategory) {
+        category = c.name;
+        url.searchParams.set("category", category);
+      } else {
+        category = null;
+        url.searchParams.delete("category");
+      }
+      history.pushState({ category }, "", url);
+      setFilter(category);
+    });
+    categories.appendChild(button);
+
+    if (c.logo) {
+      const logo = document.createElement("img");
+      logo.classList.add("knife-category-logo");
+      logo.loading = "lazy";
+      logo.src = c.logo;
+      button.appendChild(logo);
+    } else {
+      button.textContent = button.title;
+    }
+
+    const count = document.createElement("span");
+    count.classList.add("knife-category-count");
+    count.textContent = `${numberFormatter.format(c.count)}명`;
+    button.appendChild(count);
+  }
+
+  const url = new URL(location.href);
+  setFilter(url.searchParams.get("category"));
+
+  const listObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((n) => {
+        if (n.querySelector != null) {
+          applyFilter(n);
+        }
+      });
+    });
+  });
+  listObserver.observe(list, { childList: true });
 };
 
 const cloneButton = (button, name, iconSvg, onClick, after = false) => {
@@ -458,11 +623,10 @@ FPS: ${info.fps}
 
 let pzpVue;
 let viewModeButton;
-const initPlayerFeatures = async (node, tries = 0) => {
+const initPlayerFeatures = async (node, isLive, tries = 0) => {
   if (node == null) {
     return;
   }
-  const isLive = !node.className.includes("vod_");
   const pzp = node.querySelector(".pzp-pc");
   pzpVue = pzp?.__vue__;
   if (pzpVue == null) {
@@ -470,7 +634,7 @@ const initPlayerFeatures = async (node, tries = 0) => {
       return;
     }
     return new Promise((r) => setTimeout(r, 50)).then(() =>
-      initPlayerFeatures(node, tries + 1)
+      initPlayerFeatures(node, isLive, tries + 1)
     );
   }
 
@@ -874,7 +1038,7 @@ const enterChatPip = async (container) => {
 };
 
 const initChatFeatures = async (node, tries = 0) => {
-  if (node == null || node.className.includes("vod_")) {
+  if (node == null) {
     return;
   }
   const chattingContainer = node.querySelector("aside");
@@ -940,6 +1104,12 @@ const initChatFeatures = async (node, tries = 0) => {
     );
   }
 };
+
+window.addEventListener("popstate", (e) => {
+  if (location.pathname === "/lives") {
+    setFilter?.(e.state.category);
+  }
+});
 
 document.body.addEventListener("keydown", (e) => {
   if (

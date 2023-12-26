@@ -14,6 +14,73 @@ body {
   right: auto;
 }
 
+.knife-explore {
+  margin: auto 1rem;
+  color: #dfe2ea;
+  font-size: 1rem;
+  font-family: "Sandoll Nemony2", "Apple SD Gothic NEO", "Helvetica Neue",
+    Helvetica, 나눔고딕, NanumGothic, "Malgun Gothic", "맑은 고딕", 굴림, gulim,
+    새굴림, "noto sans", 돋움, Dotum, sans-serif;
+  font-weight: 400;
+}
+
+.knife-categories {
+  display: flex;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.knife-categories::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.knife-categories::-webkit-scrollbar-thumb {
+  background-color: #374151;
+  border-radius: 9999px;
+}
+
+.knife-category {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  margin: 0.25rem;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #2e3033;
+  color: #9da5b6;
+  font-size: 1.2rem;
+  font-family: Sandoll Nemony2, Apple SD Gothic NEO, Helvetica Neue, Helvetica,
+    나눔고딕, NanumGothic, Malgun Gothic, 맑은 고딕, 굴림, gulim, 새굴림,
+    noto sans, 돋움, Dotum, sans-serif;
+}
+
+.knife-category-active {
+  border-color: #00ffa3;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.knife-category-logo {
+  width: 80px;
+  height: 80px;
+}
+
+.knife-category-count {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.2rem 0;
+  background-color: #2e303399;
+  color: #dfe2ea;
+  font-size: 0.8rem;
+}
+
 .knife-preview {
   position: absolute;
   top: 0;
