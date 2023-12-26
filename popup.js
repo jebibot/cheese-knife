@@ -10,6 +10,7 @@ chrome.storage.local
     config: {
       preview: true,
       updateSidebar: true,
+      category: true,
       popupPlayer: true,
       hotkey: true,
       arrowSeek: true,
