@@ -13,6 +13,7 @@ chrome.storage.local
       popupPlayer: true,
       hotkey: true,
       arrowSeek: true,
+      rememberTime: true,
       hideDonation: false,
       leftSideChat: false,
     },

@@ -698,15 +698,58 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
     }
   );
 
-  try {
-    addStatsMenu();
-  } catch (e) {}
+  if (isLive) {
+    try {
+      addStatsMenu();
+    } catch (e) {}
+  }
 
-  corePlayer = isLive ? await getPlayer(pzp) : null;
+  corePlayer = await getPlayer(pzp, isLive);
+
+  if (!isLive && corePlayer != null) {
+    const getVodResumeTimes = () => {
+      let result;
+      try {
+        result = JSON.parse(window.localStorage.getItem("vodResumeTimes"));
+      } catch (e) {}
+      if (result == null || typeof result !== "object") {
+        result = {};
+      }
+      return result;
+    };
+
+    const url = new URL(location.href);
+    const id = url.pathname.split("/").pop();
+    const time = Number(url.searchParams.get("t") || getVodResumeTimes()[id]);
+    if (time > 0) {
+      corePlayer.currentTime = time;
+    }
+    let throttled = false;
+    corePlayer.addEventListener("timeupdate", () => {
+      if (throttled || !config.rememberTime) {
+        return;
+      }
+      throttled = true;
+      const vodResumeTimes = getVodResumeTimes();
+      vodResumeTimes[id] =
+        corePlayer.duration - corePlayer.currentTime > 120
+          ? Math.floor(corePlayer.currentTime)
+          : 0;
+      window.localStorage.setItem(
+        "vodResumeTimes",
+        JSON.stringify(vodResumeTimes)
+      );
+      setTimeout(() => {
+        throttled = false;
+      }, 5000);
+    });
+  }
 };
 
-const getPlayer = async (pzp, tries = 0) => {
-  const playerHeader = pzp.querySelector(".header_info")?.firstChild;
+const getPlayer = async (pzp, isLive, tries = 0) => {
+  const playerHeader = pzp.querySelector(
+    isLive ? ".header_info" : ".prev_button_tooltip"
+  )?.firstChild;
   const player = await findReactState(
     playerHeader,
     (state) => state._corePlayer != null
@@ -797,7 +840,11 @@ const seek = (backward) => {
   }
 
   const video = document.querySelector("video");
-  if (video == null || video.buffered.length === 0) {
+  if (
+    video == null ||
+    video.duration !== Infinity ||
+    video.buffered.length === 0
+  ) {
     return;
   }
 

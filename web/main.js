@@ -4,6 +4,9 @@ if (
   !location.pathname.startsWith("/donation/")
 ) {
   const initConfig = (config) => {
+    if (!config.rememberTime) {
+      window.localStorage.removeItem("vodResumeTimes");
+    }
     if (config.leftSideChat) {
       document.body.classList.add("knife-left-side-chat");
     } else {
@@ -21,6 +24,7 @@ if (
             popupPlayer: true,
             hotkey: true,
             arrowSeek: true,
+            rememberTime: true,
             hideDonation: false,
             leftSideChat: false,
           },
