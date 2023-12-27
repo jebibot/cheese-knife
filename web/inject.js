@@ -772,7 +772,7 @@ const getPlayer = async (pzp, isLive, tries = 0) => {
       return;
     }
     return new Promise((r) => setTimeout(r, 50)).then(() =>
-      getPlayer(pzp, tries + 1)
+      getPlayer(pzp, isLive, tries + 1)
     );
   }
   return corePlayer;
