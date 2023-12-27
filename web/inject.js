@@ -375,15 +375,21 @@ const initSidebarFeatures = (sidebar) => {
     const recommendedShown = recommended.next;
     const followingExpanded = recommendedShown.next;
     const recommendedExpanded = followingExpanded.next;
-    if (followingExpanded.memoizedState) {
+    if (
+      followingExpanded.baseQueue?.action ??
+      followingExpanded.memoizedState
+    ) {
       followingShown.queue.dispatch(following.memoizedState);
     }
-    if (recommendedExpanded.memoizedState) {
+    if (
+      recommendedExpanded.baseQueue?.action ??
+      recommendedExpanded.memoizedState
+    ) {
       recommendedShown.queue.dispatch(recommended.memoizedState);
     }
   };
 
-  let debounceTimeout;
+  let throttled = false;
   const sidebarObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((n) => {
@@ -396,8 +402,14 @@ const initSidebarFeatures = (sidebar) => {
         }
       });
       if (mutation.removedNodes.length > 0) {
-        clearTimeout(debounceTimeout);
-        debounceTimeout = setTimeout(restoreSidebarState, 100);
+        if (throttled) {
+          return;
+        }
+        throttled = true;
+        restoreSidebarState();
+        setTimeout(() => {
+          throttled = false;
+        }, 500);
       }
     });
   });
