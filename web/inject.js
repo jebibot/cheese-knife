@@ -735,6 +735,10 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
     const time = Number(url.searchParams.get("t") || getVodResumeTimes()[id]);
     if (time > 0) {
       corePlayer.currentTime = time;
+      setTimeout(() => {
+        corePlayer.pause();
+        corePlayer.play();
+      }, 300);
     }
     let throttled = false;
     corePlayer.addEventListener("timeupdate", () => {
