@@ -379,13 +379,17 @@ const initSidebarFeatures = (sidebar) => {
       followingExpanded.baseQueue?.action ??
       followingExpanded.memoizedState
     ) {
-      followingShown.queue.dispatch(following.memoizedState);
+      followingShown.queue.dispatch(
+        following.baseQueue?.action ?? following.memoizedState
+      );
     }
     if (
       recommendedExpanded.baseQueue?.action ??
       recommendedExpanded.memoizedState
     ) {
-      recommendedShown.queue.dispatch(recommended.memoizedState);
+      recommendedShown.queue.dispatch(
+        recommended.baseQueue?.action ?? recommended.memoizedState
+      );
     }
   };
 
