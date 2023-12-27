@@ -26,7 +26,8 @@ body {
 
 .knife-categories {
   display: flex;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
   overflow-x: auto;
 }
 

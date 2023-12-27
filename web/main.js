@@ -55,7 +55,11 @@ if (
     }
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.style.display = "none";
+    if (navigator.userAgent.includes("Firefox")) {
+      svg.style.height = "0";
+    } else {
+      svg.style.display = "none";
+    }
 
     const filter = document.createElementNS(
       "http://www.w3.org/2000/svg",
