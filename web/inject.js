@@ -907,11 +907,14 @@ const initChatFeatures = async (node, tries = 0) => {
     );
   }
 
-  const foldButton = chattingContainer.querySelector(
-    '[class*="live_chatting_header_fold__"] > [class^="live_chatting_header_button__"]'
-  );
   if (window.top !== window) {
-    foldButton?.click();
+    setTimeout(() => {
+      chattingContainer
+        .querySelector(
+          '[class*="live_chatting_header_fold__"] > [class^="live_chatting_header_button__"]'
+        )
+        ?.click();
+    }, 300);
   }
 
   if (chatController.knifePatched) {
