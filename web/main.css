@@ -222,7 +222,8 @@ body {
   display: block;
 }
 
-.knife-resize-handle:has(+ [class*="live_chatting_is_folded__"]) {
+.knife-resize-handle:has(+ [class*="live_chatting_is_folded__"]),
+.knife-resize-handle:has(+ [class*="live_chatting_is_popup_chat__"]) {
   display: none;
 }
 

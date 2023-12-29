@@ -901,7 +901,8 @@ const initChatFeatures = async (node, tries = 0) => {
   if (node == null) {
     return;
   }
-  const chattingContainer = node.querySelector("aside");
+  const chattingContainer =
+    node.tagName === "ASIDE" ? node : node.querySelector("aside");
   const chatController = await findReactState(
     chattingContainer,
     (state) => state.messageFilter != null
@@ -994,7 +995,11 @@ document.body.addEventListener("keydown", (e) => {
 });
 
 (async () => {
-  await Promise.all([attachLayoutObserver(), attachBodyObserver()]);
+  if (location.pathname.endsWith("/chat")) {
+    await initChatFeatures(await waitFor("aside"));
+  } else {
+    await Promise.all([attachLayoutObserver(), attachBodyObserver()]);
+  }
   rootObserver.disconnect();
 })();
 })();
