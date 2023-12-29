@@ -254,6 +254,9 @@ const initSidebarFeatures = (sidebar) => {
 
   const liveInfo = {};
   const addPreview = async (tooltip) => {
+    if (!config.preview) {
+      return;
+    }
     const url = new URL(tooltip.parentNode.href);
     const uid = url.pathname.split("/").pop();
     let info = liveInfo[uid];
