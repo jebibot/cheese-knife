@@ -89,9 +89,9 @@ section[class^="header_section__"][class*="header_show_tooltip__"] {
   background-color: #2e3033;
   color: #9da5b6;
   font-size: 1.2rem;
-  font-family: Sandoll Nemony2, Apple SD Gothic NEO, Helvetica Neue, Helvetica,
-    나눔고딕, NanumGothic, Malgun Gothic, 맑은 고딕, 굴림, gulim, 새굴림,
-    noto sans, 돋움, Dotum, sans-serif;
+  font-family: "Sandoll Nemony2", "Apple SD Gothic NEO", "Helvetica Neue",
+    Helvetica, 나눔고딕, NanumGothic, "Malgun Gothic", "맑은 고딕", 굴림, gulim,
+    새굴림, "noto sans", 돋움, Dotum, sans-serif;
 }
 
 .knife-category-active {
