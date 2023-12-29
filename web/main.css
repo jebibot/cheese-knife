@@ -2,6 +2,11 @@ body {
   overflow: hidden;
 }
 
+section[class^="header_section__"][class*="header_show_tooltip__"] {
+  margin-right: -300px;
+  padding-right: 300px;
+}
+
 .knife-sharpen video {
   filter: url(#filterSharpen);
 }
@@ -112,7 +117,7 @@ body {
 }
 
 .knife-preview {
-  position: fixed;
+  position: absolute;
   margin-top: 0.25rem;
   width: 300px;
   aspect-ratio: 16/9;
