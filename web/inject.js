@@ -300,6 +300,7 @@ const initSidebarFeatures = (sidebar) => {
       if (!config.popupPlayer) {
         return;
       }
+      e.stopPropagation();
       document.body.classList.add("knife-dragging");
       item.style.opacity = "0.8";
 
@@ -912,7 +913,11 @@ document.body.addEventListener("keydown", (e) => {
   if (
     e.target.tagName === "INPUT" ||
     e.target.tagName === "TEXTAREA" ||
-    e.target.contentEditable === "true"
+    e.target.contentEditable === "true" ||
+    e.altKey ||
+    e.ctrlKey ||
+    e.metaKey ||
+    e.shiftKey
   ) {
     return;
   }
