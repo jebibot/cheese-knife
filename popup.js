@@ -17,6 +17,7 @@ chrome.storage.local
       rememberTime: true,
       fitPlayer: false,
       hideDonation: false,
+      resizeChat: false,
       leftSideChat: false,
     },
     t: 0,

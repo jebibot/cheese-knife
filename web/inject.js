@@ -861,6 +861,42 @@ const seek = (backward) => {
   }
 };
 
+const addResizeHandle = (container) => {
+  const resizeHandle = document.createElement("div");
+  resizeHandle.classList.add("knife-resize-handle");
+  container.parentNode.insertBefore(resizeHandle, container);
+
+  let x = 0;
+  let chatWidth = Number(window.localStorage.getItem("chatWidth"));
+  if (chatWidth > 0) {
+    document.body.style.setProperty("--knife-chat-width", `${chatWidth}px`);
+  }
+  const onMouseMove = (e) => {
+    chatWidth = Math.max(
+      24,
+      config.leftSideChat
+        ? e.clientX - x - 1
+        : document.documentElement.clientWidth - e.clientX - 1
+    );
+    container.style.width = `${chatWidth}px`;
+  };
+  const onMouseUp = () => {
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+    container.style.width = "";
+    if (chatWidth > 0) {
+      document.body.style.setProperty("--knife-chat-width", `${chatWidth}px`);
+      window.localStorage.setItem("chatWidth", chatWidth);
+    }
+  };
+  resizeHandle.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    x = container.getBoundingClientRect().x;
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  });
+};
+
 const initChatFeatures = async (node, tries = 0) => {
   if (node == null) {
     return;
@@ -878,6 +914,10 @@ const initChatFeatures = async (node, tries = 0) => {
       initChatFeatures(node, tries + 1)
     );
   }
+
+  try {
+    addResizeHandle(chattingContainer);
+  } catch (e) {}
 
   if (window.top !== window) {
     setTimeout(() => {
