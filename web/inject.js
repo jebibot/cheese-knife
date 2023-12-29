@@ -967,6 +967,7 @@ document.body.addEventListener("keydown", (e) => {
   }
   switch (e.key) {
     case "f":
+    case "ㄹ":
       if (config.hotkey && pzpVue != null) {
         if (pzpVue.fullscreen) {
           pzpVue.$store.dispatch("exitFullscreen");
@@ -976,11 +977,13 @@ document.body.addEventListener("keydown", (e) => {
       }
       break;
     case "m":
+    case "ㅡ":
       if (config.hotkey && pzpVue != null) {
         pzpVue.muted = !pzpVue.muted;
       }
       break;
     case "t":
+    case "ㅅ":
       if (config.hotkey) {
         viewModeButton?.click();
       }
