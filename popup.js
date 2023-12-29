@@ -15,6 +15,7 @@ chrome.storage.local
       hotkey: true,
       arrowSeek: true,
       rememberTime: true,
+      fitPlayer: false,
       hideDonation: false,
       leftSideChat: false,
     },

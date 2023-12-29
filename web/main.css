@@ -6,6 +6,11 @@ body {
   filter: url(#filterSharpen);
 }
 
+.knife-fit-player [class^="live_information_player__"],
+.knife-fit-player [class^="vod_player__"] {
+  max-height: 100% !important;
+}
+
 .knife-left-side-chat [class^="live_chatting_container__"] {
   order: -1;
 }

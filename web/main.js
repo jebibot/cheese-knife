@@ -7,11 +7,12 @@ if (
     if (!config.rememberTime) {
       window.localStorage.removeItem("vodResumeTimes");
     }
+    document.body.classList.toggle("knife-category-hidden", !config.category);
+    document.body.classList.toggle("knife-fit-player", !!config.fitPlayer);
     document.body.classList.toggle(
       "knife-left-side-chat",
       !!config.leftSideChat
     );
-    document.body.classList.toggle("knife-category-hidden", !config.category);
   };
 
   window.addEventListener("message", async (e) => {
@@ -26,6 +27,7 @@ if (
             hotkey: true,
             arrowSeek: true,
             rememberTime: true,
+            fitPlayer: false,
             hideDonation: false,
             leftSideChat: false,
           },
