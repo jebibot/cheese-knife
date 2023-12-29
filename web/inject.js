@@ -252,95 +252,50 @@ const initSidebarFeatures = (sidebar) => {
     return;
   }
 
-  const preview = document.createElement("div");
-  preview.classList.add("knife-preview");
-  document.body.appendChild(preview);
-
-  const thumbnail = document.createElement("div");
-  thumbnail.classList.add("knife-preview-thumbnail");
-  preview.appendChild(thumbnail);
-
-  const img = document.createElement("img");
-  thumbnail.appendChild(img);
-
-  const uptime = document.createElement("div");
-  uptime.classList.add("knife-preview-uptime");
-  thumbnail.appendChild(uptime);
-
-  const viewers = document.createElement("div");
-  viewers.classList.add("knife-preview-viewers");
-  thumbnail.appendChild(viewers);
-
-  const info = document.createElement("div");
-  info.classList.add("knife-preview-info");
-  preview.appendChild(info);
-
-  const category = document.createElement("span");
-  category.classList.add("knife-preview-category");
-  info.appendChild(category);
-
-  const title = document.createElement("span");
-  info.appendChild(title);
-
-  let lastPreview;
-  let previewTimeout;
   const liveInfo = {};
+  const addPreview = async (tooltip) => {
+    const url = new URL(tooltip.parentNode.href);
+    const uid = url.pathname.split("/").pop();
+    let info = liveInfo[uid];
+    if (info === undefined) {
+      const res = await fetch(
+        `https://api.chzzk.naver.com/service/v1/channels/${uid}/live-detail`
+      );
+      if (!res.ok) {
+        return;
+      }
+      const live = await res.json();
+      if (live.code !== 200) {
+        return;
+      }
+      info = live.content;
+      liveInfo[uid] = info;
+    }
+    if (info == null) {
+      return;
+    }
+
+    const thumbnail = document.createElement("div");
+    thumbnail.classList.add("knife-preview");
+    tooltip.appendChild(thumbnail);
+
+    const img = document.createElement("img");
+    img.src = info.liveImageUrl?.replace("{type}", 480) || "";
+    thumbnail.appendChild(img);
+
+    const uptime = document.createElement("div");
+    uptime.classList.add("knife-preview-uptime");
+    uptime.textContent = info.openDate
+      ? formatTimestamp(Date.now() - new Date(info.openDate).getTime())
+      : "";
+    thumbnail.appendChild(uptime);
+  };
+
   const addListeners = (item) => {
     const url = new URL(item.href);
     if (url.hostname !== "chzzk.naver.com") {
       return;
     }
-    item.addEventListener("mouseover", async () => {
-      if (!config.preview) {
-        return;
-      }
-      clearTimeout(previewTimeout);
-      const url = new URL(item.href);
-      const uid = url.pathname.split("/").pop();
-      if (uid === lastPreview) {
-        return;
-      }
-      lastPreview = uid;
-      let info = liveInfo[uid];
-      if (info === undefined) {
-        const res = await fetch(
-          `https://api.chzzk.naver.com/service/v1/channels/${uid}/data?fields=topExposedVideos`
-        );
-        if (!res.ok) {
-          return;
-        }
-        const live = await res.json();
-        if (live.code !== 200) {
-          return;
-        }
-        info = live.content?.topExposedVideos?.openLive;
-        liveInfo[uid] = info;
-      }
-      if (info == null) {
-        return;
-      }
-      img.src = info.liveImageUrl?.replace("{type}", 480) || "";
-      uptime.textContent = info.openDate
-        ? formatTimestamp(Date.now() - new Date(info.openDate).getTime())
-        : "";
-      viewers.textContent = info.concurrentUserCount
-        ? `${numberFormatter.format(info.concurrentUserCount)}명`
-        : "";
-      category.textContent = info.liveCategoryValue || "";
-      title.textContent = info.liveTitle || "";
-
-      const rect = item.getBoundingClientRect();
-      preview.style.top = `${rect.top}px`;
-      preview.style.left = `${rect.left + rect.width}px`;
-      preview.style.opacity = "1";
-    });
-    item.addEventListener("mouseout", () => {
-      clearTimeout(previewTimeout);
-      previewTimeout = setTimeout(() => {
-        lastPreview = null;
-        preview.style.opacity = "0";
-      }, 500);
-    });
     item.addEventListener("dragstart", (e) => {
       if (!config.popupPlayer) {
         return;
@@ -403,6 +358,9 @@ const initSidebarFeatures = (sidebar) => {
         const items = n.tagName === "A" ? [n] : n.querySelectorAll("a");
         for (const item of items) {
           addListeners(item);
+        }
+        if (n.className.startsWith("navigator_tooltip__")) {
+          addPreview(n);
         }
       });
       if (mutation.removedNodes.length > 0) {

@@ -88,60 +88,28 @@ body {
 }
 
 .knife-preview {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  margin: 0 1rem;
+  position: fixed;
+  margin-top: 0.25rem;
   width: 300px;
-  background-color: #2a2c31;
-  color: #dfe2ea;
-  font-weight: 600;
+  aspect-ratio: 16/9;
+  background-color: #2e3033;
   border-radius: 5px;
   overflow: hidden;
   z-index: 1000;
-  opacity: 0;
-  transition-property: opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-  pointer-events: none;
 }
 
-.knife-preview-thumbnail {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16/9;
-}
-
-.knife-preview-thumbnail > img {
+.knife-preview > img {
   width: 100%;
 }
 
-.knife-preview-viewers,
 .knife-preview-uptime {
   position: absolute;
+  bottom: 0;
   left: 0;
   margin: 0.25rem;
   padding: 0.25rem 0.5rem;
   background-color: #18181b99;
   color: white;
-}
-
-.knife-preview-uptime {
-  top: 0;
-}
-
-.knife-preview-viewers {
-  bottom: 0;
-}
-
-.knife-preview-info {
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-
-.knife-preview-category {
-  margin-right: 0.3rem;
-  color: #697183;
 }
 
 .knife-popup {
