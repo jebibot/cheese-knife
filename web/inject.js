@@ -407,7 +407,7 @@ const attachBodyObserver = async () => {
     const features = [];
     if (node.className.startsWith("live_")) {
       features.push(initPlayerFeatures(node, true));
-      features.push(initChatFeatures(node));
+      features.push(attachLiveObserver(node));
     } else if (node.className.startsWith("vod_")) {
       features.push(initPlayerFeatures(node, false));
     } else if (node.className.startsWith("lives_")) {
@@ -897,12 +897,10 @@ const addResizeHandle = (container) => {
   });
 };
 
-const initChatFeatures = async (node, tries = 0) => {
-  if (node == null) {
+const initChatFeatures = async (chattingContainer, tries = 0) => {
+  if (chattingContainer == null) {
     return;
   }
-  const chattingContainer =
-    node.tagName === "ASIDE" ? node : node.querySelector("aside");
   const chatController = await findReactState(
     chattingContainer,
     (state) => state.messageFilter != null
@@ -912,7 +910,7 @@ const initChatFeatures = async (node, tries = 0) => {
       return;
     }
     return new Promise((r) => setTimeout(r, 50)).then(() =>
-      initChatFeatures(node, tries + 1)
+      initChatFeatures(chattingContainer, tries + 1)
     );
   }
 
@@ -946,6 +944,22 @@ const initChatFeatures = async (node, tries = 0) => {
     return true;
   };
 };
+
+const attachLiveObserver = async (node) => {
+  if (node == null) {
+    return;
+  }
+  const liveObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((n) => {
+        initChatFeatures(n.tagName === "ASIDE" ? n : n.querySelector("aside"));
+      });
+    });
+  });
+  liveObserver.observe(node, { childList: true });
+
+  await initChatFeatures(node.querySelector("aside"));
+}
 
 window.addEventListener("popstate", (e) => {
   if (location.pathname === "/lives") {
