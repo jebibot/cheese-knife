@@ -262,7 +262,7 @@ const initSidebarFeatures = (sidebar) => {
     let info = liveInfo[uid];
     if (info === undefined) {
       const res = await fetch(
-        `https://api.chzzk.naver.com/service/v1/channels/${uid}/live-detail`
+        `https://api.chzzk.naver.com/service/v2/channels/${uid}/live-detail`
       );
       if (!res.ok) {
         return;
