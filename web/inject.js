@@ -320,35 +320,6 @@ const initSidebarFeatures = (sidebar) => {
     addListeners(item);
   }
 
-  const restoreSidebarState = async () => {
-    const following = await findReactState(
-      sidebar,
-      (state) => Array.isArray(state) && typeof state[0] !== "function",
-      true
-    );
-    const followingShown = following.next;
-    const recommended = followingShown.next;
-    const recommendedShown = recommended.next;
-    const followingExpanded = recommendedShown.next;
-    const recommendedExpanded = followingExpanded.next;
-    if (
-      followingExpanded.baseQueue?.action ??
-      followingExpanded.memoizedState
-    ) {
-      followingShown.queue.dispatch(
-        following.baseQueue?.action ?? following.memoizedState
-      );
-    }
-    if (
-      recommendedExpanded.baseQueue?.action ??
-      recommendedExpanded.memoizedState
-    ) {
-      recommendedShown.queue.dispatch(
-        recommended.baseQueue?.action ?? recommended.memoizedState
-      );
-    }
-  };
-
   const sidebarObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((n) => {
