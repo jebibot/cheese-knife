@@ -222,7 +222,7 @@ const attachLayoutObserver = async () => {
   try {
     routeNavigator = (
       await findReactContext(
-        layoutWrap.parentNode,
+        layoutWrap,
         (context) => context.navigator != null
       )
     )?.navigator;
@@ -450,7 +450,6 @@ const initLivesFeatures = async (node) => {
 
   let currentCategory;
   const applyFilter = (item) => {
-    console.log(item);
     if (
       currentCategory != null &&
       (item.querySelector('[class^="video_card_category__"]')?.textContent ||
