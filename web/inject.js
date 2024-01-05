@@ -281,7 +281,9 @@ const initSidebarFeatures = (sidebar) => {
     tooltip.appendChild(thumbnail);
 
     const img = document.createElement("img");
-    img.src = info.liveImageUrl?.replace("{type}", 480) || "";
+    img.src = info.adult
+      ? "https://ssl.pstatic.net/static/nng/glive/resource/p/static/media/image_age_restriction.c04b98f818ed01f04be9.png"
+      : info.liveImageUrl?.replace("{type}", 480) || "";
     thumbnail.appendChild(img);
 
     const uptime = document.createElement("div");
