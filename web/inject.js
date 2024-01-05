@@ -129,6 +129,7 @@ const createPopupPlayer = (url, left, top) => {
   player.src = url;
   player.allowFullscreen = true;
   player.allow = "autoplay; encrypted-media; picture-in-picture";
+  player.scrolling = "no";
   popup.appendChild(player);
 
   const dragArea = document.createElement("div");
@@ -612,11 +613,8 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
   }
 
   try {
-    const container = node.querySelector(
-      '[class^="live_information_video_container__"]'
-    );
     const setLiveWide = await findReactState(
-      container,
+      node.parentNode.parentNode.parentNode,
       (state) =>
         state[0]?.length === 1 &&
         state[1]?.length === 2 &&
