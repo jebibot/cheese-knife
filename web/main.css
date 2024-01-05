@@ -1,7 +1,3 @@
-body {
-  overflow: hidden;
-}
-
 section[class^="header_section__"][class*="header_show_tooltip__"] {
   margin-right: -300px;
   padding-right: 300px;
