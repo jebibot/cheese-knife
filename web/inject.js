@@ -221,10 +221,7 @@ const attachLayoutObserver = async () => {
 
   try {
     routeNavigator = (
-      await findReactContext(
-        layoutWrap,
-        (context) => context.navigator != null
-      )
+      await findReactContext(layoutWrap, (context) => context.navigator != null)
     )?.navigator;
   } catch (e) {}
 };
@@ -395,10 +392,10 @@ const attachBodyObserver = async () => {
     }
     const features = [];
     if (node.className.startsWith("live_")) {
-      features.push(initPlayerFeatures(node, true));
+      features.push(attachPlayerObserver(true));
       features.push(attachLiveObserver(node));
     } else if (node.className.startsWith("vod_")) {
-      features.push(initPlayerFeatures(node, false));
+      features.push(attachPlayerObserver(false));
     } else if (node.className.startsWith("lives_")) {
       features.push(initLivesFeatures(node));
     }
@@ -604,6 +601,30 @@ FPS: ${info.fps}
 
 let pzpVue;
 let viewModeButton;
+const attachPlayerObserver = async (isLive, tries = 0) => {
+  const playerLayout = document.getElementById(
+    isLive ? "live_player_layout" : "player_layout"
+  );
+  if (playerLayout == null) {
+    if (tries > 500) {
+      return;
+    }
+    return new Promise((r) => setTimeout(r, 50)).then(() =>
+      attachPlayerObserver(isLive, tries + 1)
+    );
+  }
+  const playerObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((n) => {
+        initPlayerFeatures(n, isLive);
+      });
+    });
+  });
+  playerObserver.observe(playerLayout.parentNode, { childList: true });
+
+  await initPlayerFeatures(playerLayout, isLive);
+};
+
 const initPlayerFeatures = async (node, isLive, tries = 0) => {
   if (node == null) {
     return;
@@ -850,6 +871,7 @@ const seek = (backward) => {
 };
 
 const addResizeHandle = (container) => {
+  container.parentNode.querySelector(".knife-resize-handle")?.remove();
   const resizeHandle = document.createElement("div");
   resizeHandle.classList.add("knife-resize-handle");
   container.parentNode.insertBefore(resizeHandle, container);
@@ -947,7 +969,7 @@ const attachLiveObserver = async (node) => {
   liveObserver.observe(node, { childList: true });
 
   await initChatFeatures(node.querySelector("aside"));
-}
+};
 
 window.addEventListener("popstate", (e) => {
   if (location.pathname === "/lives") {
