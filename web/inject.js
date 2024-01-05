@@ -352,7 +352,6 @@ const initSidebarFeatures = (sidebar) => {
     }
   };
 
-  let throttled = false;
   const sidebarObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((n) => {
@@ -367,16 +366,6 @@ const initSidebarFeatures = (sidebar) => {
           addPreview(n);
         }
       });
-      if (mutation.removedNodes.length > 0) {
-        if (throttled) {
-          return;
-        }
-        throttled = true;
-        restoreSidebarState();
-        setTimeout(() => {
-          throttled = false;
-        }, 500);
-      }
     });
   });
   sidebarObserver.observe(sidebar, {
