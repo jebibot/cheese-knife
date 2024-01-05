@@ -200,7 +200,7 @@ const attachLayoutObserver = async () => {
       await refreshSidebar(sidebar);
     } catch (e) {}
   };
-  const layoutWrap = await waitFor('[class^="layout_wrap__"]');
+  const layoutWrap = await waitFor('[class^="layout_glive__"]');
   if (layoutWrap == null) {
     return;
   }
@@ -449,7 +449,7 @@ const attachBodyObserver = async () => {
 
 let setFilter;
 const initLivesFeatures = async (node) => {
-  const list = node.querySelector("ul");
+  const list = node.querySelector('[class^="component_list__"]');
   if (list == null) {
     return;
   }
@@ -462,6 +462,7 @@ const initLivesFeatures = async (node) => {
 
   let currentCategory;
   const applyFilter = (item) => {
+    console.log(item);
     if (
       currentCategory != null &&
       (item.querySelector('[class^="video_card_category__"]')?.textContent ||
