@@ -182,14 +182,8 @@ const createPopupPlayer = (url, left, top) => {
   return popup;
 };
 
-let routeNavigator;
 const attachLayoutObserver = async () => {
   const init = async (node) => {
-    try {
-      initHeaderFeatures(
-        node.tagName === "H1" ? node : node.querySelector("h1")
-      );
-    } catch (e) {}
     const sidebar = node.querySelector("#navigation");
     if (sidebar == null) {
       return;
@@ -219,30 +213,6 @@ const attachLayoutObserver = async () => {
   layoutObserver.observe(layoutWrap, { childList: true });
 
   await init(layoutWrap);
-
-  try {
-    routeNavigator = (
-      await findReactContext(layoutWrap, (context) => context.navigator != null)
-    )?.navigator;
-  } catch (e) {}
-};
-
-const initHeaderFeatures = (header) => {
-  if (header == null) {
-    return;
-  }
-  const explore = document.createElement("a");
-  explore.classList.add("knife-explore");
-  explore.href = "/lives";
-  explore.textContent = "탐색";
-  explore.addEventListener("click", (e) => {
-    if (routeNavigator != null) {
-      e.preventDefault();
-      setFilter?.(null);
-      routeNavigator.push("/lives");
-    }
-  });
-  header.appendChild(explore);
 };
 
 const initSidebarFeatures = (sidebar) => {

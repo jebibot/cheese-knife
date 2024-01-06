@@ -39,16 +39,6 @@ section[class^="header_section__"][class*="header_show_tooltip__"] {
   right: auto;
 }
 
-.knife-explore {
-  margin: auto 1rem;
-  color: #dfe2ea;
-  font-size: 1rem;
-  font-family: "Sandoll Nemony2", "Apple SD Gothic NEO", "Helvetica Neue",
-    Helvetica, 나눔고딕, NanumGothic, "Malgun Gothic", "맑은 고딕", 굴림, gulim,
-    새굴림, "noto sans", 돋움, Dotum, sans-serif;
-  font-weight: 400;
-}
-
 .knife-categories {
   display: flex;
   margin-bottom: 0.75rem;
@@ -56,7 +46,6 @@ section[class^="header_section__"][class*="header_show_tooltip__"] {
   overflow-x: auto;
 }
 
-.knife-category-hidden .knife-explore,
 .knife-category-hidden .knife-categories {
   display: none;
 }
