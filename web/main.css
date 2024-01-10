@@ -7,9 +7,16 @@ section[class^="header_section__"][class*="header_show_tooltip__"] {
   filter: url(#filterSharpen);
 }
 
-.knife-fit-player [class^="live_information_player__"],
 .knife-fit-player [class^="vod_player__"] {
   max-height: 100% !important;
+}
+
+.knife-fit-player [class^="live_information_player__"] {
+  max-height: 100vh;
+}
+
+.knife-fit-player [class^="live_information_contents__"] {
+  max-height: none;
 }
 
 .knife-resize-chat [class^="live_chatting_container__"] {
