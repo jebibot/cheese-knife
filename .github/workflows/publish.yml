@@ -1,0 +1,65 @@
+name: "Publish"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "The argument to npm version"
+        default: "patch"
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    environment: publish
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install latest npm
+        run: npm install -g npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Increment version
+        run: npm version --no-git-tag-version ${{ github.event.inputs.version }}
+
+      - name: Push and tag version
+        run: |
+          VERSION=$(jq -r ".version" package.json)
+          git config user.name "Jebibot"
+          git config user.email "83044352+jebibot@users.noreply.github.com"
+          git add *.json
+          git commit -m "v$VERSION"
+          git tag -a "v$VERSION" -m "v$VERSION"
+          git push --follow-tags
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish extension
+        run: npm run publish
+        env:
+          CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          EXTENSION_ID: ${{ secrets.CHROME_APP_ID }}
+
+      - name: Build Firefox
+        run: npm run build:firefox
+
+      - name: Publish Firefox add-on
+        run: npm run publish:firefox
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
