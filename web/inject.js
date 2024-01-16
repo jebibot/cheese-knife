@@ -383,7 +383,7 @@ const initLivesFeatures = async (node) => {
     return;
   }
 
-  const res = await fetch("https://api.multichzzk.tv/categories");
+  const res = await fetch("https://api.chz.app/categories");
   if (!res.ok) {
     return;
   }
