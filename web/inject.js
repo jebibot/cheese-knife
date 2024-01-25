@@ -470,12 +470,14 @@ const initLivesFeatures = async (node) => {
   listObserver.observe(list, { childList: true });
 };
 
-const cloneButton = (button, name, iconSvg, onClick, after = false) => {
+const cloneButton = (pzp, className, name, iconSvg, onClick, after = false) => {
+  const button = pzp?.querySelector(`.${className}`);
   if (button == null) {
     return;
   }
   try {
     const b = button.cloneNode(true);
+    b.classList.remove(className);
     b.ariaLabel = name;
     b.setAttribute("label", name);
     b.addEventListener("click", onClick);
@@ -598,7 +600,8 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
 
   if (isLive) {
     cloneButton(
-      pzp.querySelector(".pzp-pc-playback-switch"),
+      pzp,
+      "pzp-pc-playback-switch",
       "빨리 감기",
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 40"><path fill="#fff" d="M10.57 25.91c.35.17.77.11 1.07-.14L17 21.3V25a.997.997 0 0 0 1.64.77L24 21.3V25c0 .55.45 1 1 1s1-.45 1-1V15c0-.55-.45-1-1-1s-1 .45-1 1v3.7l-5.36-4.47c-.3-.25-.71-.3-1.07-.14-.35.17-.57.52-.57.91v3.7l-5.36-4.47c-.3-.25-.71-.3-1.07-.14-.35.17-.58.52-.58.91v10c0 .39.22.74.57.91Z"/></svg>',
       () => {
@@ -609,10 +612,10 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
     );
   }
 
-  const viewModeButton = pzp.querySelector(".pzp-pc-viewmode-button");
   if (document.pictureInPictureEnabled) {
     cloneButton(
-      viewModeButton,
+      pzp,
+      "pzp-pc-viewmode-button",
       "PIP 모드",
       '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><path fill="#fff" d="M27 9c.55 0 1 .45 1 1v7h-2v-6H10v14h6v2H9c-.55 0-1-.45-1-1V10c0-.55.45-1 1-1h18Zm0 10c.55 0 1 .45 1 1v6c0 .55-.45 1-1 1h-8c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h8Zm-1 2h-6v4h6v-4Z"/></svg>',
       () => {
