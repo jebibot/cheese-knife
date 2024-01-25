@@ -322,7 +322,8 @@ const refreshSidebar = async (sidebar) => {
     if (config.updateSidebar) {
       const sidebarEffect = await findReactState(
         sidebar,
-        (state) => state.tag === 8 && state.destroy == null
+        (state) =>
+          state.tag === 8 && state.destroy == null && state.deps?.length > 2
       );
       sidebarEffect?.create?.();
     }
@@ -822,7 +823,10 @@ const addResizeHandle = (container) => {
   let x = 0;
   let chatWidth = Number(window.localStorage.getItem("chatWidth"));
   if (chatWidth > 0) {
-    document.documentElement.style.setProperty("--knife-chat-width", `${chatWidth}px`);
+    document.documentElement.style.setProperty(
+      "--knife-chat-width",
+      `${chatWidth}px`
+    );
   }
   const onMouseMove = (e) => {
     chatWidth = Math.max(
@@ -838,7 +842,10 @@ const addResizeHandle = (container) => {
     document.removeEventListener("mouseup", onMouseUp);
     container.style.width = "";
     if (chatWidth > 0) {
-      document.documentElement.style.setProperty("--knife-chat-width", `${chatWidth}px`);
+      document.documentElement.style.setProperty(
+        "--knife-chat-width",
+        `${chatWidth}px`
+      );
       window.localStorage.setItem("chatWidth", chatWidth);
     }
   };
