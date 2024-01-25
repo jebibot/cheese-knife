@@ -462,7 +462,7 @@ const initLivesFeatures = async (node) => {
   const listObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((n) => {
-        if (n.querySelector != null) {
+        if (n.tagName === "LI") {
           applyFilter(n);
         }
       });
