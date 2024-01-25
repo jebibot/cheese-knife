@@ -19,7 +19,7 @@ section[class^="header_section__"][class*="header_show_tooltip__"] {
   max-height: none;
 }
 
-.knife-resize-chat [class^="live_chatting_container__"] {
+.knife-resize-chat [class^="live_chatting_container__"]:not([class*="live_chatting_is_popup_chat__"]) {
   width: var(--knife-chat-width, 353px);
   max-width: calc(100% - 24px);
 }
