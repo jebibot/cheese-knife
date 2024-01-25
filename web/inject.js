@@ -544,7 +544,6 @@ FPS: ${info.fps}
 };
 
 let pzpVue;
-let viewModeButton;
 const attachPlayerObserver = async (isLive, tries = 0) => {
   const playerLayout = document.getElementById(
     isLive ? "live_player_layout" : "player_layout"
@@ -610,7 +609,7 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
     );
   }
 
-  viewModeButton = pzp.querySelector(".pzp-pc-viewmode-button");
+  const viewModeButton = pzp.querySelector(".pzp-pc-viewmode-button");
   if (document.pictureInPictureEnabled) {
     cloneButton(
       viewModeButton,
@@ -931,28 +930,6 @@ document.body.addEventListener("keydown", (e) => {
     return;
   }
   switch (e.key) {
-    case "f":
-    case "ㄹ":
-      if (config.hotkey && pzpVue != null) {
-        if (pzpVue.fullscreen) {
-          pzpVue.$store.dispatch("exitFullscreen");
-        } else {
-          pzpVue.$store.dispatch("requestFullscreen");
-        }
-      }
-      break;
-    case "m":
-    case "ㅡ":
-      if (config.hotkey && pzpVue != null) {
-        pzpVue.muted = !pzpVue.muted;
-      }
-      break;
-    case "t":
-    case "ㅅ":
-      if (config.hotkey) {
-        viewModeButton?.click();
-      }
-      break;
     case "ArrowLeft":
       seek(true);
       break;

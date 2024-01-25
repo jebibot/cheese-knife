@@ -25,7 +25,6 @@ if (
             updateSidebar: true,
             category: true,
             popupPlayer: true,
-            hotkey: true,
             arrowSeek: true,
             rememberTime: true,
             fitPlayer: false,
