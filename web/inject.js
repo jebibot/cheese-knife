@@ -65,6 +65,16 @@ const findReactContext = async (node, criteria, tries = 0) => {
   }
 };
 
+let isPopup = false;
+try {
+  if (
+    window.top !== window &&
+    window.top.location.hostname === "chzzk.naver.com"
+  ) {
+    isPopup = true;
+  }
+} catch {}
+
 let config = {};
 window.addEventListener("message", (e) => {
   switch (e.data.type) {
@@ -594,7 +604,7 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
         state[1]?.length === 2 &&
         state[1]?.[1]?.key === "isLiveWide"
     );
-    if (window.top !== window) {
+    if (isPopup) {
       setLiveWide?.[0](true);
     }
   } catch (e) {}
@@ -878,7 +888,7 @@ const initChatFeatures = async (chattingContainer, tries = 0) => {
     addResizeHandle(chattingContainer);
   } catch (e) {}
 
-  if (window.top !== window) {
+  if (isPopup) {
     setTimeout(() => {
       chattingContainer
         .querySelector(
