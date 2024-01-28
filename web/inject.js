@@ -549,9 +549,7 @@ const attachBodyObserver = async () => {
       return;
     }
     e.preventDefault();
-    layoutBody.appendChild(
-      createPopupPlayer(url, e.clientX - 320, e.clientY - 12)
-    );
+    layoutBody.appendChild(createPopupPlayer(url, e.pageX - 320, e.pageY - 12));
   });
   layoutBody.addEventListener("dragover", (e) => {
     e.preventDefault();
