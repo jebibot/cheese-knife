@@ -181,6 +181,12 @@ const showPreview = async (href, node, tooltip) => {
     return;
   }
 
+  const rect = node.getBoundingClientRect();
+  if (!rect.width) {
+    return;
+  }
+  const width = Math.max(config.previewWidth, rect.width);
+
   let Player;
   try {
     Player = (await getWebpackRequire)(4772);
@@ -214,8 +220,6 @@ const showPreview = async (href, node, tooltip) => {
     preview.appendChild(previewProgress);
   }
 
-  const rect = node.getBoundingClientRect();
-  const width = Math.max(config.previewWidth, rect.width);
   let left;
   let top;
   if (tooltip) {
