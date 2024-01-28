@@ -153,7 +153,11 @@ const playPreview = () => {
 
 const showPreview = async (href, node, tooltip) => {
   const url = new URL(href);
-  const uid = url.pathname.split("/").pop();
+  const parts = url.pathname.split("/");
+  if (parts.length < 3 || parts[1] !== "live") {
+    return;
+  }
+  const uid = parts[2];
   let info = liveInfo[uid];
   if (info === undefined) {
     const res = await fetch(
@@ -310,7 +314,11 @@ const hidePreview = (href) => {
   }
   if (href != null) {
     const url = new URL(href);
-    const uid = url.pathname.split("/").pop();
+    const parts = url.pathname.split("/");
+    if (parts.length < 3 || parts[1] !== "live") {
+      return;
+    }
+    const uid = parts[2];
     if (currentPreview !== uid) {
       return;
     }
