@@ -9,6 +9,10 @@ chrome.storage.local
   .get({
     config: {
       preview: true,
+      livePreview: true,
+      previewWidth: 400,
+      previewDelay: 1,
+      previewVolume: 5,
       updateSidebar: true,
       category: true,
       popupPlayer: true,
@@ -23,15 +27,26 @@ chrome.storage.local
   })
   .then(({ config, t }) => {
     for (const c in config) {
-      const checkbox = document.getElementById(c);
-      if (checkbox == null) {
+      const input = document.getElementById(c);
+      if (input == null) {
         continue;
       }
-      checkbox.checked = config[c];
-      checkbox.addEventListener("change", (e) => {
-        config[e.target.id] = e.target.checked;
-        chrome.storage.local.set({ config });
-      });
+      if (input.type === "checkbox") {
+        input.checked = config[c];
+        input.addEventListener("change", (e) => {
+          config[e.target.id] = e.target.checked;
+          chrome.storage.local.set({ config });
+        });
+      } else {
+        const current = input.parentElement.querySelector(".current");
+        input.value = config[c];
+        current.textContent = config[c];
+        input.addEventListener("input", (e) => {
+          config[e.target.id] = Number(e.target.value);
+          current.textContent = e.target.value;
+          chrome.storage.local.set({ config });
+        });
+      }
     }
 
     if (isNaN(t)) {

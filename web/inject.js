@@ -65,6 +65,19 @@ const findReactContext = async (node, criteria, tries = 0) => {
   }
 };
 
+const getWebpackRequire = new Promise((resolve) => {
+  const id = "knife";
+  window.webpackChunkglive_fe_pc.push([
+    [id],
+    {
+      [id]: (module, exports, __webpack_require__) => {
+        resolve(__webpack_require__);
+      },
+    },
+    (req) => req(id),
+  ]);
+});
+
 let isPopup = false;
 try {
   if (
@@ -113,6 +126,202 @@ const waitFor = (query) => {
   ]);
 };
 rootObserver.observe(root, { childList: true, subtree: true });
+
+const liveInfo = {};
+let currentPreview;
+let preview;
+let previewPlayer;
+let previewThumbnail;
+let previewUptime;
+let previewProgress;
+let previewInterval;
+let previewAnimation;
+const playPreview = () => {
+  previewPlayer.play().catch((e) => {
+    if (e.name !== "AbortError") {
+      previewPlayer.muted = true;
+      previewPlayer.play();
+    }
+  });
+};
+
+const showPreview = async (href, node, tooltip) => {
+  const url = new URL(href);
+  const uid = url.pathname.split("/").pop();
+  let info = liveInfo[uid];
+  if (info === undefined) {
+    const res = await fetch(
+      `https://api.chzzk.naver.com/service/v2/channels/${uid}/live-detail`,
+      { credentials: "include" }
+    );
+    if (!res.ok) {
+      return;
+    }
+    const live = await res.json();
+    if (live.code !== 200) {
+      return;
+    }
+    info = live.content;
+    try {
+      info.livePlayback = JSON.parse(info.livePlaybackJson);
+    } catch {}
+    liveInfo[uid] = info;
+  }
+  if (info == null) {
+    return;
+  }
+
+  let Player;
+  try {
+    Player = (await getWebpackRequire)(4772);
+  } catch {}
+
+  hidePreview();
+  currentPreview = uid;
+  if (preview == null) {
+    preview = document.createElement("div");
+    preview.classList.add("knife-preview");
+    document.body.appendChild(preview);
+
+    previewThumbnail = document.createElement("img");
+    preview.appendChild(previewThumbnail);
+
+    const playerContainer = document.createElement("div");
+    playerContainer.classList.add("knife-preview-player");
+    preview.appendChild(playerContainer);
+
+    if (Player?.CorePlayer != null) {
+      previewPlayer = new Player.CorePlayer();
+      playerContainer.appendChild(previewPlayer.shadowRoot);
+    }
+
+    previewUptime = document.createElement("div");
+    previewUptime.classList.add("knife-preview-uptime");
+    preview.appendChild(previewUptime);
+
+    previewProgress = document.createElement("div");
+    previewProgress.classList.add("knife-preview-progress");
+    preview.appendChild(previewProgress);
+  }
+
+  const rect = node.getBoundingClientRect();
+  const width = Math.max(config.previewWidth, rect.width);
+  let left;
+  let top;
+  if (tooltip) {
+    preview.style.position = "fixed";
+    preview.style.marginTop = "0.25rem";
+    left = rect.left;
+    top = rect.bottom;
+  } else {
+    const height = (width * 9) / 16;
+    const rootRect = root.getBoundingClientRect();
+    preview.style.position = "absolute";
+    preview.style.marginTop = "";
+    left = Math.max(
+      Math.min(
+        rect.left + rect.width / 2 - width / 2 - rootRect.left,
+        rootRect.right - width - 16
+      ),
+      16
+    );
+    top = rect.top + rect.height / 2 - height / 2 - rootRect.top;
+  }
+  preview.style.display = "";
+  preview.style.width = `${width}px`;
+  preview.style.left = `${Math.round(left)}px`;
+  preview.style.top = `${Math.round(top)}px`;
+
+  previewThumbnail.src = (
+    info.liveImageUrl ||
+    info.livePlayback?.thumbnail?.snapshotThumbnailTemplate ||
+    (info.adult
+      ? "https://ssl.pstatic.net/static/nng/glive/resource/p/static/media/image_age_restriction.c04b98f818ed01f04be9.png"
+      : "https://ssl.pstatic.net/static/nng/glive/resource/p/static/media/bg-video-placeholder.938697e8023d630ed7a8.png")
+  ).replace("{type}", 480);
+
+  if (previewPlayer != null) {
+    previewPlayer.shadowRoot.style.visibility = "hidden";
+    previewPlayer.volume = config.previewVolume / 100;
+  }
+
+  const previewAvailable =
+    previewPlayer != null && info.livePlayback != null && config.livePreview;
+  const openDate = info.openDate ? new Date(info.openDate).getTime() : 0;
+  const delay = Math.floor(config.previewDelay * 10);
+  let step = 0;
+  previewInterval = setInterval(() => {
+    if (step % 10 === 0 && openDate) {
+      previewUptime.textContent = formatTimestamp(Date.now() - openDate);
+    }
+    if (previewAvailable) {
+      if (step === Math.max(0, delay - 9)) {
+        previewPlayer.srcObject = Player.LiveProvider.fromJSON(
+          info.livePlayback,
+          {
+            devt: "HTML5_PC",
+            serviceId: 2099,
+            countryCode: "kr",
+            p2pDisabled: true,
+            maxLevel: 480,
+          }
+        );
+      }
+      if (step === delay - 1) {
+        previewProgress.style.display = "none";
+        previewPlayer.shadowRoot.style.visibility = "";
+        if (previewPlayer.readyState) {
+          playPreview();
+        } else {
+          previewPlayer.addEventListener("loadedmetadata", playPreview);
+        }
+      }
+    }
+    step++;
+  }, 100);
+
+  if (!previewAvailable) {
+    return;
+  }
+  let start;
+  const progress = (timestamp) => {
+    if (start == null) {
+      start = timestamp;
+      previewProgress.style.display = "";
+    }
+    const p = (timestamp - start) / delay;
+    previewProgress.style.width = `${p}%`;
+    if (p < 100) {
+      previewAnimation = requestAnimationFrame(progress);
+    }
+  };
+  previewAnimation = requestAnimationFrame(progress);
+};
+
+const hidePreview = (href) => {
+  if (preview == null) {
+    return;
+  }
+  if (href != null) {
+    const url = new URL(href);
+    const uid = url.pathname.split("/").pop();
+    if (currentPreview !== uid) {
+      return;
+    }
+  }
+  currentPreview = null;
+
+  clearInterval(previewInterval);
+  cancelAnimationFrame(previewAnimation);
+  if (previewPlayer != null) {
+    previewPlayer.removeEventListener("loadedmetadata", playPreview);
+    previewPlayer.src = "";
+  }
+  preview.style.display = "none";
+  previewThumbnail.src = "";
+  previewUptime.textContent = "";
+  previewProgress.style.display = "none";
+};
 
 const numberFormatter = new Intl.NumberFormat("ko-KR");
 const padNumber = (n, len) => n.toString().padStart(len, "0");
@@ -211,6 +420,7 @@ const attachLayoutObserver = async () => {
   }
 
   const layoutObserver = new MutationObserver((mutations) => {
+    hidePreview();
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((n) => {
         if (n.querySelector == null) {
@@ -229,51 +439,6 @@ const initSidebarFeatures = (sidebar) => {
   if (sidebar == null) {
     return;
   }
-
-  const liveInfo = {};
-  const addPreview = async (tooltip) => {
-    if (!config.preview) {
-      return;
-    }
-    const url = new URL(tooltip.parentNode.href);
-    const uid = url.pathname.split("/").pop();
-    let info = liveInfo[uid];
-    if (info === undefined) {
-      const res = await fetch(
-        `https://api.chzzk.naver.com/service/v2/channels/${uid}/live-detail`
-      );
-      if (!res.ok) {
-        return;
-      }
-      const live = await res.json();
-      if (live.code !== 200) {
-        return;
-      }
-      info = live.content;
-      liveInfo[uid] = info;
-    }
-    if (info == null) {
-      return;
-    }
-
-    const thumbnail = document.createElement("div");
-    thumbnail.classList.add("knife-preview");
-    tooltip.appendChild(thumbnail);
-
-    const img = document.createElement("img");
-    img.src = info.adult
-      ? "https://ssl.pstatic.net/static/nng/glive/resource/p/static/media/image_age_restriction.c04b98f818ed01f04be9.png"
-      : info.liveImageUrl?.replace("{type}", 480) || "";
-    thumbnail.appendChild(img);
-
-    const uptime = document.createElement("div");
-    uptime.classList.add("knife-preview-uptime");
-    uptime.textContent = info.openDate
-      ? formatTimestamp(Date.now() - new Date(info.openDate).getTime())
-      : "";
-    thumbnail.appendChild(uptime);
-  };
-
   const addListeners = (item) => {
     const url = new URL(item.href);
     if (url.hostname !== "chzzk.naver.com") {
@@ -313,8 +478,15 @@ const initSidebarFeatures = (sidebar) => {
         for (const item of items) {
           addListeners(item);
         }
-        if (n.className.startsWith("navigator_tooltip__")) {
-          addPreview(n);
+        if (n.className?.startsWith?.("navigator_tooltip__")) {
+          if (config.preview) {
+            showPreview(mutation.target.href, n, true);
+          }
+        }
+      });
+      mutation.removedNodes.forEach((n) => {
+        if (n.className?.startsWith?.("navigator_tooltip__")) {
+          hidePreview(mutation.target.href);
         }
       });
     });
@@ -345,6 +517,7 @@ const attachBodyObserver = async () => {
     if (node == null) {
       return;
     }
+    hidePreview();
     const features = [];
     if (node.className.startsWith("live_")) {
       features.push(attachPlayerObserver(true));
@@ -956,6 +1129,16 @@ document.body.addEventListener("keydown", (e) => {
     case "ArrowRight":
       seek(false);
       break;
+  }
+});
+
+document.addEventListener("mouseout", (e) => {
+  if (e.relatedTarget?.className?.startsWith?.("video_card_thumbnail__")) {
+    if (config.livePreview) {
+      showPreview(e.relatedTarget.href, e.relatedTarget);
+    }
+  } else if (e.target?.className?.startsWith?.("video_card_thumbnail__")) {
+    hidePreview(e.target.href);
   }
 });
 

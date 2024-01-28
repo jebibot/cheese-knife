@@ -22,6 +22,10 @@ if (
         const { config } = await chrome.storage.local.get({
           config: {
             preview: true,
+            livePreview: true,
+            previewWidth: 400,
+            previewDelay: 1,
+            previewVolume: 5,
             updateSidebar: true,
             category: true,
             popupPlayer: true,
