@@ -101,15 +101,21 @@ window.postMessage({ type: "getConfig" }, location.origin);
 const root = document.getElementById("root");
 const waiting = [];
 const rootObserver = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    mutation.addedNodes.forEach((n) => {
+  if (!waiting.length) {
+    return;
+  }
+  for (const mutation of mutations) {
+    for (const n of mutation.addedNodes) {
+      if (n.querySelector == null) {
+        continue;
+      }
       for (const elem of waiting) {
-        if (n.querySelector?.(elem.query)) {
+        if (n.querySelector(elem.query)) {
           elem.resolve(n);
         }
       }
-    });
-  });
+    }
+  }
 });
 const waitFor = (query) => {
   const node = root.querySelector(query);
@@ -421,14 +427,13 @@ const attachLayoutObserver = async () => {
 
   const layoutObserver = new MutationObserver((mutations) => {
     hidePreview();
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((n) => {
-        if (n.querySelector == null) {
-          return;
+    for (const mutation of mutations) {
+      for (const n of mutation.addedNodes) {
+        if (n.querySelector != null) {
+          init(n);
         }
-        init(n);
-      });
-    });
+      }
+    }
   });
   layoutObserver.observe(layoutWrap, { childList: true });
 
@@ -469,27 +474,28 @@ const initSidebarFeatures = (sidebar) => {
   }
 
   const sidebarObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((n) => {
+    for (const mutation of mutations) {
+      for (const n of mutation.addedNodes) {
         if (n.querySelectorAll == null) {
-          return;
+          continue;
         }
         const items = n.tagName === "A" ? [n] : n.querySelectorAll("a");
         for (const item of items) {
           addListeners(item);
         }
+
         if (n.className?.startsWith?.("navigator_tooltip__")) {
           if (config.preview) {
             showPreview(mutation.target.href, n, true);
           }
         }
-      });
-      mutation.removedNodes.forEach((n) => {
+      }
+      for (const n of mutation.removedNodes) {
         if (n.className?.startsWith?.("navigator_tooltip__")) {
           hidePreview(mutation.target.href);
         }
-      });
-    });
+      }
+    }
   });
   sidebarObserver.observe(sidebar, {
     childList: true,
@@ -535,11 +541,13 @@ const attachBodyObserver = async () => {
     return;
   }
   const layoutBodyObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((n) => {
-        init(n.tagName === "SECTION" ? n : n.querySelector("section"));
-      });
-    });
+    for (const mutation of mutations) {
+      for (const n of mutation.addedNodes) {
+        if (n.querySelector != null) {
+          init(n.tagName === "SECTION" ? n : n.querySelector("section"));
+        }
+      }
+    }
   });
   layoutBodyObserver.observe(layoutBody, { childList: true });
 
@@ -641,13 +649,13 @@ const initLivesFeatures = async (node) => {
   setFilter(url.searchParams.get("category"));
 
   const listObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((n) => {
+    for (const mutation of mutations) {
+      for (const n of mutation.addedNodes) {
         if (n.tagName === "LI") {
           applyFilter(n);
         }
-      });
-    });
+      }
+    }
   });
   listObserver.observe(list, { childList: true });
 };
@@ -741,11 +749,13 @@ const attachPlayerObserver = async (isLive, tries = 0) => {
     );
   }
   const playerObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((n) => {
-        initPlayerFeatures(n, isLive);
-      });
-    });
+    for (const mutation of mutations) {
+      for (const n of mutation.addedNodes) {
+        if (n.querySelector != null) {
+          initPlayerFeatures(n, isLive);
+        }
+      }
+    }
   });
   playerObserver.observe(playerLayout.parentNode, { childList: true });
 
@@ -1091,11 +1101,15 @@ const attachLiveObserver = async (node) => {
     return;
   }
   const liveObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((n) => {
-        initChatFeatures(n.tagName === "ASIDE" ? n : n.querySelector("aside"));
-      });
-    });
+    for (const mutation of mutations) {
+      for (const n of mutation.addedNodes) {
+        if (n.querySelector != null) {
+          initChatFeatures(
+            n.tagName === "ASIDE" ? n : n.querySelector("aside")
+          );
+        }
+      }
+    }
   });
   liveObserver.observe(node, { childList: true });
 
