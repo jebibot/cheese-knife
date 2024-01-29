@@ -28,7 +28,8 @@
 }
 
 @media screen and (max-aspect-ratio: 1 / 1) {
-  .knife-resize-chat [class*="live_chatting_is_large__"] {
+  .knife-resize-chat [class^="live_chatting_container__"][class*="live_chatting_is_large__"] {
+    width: 100%;
     max-width: none;
   }
 
