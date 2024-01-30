@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "zip -r extension.zip web *.html *.js *.css *.png manifest.json",
-    "build:firefox": "mkdir -p dist && cp -r web *.html *.js *.css *.png manifest.json dist",
+    "build:firefox": "mkdir -p dist && cp -r web *.html *.js *.css *.png dist && jq '.background = {scripts: [\"background.js\"]}' manifest.json > dist/manifest.json",
     "postversion": "manifest=\"$(jq \".version = `jq '.version' package.json`\" manifest.json)\" && echo \"$manifest\" > manifest.json",
     "publish": "chrome-webstore-upload upload --source=extension.zip --auto-publish",
     "publish:firefox": "cd dist && web-ext sign --use-submission-api --channel listed --timeout 60000"

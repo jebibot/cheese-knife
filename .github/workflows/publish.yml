@@ -58,8 +58,7 @@ jobs:
       - name: Build Firefox
         run: npm run build:firefox
 
-      - name: Publish Firefox add-on
-        run: npm run publish:firefox
-        env:
-          WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
-          WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firefox
+          path: dist
