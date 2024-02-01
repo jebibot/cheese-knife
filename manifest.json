@@ -16,6 +16,7 @@
   },
   "homepage_url": "https://www.chz.app/",
   "permissions": [
+    "scripting",
     "storage"
   ],
   "host_permissions": [

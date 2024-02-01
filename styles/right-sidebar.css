@@ -1,0 +1,45 @@
+[class^="header_logo__"] {
+  left: 13px !important;
+}
+
+[class^="header_container__"] {
+  left: auto !important;
+  right: 0;
+}
+
+[class^="layout_body"] {
+  padding-left: 0 !important;
+  padding-right: 66px;
+}
+
+@media (min-width: 1200px) {
+  [class^="layout_body"][class*="layout_is_expanded__"] {
+    padding-right: 240px;
+  }
+}
+
+[class^="navigator_tooltip__"] {
+  left: auto !important;
+  right: calc(100% + 5px);
+}
+
+[class^="header_section__"][class*="header_show_tooltip__"] {
+  margin-left: -200px;
+  padding-left: 200px;
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
+
+[class^="toolbar_section__"] {
+  padding-right: 68px !important;
+}
+
+[class*="header_is_expanded__"]
+  ~ [class^="toolbar_container__"]
+  [class^="toolbar_section__"] {
+  padding-right: 248px !important;
+}
+
+[class^="header_button__"] {
+  float: right;
+}

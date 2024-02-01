@@ -1,0 +1,3 @@
+[class^="component_container__"]:has([class^="partner_list__"]) {
+  display: none !important;
+}

@@ -9,11 +9,6 @@ if (
     }
     document.body.classList.toggle("knife-resize-chat", !!config.resizeChat);
     document.body.classList.toggle("knife-category-hidden", !config.category);
-    document.body.classList.toggle("knife-fit-player", !!config.fitPlayer);
-    document.body.classList.toggle(
-      "knife-left-side-chat",
-      !!config.leftSideChat
-    );
   };
 
   window.addEventListener("message", async (e) => {
@@ -31,10 +26,8 @@ if (
             popupPlayer: true,
             arrowSeek: true,
             rememberTime: true,
-            fitPlayer: false,
             hideDonation: false,
             resizeChat: false,
-            leftSideChat: false,
           },
         });
         initConfig(config);

@@ -24,11 +24,24 @@ footer a {
   color: #0ea5e9;
 }
 
+svg {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-left: 0.25rem;
+}
+
 .box {
   border: 1px solid black;
   border-radius: 0.5rem;
   padding: 1rem;
   margin: 0.75rem;
+}
+
+.box a {
+  text-decoration: none;
+  font-weight: bold;
+  color: inherit;
 }
 
 .question {

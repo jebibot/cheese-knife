@@ -1,0 +1,18 @@
+.pzp-pc .pzp-pc__volume-slider::before {
+  content: attr(aria-valuetext);
+  display: block;
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 27px;
+  margin: 0;
+  padding: 0 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 28px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
+  text-align: center;
+  white-space: nowrap;
+}

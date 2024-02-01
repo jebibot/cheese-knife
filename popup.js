@@ -1,10 +1,3 @@
-document.querySelectorAll("a").forEach((a) => {
-  a.onclick = (e) => {
-    e.preventDefault();
-    chrome.tabs.create({ url: a.href });
-  };
-});
-
 chrome.storage.local
   .get({
     config: {
@@ -18,10 +11,8 @@ chrome.storage.local
       popupPlayer: true,
       arrowSeek: true,
       rememberTime: true,
-      fitPlayer: false,
       hideDonation: false,
       resizeChat: false,
-      leftSideChat: false,
     },
     t: 0,
   })

@@ -2,18 +2,6 @@
   filter: url(#filterSharpen);
 }
 
-.knife-fit-player [class^="vod_player__"] {
-  max-height: 100% !important;
-}
-
-.knife-fit-player [class^="live_information_player__"] {
-  max-height: 100vh;
-}
-
-.knife-fit-player [class^="live_information_contents__"] {
-  max-height: none;
-}
-
 .knife-resize-chat [class^="live_chatting_container__"]:not([class*="live_chatting_is_popup_chat__"]) {
   width: var(--knife-chat-width, 353px);
   max-width: calc(100% - 24px);
@@ -23,23 +11,11 @@
   max-width: none;
 }
 
-.knife-left-side-chat [class^="live_container__"] {
-  flex-direction: row-reverse;
-}
-
 @media screen and (max-aspect-ratio: 1 / 1) {
   .knife-resize-chat [class^="live_chatting_container__"][class*="live_chatting_is_large__"] {
     width: 100%;
     max-width: none;
   }
-
-  .knife-left-side-chat [class^="live_container__"][class*="live_is_large__"] {
-    flex-direction: column-reverse;
-  }
-}
-
-.knife-left-side-chat [class^="live_chatting_popup_profile_container__"] {
-  right: auto;
 }
 
 .knife-categories {

@@ -1,0 +1,13 @@
+[class^="live_container__"] {
+  flex-direction: row-reverse !important;
+}
+
+[class^="live_chatting_popup_profile_container__"] {
+  right: auto !important;
+}
+
+@media screen and (max-aspect-ratio: 1 / 1) {
+  [class^="live_container__"][class*="live_is_large__"] {
+    flex-direction: column-reverse !important;
+  }
+}

@@ -1,0 +1,24 @@
+[class^="layout_glive__"] {
+  padding-top: 15px !important;
+}
+
+[class^="header_logo__"],
+[class^="toolbar_container__"] {
+  top: -45px !important;
+  transition: top ease-in-out 100ms;
+}
+
+[class^="header_logo__"]:hover,
+[class^="header_logo__"]:has(~ [class^="toolbar_container__"]:hover),
+[class^="toolbar_container__"]:hover,
+[class^="header_logo__"]:hover ~ [class^="toolbar_container__"] {
+  top: 0px !important;
+}
+
+[class^="live_container__"]:not([class*="live_type_pip__"]) {
+  height: calc(100vh - 15px) !important;
+}
+
+[class^="live_container__"][class*="live_is_large__"]:not([class*="live_type_pip__"]) {
+  height: auto !important;
+}

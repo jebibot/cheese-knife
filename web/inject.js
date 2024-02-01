@@ -185,6 +185,7 @@ const showPreview = async (href, node, tooltip) => {
   if (!rect.width) {
     return;
   }
+  const rootRect = root.getBoundingClientRect();
   const width = Math.max(config.previewWidth, rect.width);
 
   let Player;
@@ -221,15 +222,19 @@ const showPreview = async (href, node, tooltip) => {
   }
 
   let left;
+  let right;
   let top;
   if (tooltip) {
     preview.style.position = "fixed";
     preview.style.marginTop = "0.25rem";
-    left = rect.left;
+    if (parseInt(getComputedStyle(node).getPropertyValue("left")) < 0) {
+      right = rootRect.width - rect.right;
+    } else {
+      left = rect.left;
+    }
     top = rect.bottom;
   } else {
     const height = (width * 9) / 16;
-    const rootRect = root.getBoundingClientRect();
     preview.style.position = "absolute";
     preview.style.marginTop = "";
     left = Math.max(
@@ -243,7 +248,11 @@ const showPreview = async (href, node, tooltip) => {
   }
   preview.style.display = "";
   preview.style.width = `${width}px`;
-  preview.style.left = `${Math.round(left)}px`;
+  if (right) {
+    preview.style.right = `${Math.round(right)}px`;
+  } else {
+    preview.style.left = `${Math.round(left)}px`;
+  }
   preview.style.top = `${Math.round(top)}px`;
 
   previewThumbnail.src = (
@@ -1024,6 +1033,7 @@ const addResizeHandle = (container) => {
   container.parentNode.insertBefore(resizeHandle, container);
 
   let x = 0;
+  let reverse = false;
   let chatWidth = Number(window.localStorage.getItem("chatWidth"));
   if (chatWidth > 0) {
     document.documentElement.style.setProperty(
@@ -1034,7 +1044,7 @@ const addResizeHandle = (container) => {
   const onMouseMove = (e) => {
     chatWidth = Math.max(
       24,
-      config.leftSideChat
+      reverse
         ? e.clientX - x - 1
         : document.documentElement.clientWidth - e.clientX - 1
     );
@@ -1055,6 +1065,9 @@ const addResizeHandle = (container) => {
   resizeHandle.addEventListener("mousedown", (e) => {
     e.preventDefault();
     x = container.getBoundingClientRect().x;
+    reverse = getComputedStyle(container.parentElement).flexDirection.endsWith(
+      "reverse"
+    );
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
   });

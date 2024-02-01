@@ -1,0 +1,3 @@
+[class^="header_section__"] [class^="header_service__"]:last-child {
+  display: none !important;
+}

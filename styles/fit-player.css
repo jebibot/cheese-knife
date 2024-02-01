@@ -1,0 +1,11 @@
+[class^="vod_player__"] {
+  max-height: 100% !important;
+}
+
+[class^="live_information_player__"] {
+  max-height: 100vh;
+}
+
+[class^="live_information_contents__"] {
+  max-height: none !important;
+}
