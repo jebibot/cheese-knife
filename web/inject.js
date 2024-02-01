@@ -249,9 +249,11 @@ const showPreview = async (href, node, tooltip) => {
   preview.style.display = "";
   preview.style.width = `${width}px`;
   if (right) {
+    preview.style.left = "";
     preview.style.right = `${Math.round(right)}px`;
   } else {
     preview.style.left = `${Math.round(left)}px`;
+    preview.style.right = "";
   }
   preview.style.top = `${Math.round(top)}px`;
 
