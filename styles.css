@@ -3,7 +3,6 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  overflow-y: scroll;
   font-size: 16px;
   word-break: keep-all;
   color: #2c2c2c;
@@ -17,22 +16,39 @@ input {
   margin-right: 0.5rem;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem;
-  margin: 0.75rem;
-  border: 1px solid black;
-  border-radius: 0.5rem;
+svg {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.25rem;
+  fill: currentColor;
 }
 
-.header,
-.footer {
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border-width: 0;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  color: #fafafa;
+  background-color: #18181b;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #18181be6;
+}
+
+header {
   font-weight: bold;
 }
 
-.header a {
+header a {
   display: inline-block;
   text-decoration: none;
   width: 1.5rem;
@@ -43,12 +59,26 @@ input {
   text-align: center;
 }
 
-.header a:hover {
+header a:hover {
   background-color: #ccc;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin: 0.75rem;
+  border: 1px solid black;
+  border-radius: 0.5rem;
 }
 
 #list {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+#reload {
+  display: none;
 }

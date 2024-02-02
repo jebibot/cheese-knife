@@ -69,10 +69,16 @@ const STYLES = [
   },
 ];
 
+const list = document.getElementById("list");
+const reload = document.getElementById("reload");
+reload.addEventListener("click", () => {
+  reload.style.display = "none";
+  chrome.tabs.reload();
+});
+
 (async () => {
   const { styles } = await chrome.storage.local.get({ styles: [] });
   const stylesSet = new Set(styles);
-  const list = document.getElementById("list");
   for (const style of STYLES) {
     const item = document.createElement("div");
     list.appendChild(item);
@@ -88,6 +94,7 @@ const STYLES = [
         stylesSet.delete(style.name);
       }
       await chrome.storage.local.set({ styles: [...stylesSet] });
+      reload.style.display = "inline-flex";
     });
     item.appendChild(checkbox);
 
