@@ -25,10 +25,6 @@
   overflow-x: auto;
 }
 
-.knife-category-hidden .knife-categories {
-  display: none;
-}
-
 .knife-categories::-webkit-scrollbar {
   width: 8px;
   height: 8px;

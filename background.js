@@ -7,6 +7,7 @@ async function registerStyles(styles) {
     [
       "auto-hide-toolbar",
       "fit-player",
+      "hide-category",
       "hide-live-badge",
       "hide-news",
       "hide-offline",

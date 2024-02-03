@@ -60,6 +60,10 @@ const STYLES = [
     description: "메인 최근 소식 숨기기",
   },
   {
+    name: "hide-category",
+    description: "카테고리 목록 숨기기",
+  },
+  {
     name: "hide-live-badge",
     description: "생방송 뱃지 숨기기",
   },

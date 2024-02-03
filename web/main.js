@@ -8,7 +8,6 @@ if (
       window.localStorage.removeItem("vodResumeTimes");
     }
     document.body.classList.toggle("knife-resize-chat", !!config.resizeChat);
-    document.body.classList.toggle("knife-category-hidden", !config.category);
   };
 
   window.addEventListener("message", async (e) => {
@@ -22,7 +21,6 @@ if (
             previewDelay: 1,
             previewVolume: 5,
             updateSidebar: true,
-            category: true,
             popupPlayer: true,
             arrowSeek: true,
             rememberTime: true,

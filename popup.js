@@ -7,7 +7,6 @@ chrome.storage.local
       previewDelay: 1,
       previewVolume: 5,
       updateSidebar: true,
-      category: true,
       popupPlayer: true,
       arrowSeek: true,
       rememberTime: true,
