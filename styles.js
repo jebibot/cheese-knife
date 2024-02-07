@@ -60,6 +60,10 @@ const STYLES = [
     description: "메인 최근 소식 숨기기",
   },
   {
+    name: "top-explore",
+    description: "탐색 상단 표시",
+  },
+  {
     name: "hide-category",
     description: "카테고리 목록 숨기기",
   },

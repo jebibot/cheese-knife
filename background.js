@@ -22,6 +22,7 @@ async function registerStyles(styles) {
       "light-mode",
       "rectangle-profile",
       "right-sidebar",
+      "top-explore",
       "volume-percentage",
     ].includes(t)
   );
