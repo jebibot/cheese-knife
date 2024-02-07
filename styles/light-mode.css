@@ -11,7 +11,9 @@ body .live_chatting_header_title__3y2oK,
 body .live_chatting_ranking_container__RVHvS,
 body .live_chatting_ranking_contents__E\+c09,
 body .live_container__Ccraj.live_is_large__Ghhnm,
-body .news_icon_arrow__u02tn {
+body .news_icon_arrow__u02tn,
+body .webkit_cafe_pc,
+body .webkit_cafe_pc .webkit_cafe_content .btn_flicking {
   background-color: #f7f7f8;
 }
 
@@ -71,7 +73,9 @@ body .report_wrapper__Wy8OD.report_is_error__NIaHg,
 body .report_wrapper__Wy8OD.report_is_focused__5WD1I,
 body .video_information_label__ys8r1,
 body .videos_tab__w6Uek,
-body .vod_recommend_label__SpNOG {
+body .vod_recommend_label__SpNOG,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_flicking .dot,
+body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_tab > div .btn_tab {
   background-color: #d3d3d9;
 }
 
@@ -80,7 +84,8 @@ body .channel_information_channel_item__sipXo:focus-visible,
 body .channel_information_channel_item__sipXo:hover,
 body .live_chatting_popup_my_profile_area__TjCrW,
 body .live_chatting_popup_my_profile_preview__jDjXa,
-body .live_chatting_popup_profile_header__OWnnU {
+body .live_chatting_popup_profile_header__OWnnU,
+body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_tab > div .btn_tab:hover {
   background-color: #c8c8d0;
 }
 
@@ -96,7 +101,10 @@ body .pagination_button__\+Tzu0[aria-current="page"]:hover {
 
 body .input_button__6SZ4P.input_highlight__FyLt6:active,
 body .input_button__6SZ4P.input_highlight__FyLt6:focus-visible,
-body .input_button__6SZ4P.input_highlight__FyLt6:hover {
+body .input_button__6SZ4P.input_highlight__FyLt6:hover,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_flicking .dot.selected,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_item .item_comment:before,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_item .item_date:before {
   background-color: #3b3b44;
 }
 
@@ -295,6 +303,7 @@ body .video_information_link__2OrbG:hover,
 body .vod_recommend_switch__NhlSe:active:before,
 body .vod_recommend_switch__NhlSe:focus-visible:before,
 body .vod_recommend_switch__NhlSe:hover:before,
+body .webkit_cafe_pc .webkit_cafe_head .btn_more:hover,
 body a.video_card_channel__AjQ\+P:active,
 body a.video_card_channel__AjQ\+P:focus-visible,
 body a.video_card_channel__AjQ\+P:hover {
@@ -331,7 +340,9 @@ body .channel_manage_component_area__XIPZG,
 body .community_detail_area__H9w34,
 body .community_detail_cell_button__XLDgL,
 body .community_list_item_container__6ZKYd,
-body .news_container__ieXfW {
+body .news_container__ieXfW,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_empty,
+body .webkit_cafe_pc .webkit_cafe_content ul {
   background-color: hsla(220, 6%, 90%, 0.3);
 }
 
@@ -452,7 +463,11 @@ body .video_information_live_data__KuWvk .video_information_count__Y05sI,
 body .video_information_private__7RnJs,
 body .videos_title__KuM6Y,
 body .vod_recommend_text__VQCN3,
-body .vod_recommend_vod_title__W0WOT {
+body .vod_recommend_vod_title__W0WOT,
+body .webkit_cafe_pc .webkit_cafe_head .btn_more,
+body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_name .btn_cafe_more,
+body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_name .cafe_name,
+body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_tab > div .btn_tab {
   /* #c9cedc */
   color: #1f1f23;
 }
@@ -531,7 +546,9 @@ body .video_information_link__2OrbG,
 body .video_information_title__jrLfG,
 body .videos_tab__w6Uek,
 body .vod_recommend_header_title__iu4\+P,
-body .vod_recommend_label__SpNOG {
+body .vod_recommend_label__SpNOG,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_item,
+body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_tab > div .btn_tab:hover {
   /* #dfe2ea */
   color: #26262c;
 }
@@ -635,7 +652,12 @@ body .video_card_is_block__cGuyo .video_card_title__Amjk2,
 body .video_information_vod_count__\+\+UCG .video_information_count__Y05sI,
 body .video_information_time__G95w\+,
 body .vod_recommend_channel__8s\+Fd,
-body .vod_recommend_data__Fjf7s {
+body .vod_recommend_data__Fjf7s,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_empty,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_empty a,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_item .item_comment,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_item .item_date,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_item .item_nickname {
   /* #9da5b6 */
   color: #323239;
 }
@@ -667,6 +689,7 @@ body .video_information_game__18XV7 {
   color: rgba(0, 153, 97, 0.9);
 }
 
+body .badge_condition__AKB0g,
 body .channel_manage_video_item__0n73f[aria-selected="true"],
 body .charge_complete_highlight__8fsJw,
 body .comment_item_button_reply__kdFjl.comment_item_highlight__xp520:active,
@@ -676,6 +699,7 @@ body .community_list_item_comment__DEe8n,
 body .input_photo__BFAH1:active,
 body .input_photo__BFAH1:focus,
 body .live_chatting_input_input_button__sjwrf[aria-expanded="true"],
+body .live_chatting_popup_bottom_description__ISDdQ strong,
 body .live_chatting_popup_initial_link__\+QZJy,
 body .live_chatting_ranking_guide_text__Q1V8i strong,
 body .manage_auto_charge_highlight__XNGnf,
@@ -712,7 +736,9 @@ body .live_chatting_ranking_marquee_number__uXVzD {
 body .channel_vod_tab_type_item__9Yq3l[aria-selected="true"],
 body .input_button__6SZ4P.input_highlight__FyLt6,
 body .pagination_button__\+Tzu0[aria-current="page"],
-body .videos_tab__w6Uek[aria-selected="true"] {
+body .videos_tab__w6Uek[aria-selected="true"],
+body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_tab > div .btn_tab[aria-selected="true"],
+body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_tab > div .btn_tab[aria-selected="true"]:hover {
   background-color: #1f1f23;
   color: #f7f7f8;
 }
@@ -834,42 +860,52 @@ body .channel_manage_basic_button__26slF:active,
 body .channel_manage_basic_button__26slF:focus-visible,
 body .channel_manage_basic_button__26slF:hover,
 body .channel_manage_component_button__mQNU5:hover,
-body .channel_manage_home_button__0Cp3D:hover,
 body .channel_manage_video_button__R3ds4:hover:not(.channel_manage_video_button__R3ds4[aria-selected=true]),
 body .cleanbot_button__VvdyA:active,
 body .cleanbot_button__VvdyA:focus-visible,
 body .cleanbot_button__VvdyA:hover,
 body .navigator_profile__kAP2J:active,
 body .navigator_profile__kAP2J:focus-visible,
-body .navigator_profile__kAP2J:hover {
+body .navigator_profile__kAP2J:hover,
+body .toolbar_login__xdtjd,
+body .video_information_private__7RnJs,
+body .webkit_cafe_pc .webkit_cafe_content .webkit_cafe_empty a {
   border-color: hsla(0, 0%, 0%, 0.2);
 }
 
 body .channel_home_banner_icon_arrow__8smxw,
 body .channel_home_community_icon_arrow__zoIlF,
 body .channel_home_vod_icon_arrow__qULQb,
+body .channel_manage_home_file_upload__A-4b2:before,
 body .charge_area__D12VJ .charge_button__bfwM7,
+body .cleanbot_button__VvdyA,
 body .live_chatting_popup_donation_money_button__KCFzJ,
 body .live_chatting_ranking_more_button__Rqup8,
 body .navigator_button_more__UE0v3,
 body .news_icon_arrow__u02tn,
-body .video_information_time__G95w\+ {
+body .video_information_time__G95w\+,
+body .webkit_cafe_pc .webkit_cafe_content .btn_flicking {
   border-color: hsla(0, 0%, 0%, 0.12);
 }
 
 body .channel_manage_basic_button__26slF,
+body .channel_manage_component_add_area__kw-Ym,
 body .channel_manage_component_button__mQNU5,
-body .channel_manage_home_button__0Cp3D,
 body .channel_manage_video_button__R3ds4,
+body .live_chatting_remaining_time__G79N4,
 body .toolbar_link__p4qbh {
   border-color: hsla(0, 0%, 0%, 0.1);
 }
 
 body .channel_home_no_content_container__q2x18.channel_home_no_content_type_border__3qK3,
-body .live_chatting_header_title__3y2oK .vod_recommend_header__btceh,
+body .input_thumb__dIbqI:after,
+body .live_chatting_header_title__3y2oK,
 body .live_chatting_popup_donation_box__jE6yn,
+body .popup_area__cBlRA,
 body .video_card_vertical__\+gTMT .video_card_thumbnail__QXYT8:after,
-body .vod_recommend_thumbnail__UbZ87:after {
+body .vod_recommend_header__btceh,
+body .vod_recommend_thumbnail__UbZ87:after,
+body .webkit_cafe_pc .webkit_cafe_content li {
   border-color: hsla(0, 0%, 0%, 0.06);
 }
 
@@ -921,8 +957,19 @@ body .news_icon_arrow__u02tn:hover {
   box-shadow: none;
 }
 
-body .header_logo__JUJQo path[fill="white"] {
+body .header_logo__JUJQo path[fill="white"],
+body .search_form_button__AFdzU path {
   fill: #000;
+}
+
+body .webkit_cafe_name g {
+  fill: #1f1f23;
+}
+
+body .comment_item_more__ceoL8 .comment_item_button_more__HRv6K:active svg path,
+body .comment_item_more__ceoL8 .comment_item_button_more__HRv6K:focus-visible svg path,
+body .comment_item_more__ceoL8 .comment_item_button_more__HRv6K:hover svg path {
+  fill: #323239;
 }
 
 body .header_button__oszSs rect {
@@ -931,7 +978,10 @@ body .header_button__oszSs rect {
 
 body .navigator_button_fold__nOkxo:active .navigator_icon_arrow__37j2I path,
 body .navigator_button_fold__nOkxo:focus-visible .navigator_icon_arrow__37j2I path,
-body .navigator_button_fold__nOkxo:hover .navigator_icon_arrow__37j2I path {
+body .navigator_button_fold__nOkxo:hover .navigator_icon_arrow__37j2I path,
+body .search_form_button__AFdzU path:not([fill="white"]),
+body .search_form_button__AFdzU circle,
+body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_name .btn_cafe_more path {
   stroke: #1f1f23;
 }
 
