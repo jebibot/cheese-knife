@@ -70,7 +70,7 @@ body .report_title__FjOSu,
 body .report_wrapper__Wy8OD.report_is_error__NIaHg,
 body .report_wrapper__Wy8OD.report_is_focused__5WD1I,
 body .video_information_label__ys8r1,
-body .vod_item__Fn2qu,
+body .videos_tab__w6Uek,
 body .vod_recommend_label__SpNOG {
   background-color: #d3d3d9;
 }
@@ -117,7 +117,7 @@ body .header_item__ZXQHZ + .header_item__ZXQHZ:before,
 body .live_information_player_count__60uon + .live_information_player_count__60uon:before,
 body .lives_item__2tvg3 + .lives_item__2tvg3:before,
 body .video_card_item__lOC8Y + .video_card_item__lOC8Y:before,
-body .video_information_count__Y05sI + .video_information_count__Y05sI:before,
+body .video_information_count__Y05sI:before,
 body .vod_recommend_data__Fjf7s + .vod_recommend_data__Fjf7s:before {
   background-color: rgba(0, 0, 0, 0.2);
 }
@@ -444,9 +444,9 @@ body .profile_introduction__cRKHk,
 body .profile_layer_container__Qjyvp,
 body .profile_layer_lounge_container__fCdQK,
 body .report_reason_text__oK9eq,
-body .video_information_count__Y05sI.video_information_highlight__4529f,
+body .video_information_live_data__KuWvk .video_information_count__Y05sI,
 body .video_information_private__7RnJs,
-body .vod_empty__Ec2ge,
+body .videos_title__KuM6Y,
 body .vod_recommend_text__VQCN3,
 body .vod_recommend_vod_title__W0WOT {
   /* #c9cedc */
@@ -525,7 +525,7 @@ body .video_card_title__Amjk2,
 body .video_information_label__ys8r1,
 body .video_information_link__2OrbG,
 body .video_information_title__jrLfG,
-body .vod_item__Fn2qu,
+body .videos_tab__w6Uek,
 body .vod_recommend_header_title__iu4\+P,
 body .vod_recommend_label__SpNOG {
   /* #dfe2ea */
@@ -628,7 +628,7 @@ body .top_banner_description__TEbBf,
 body .video_card_area__FtMQV,
 body .video_card_horizontal__-\+L1b .video_card_item__lOC8Y,
 body .video_card_is_block__cGuyo .video_card_title__Amjk2,
-body .video_information_count__Y05sI,
+body .video_information_vod_count__\+\+UCG .video_information_count__Y05sI,
 body .video_information_time__G95w\+,
 body .vod_recommend_channel__8s\+Fd,
 body .vod_recommend_data__Fjf7s {
@@ -646,6 +646,10 @@ body .live_chatting_input_send_button__8KBrn {
 
 body .live_chatting_input_input__2F3Et::placeholder {
   color: rgba(20, 23, 31, 0.5);
+}
+
+body .header_service__DyG7M .header_item__MFv39[aria-current="page"] {
+  color: #009961 !important; 
 }
 
 body .live_chatting_guide_container__vr6hZ em,
@@ -685,6 +689,7 @@ body .input_textarea_mirror__9LKRt strong {
 
 body .comment_item_mention__HTcvk,
 body .comment_item_button_reply__kdFjl.comment_item_highlight__xp520,
+body .comment_item_content__QxOPL .comment_item_time__6KPQu,
 body .community_list_item_comment__DEe8n {
   color: rgba(0, 153, 97, 0.6);
 }
@@ -703,7 +708,7 @@ body .live_chatting_ranking_marquee_number__uXVzD {
 body .channel_vod_tab_type_item__9Yq3l[aria-selected="true"],
 body .input_button__6SZ4P.input_highlight__FyLt6,
 body .pagination_button__\+Tzu0[aria-current="page"],
-body .vod_item__Fn2qu[aria-selected="true"] {
+body .videos_tab__w6Uek[aria-selected="true"] {
   background-color: #1f1f23;
   color: #f7f7f8;
 }
@@ -856,6 +861,7 @@ body .toolbar_link__p4qbh {
   border-color: hsla(0, 0%, 0%, 0.1);
 }
 
+body .channel_home_no_content_container__q2x18.channel_home_no_content_type_border__3qK3,
 body .live_chatting_header_title__3y2oK .vod_recommend_header__btceh,
 body .live_chatting_popup_donation_box__jE6yn,
 body .video_card_vertical__\+gTMT .video_card_thumbnail__QXYT8:after,
