@@ -1,79 +1,119 @@
 const STYLES = [
   {
-    name: "light-mode",
-    description: "라이트 모드",
+    name: "일반",
+    styles: [
+      {
+        name: "light-mode",
+        description: "라이트 모드",
+      },
+    ],
   },
   {
-    name: "fit-player",
-    description: "플레이어 채우기",
+    name: "플레이어",
+    styles: [
+      {
+        name: "fit-player",
+        description: "화면 채우기",
+      },
+      {
+        name: "volume-percentage",
+        description: "볼륨 퍼센트 표시",
+      },
+    ],
   },
   {
-    name: "volume-percentage",
-    description: "볼륨 퍼센트 표시",
+    name: "채팅창",
+    styles: [
+      {
+        name: "hide-ranking",
+        description: "후원 랭킹 숨기기",
+      },
+      {
+        name: "left-chat",
+        description: "왼쪽 배치",
+      },
+    ],
   },
   {
-    name: "hide-ranking",
-    description: "채팅창 후원 랭킹 숨기기",
+    name: "사이드바",
+    styles: [
+      {
+        name: "hide-offline",
+        description: "오프라인 채널 숨기기",
+      },
+      {
+        name: "hide-recommended",
+        description: "추천 채널 숨기기",
+      },
+      {
+        name: "hide-shortcut",
+        description: "서비스 바로가기 숨기기",
+      },
+      {
+        name: "right-sidebar",
+        description: "오른쪽 배치",
+      },
+    ],
   },
   {
-    name: "left-chat",
-    description: "채팅창 왼쪽 배치",
+    name: "툴바",
+    styles: [
+      {
+        name: "hide-studio",
+        description: "스튜디오 버튼 숨기기",
+      },
+      {
+        name: "hide-ticket",
+        description: "라운지 티켓 버튼 숨기기",
+      },
+      {
+        name: "auto-hide-toolbar",
+        description: "자동 숨기기",
+      },
+    ],
   },
   {
-    name: "hide-offline",
-    description: "사이드바 오프라인 채널 숨기기",
+    name: "홈",
+    styles: [
+      {
+        name: "hide-recommended-live",
+        description: "추천 방송 숨기기",
+      },
+      {
+        name: "hide-partner",
+        description: "파트너 스트리머 소개 숨기기",
+      },
+      {
+        name: "hide-news",
+        description: "최근 소식 숨기기",
+      },
+    ],
   },
   {
-    name: "hide-recommended",
-    description: "사이드바 추천 채널 숨기기",
+    name: "탐색",
+    styles: [
+      {
+        name: "top-explore",
+        description: "사이드바 대신 툴바에 표시",
+      },
+      {
+        name: "hide-category",
+        description: "카테고리 목록 숨기기",
+      },
+    ],
   },
   {
-    name: "hide-shortcut",
-    description: "사이드바 서비스 바로가기 숨기기",
-  },
-  {
-    name: "right-sidebar",
-    description: "사이드바 오른쪽 배치",
-  },
-  {
-    name: "hide-studio",
-    description: "툴바 스튜디오 버튼 숨기기",
-  },
-  {
-    name: "hide-ticket",
-    description: "툴바 라운지 티켓 버튼 숨기기",
-  },
-  {
-    name: "auto-hide-toolbar",
-    description: "툴바 자동 숨기기",
-  },
-  {
-    name: "hide-recommended-live",
-    description: "메인 추천 방송 숨기기",
-  },
-  {
-    name: "hide-partner",
-    description: "메인 파트너 스트리머 소개 숨기기",
-  },
-  {
-    name: "hide-news",
-    description: "메인 최근 소식 숨기기",
-  },
-  {
-    name: "top-explore",
-    description: "탐색 상단 표시",
-  },
-  {
-    name: "hide-category",
-    description: "카테고리 목록 숨기기",
-  },
-  {
-    name: "hide-live-badge",
-    description: "생방송 뱃지 숨기기",
-  },
-  {
-    name: "rectangle-profile",
-    description: "사각 프로필 이미지",
+    name: "기타",
+    styles: [
+      {
+        name: "hide-live-badge",
+        description: "생방송 뱃지 숨기기",
+      },
+      {
+        name: "rectangle-profile",
+        description: "사각 프로필 이미지",
+      },
+    ],
   },
 ];
 
@@ -87,28 +127,39 @@ reload.addEventListener("click", () => {
 (async () => {
   const { styles } = await chrome.storage.local.get({ styles: [] });
   const stylesSet = new Set(styles);
-  for (const style of STYLES) {
-    const item = document.createElement("div");
-    list.appendChild(item);
+  for (const c of STYLES) {
+    const category = document.createElement("div");
+    category.classList.add("box");
+    list.appendChild(category);
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = style.name;
-    checkbox.checked = stylesSet.has(style.name);
-    checkbox.addEventListener("change", async (e) => {
-      if (e.target.checked) {
-        stylesSet.add(style.name);
-      } else {
-        stylesSet.delete(style.name);
-      }
-      await chrome.storage.local.set({ styles: [...stylesSet] });
-      reload.style.display = "inline-flex";
-    });
-    item.appendChild(checkbox);
+    const title = document.createElement("div");
+    title.classList.add("title");
+    title.textContent = c.name;
+    category.appendChild(title);
 
-    const label = document.createElement("label");
-    label.textContent = style.description;
-    label.htmlFor = style.name;
-    item.appendChild(label);
+    for (const style of c.styles) {
+      const item = document.createElement("div");
+      category.appendChild(item);
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = style.name;
+      checkbox.checked = stylesSet.has(style.name);
+      checkbox.addEventListener("change", async (e) => {
+        if (e.target.checked) {
+          stylesSet.add(style.name);
+        } else {
+          stylesSet.delete(style.name);
+        }
+        await chrome.storage.local.set({ styles: [...stylesSet] });
+        reload.style.display = "inline-flex";
+      });
+      item.appendChild(checkbox);
+
+      const label = document.createElement("label");
+      label.textContent = style.description;
+      label.htmlFor = style.name;
+      item.appendChild(label);
+    }
   }
 })();

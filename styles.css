@@ -36,12 +36,13 @@ button {
   font-weight: bold;
   color: #fafafa;
   background-color: #18181b;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   white-space: nowrap;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #18181be6;
+  background-color: #26262c;
 }
 
 header {
@@ -67,18 +68,28 @@ header a:hover {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 1rem;
   margin: 0.75rem;
+}
+
+.box {
   border: 1px solid black;
   border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
 }
 
 #list {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.75rem;
 }
 
 #reload {
+  position: sticky;
+  bottom: 0.75rem;
   display: none;
 }
