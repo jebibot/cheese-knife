@@ -3,7 +3,11 @@
 }
 
 [class^="live_information_player__"] {
-  max-height: 100vh;
+  max-height: calc(100vh - 60px);
+}
+
+[class*="live_information_is_large__"] [class^="live_information_player__"] {
+  max-height: none;
 }
 
 [class^="live_information_contents__"] {
