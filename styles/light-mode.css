@@ -962,6 +962,7 @@ body .search_form_button__AFdzU path {
   fill: #000;
 }
 
+body .live_chatting_guide_icon__HX2cT path,
 body .webkit_cafe_name g {
   fill: #1f1f23;
 }
@@ -976,6 +977,7 @@ body .header_button__oszSs rect {
   fill: #848494;
 }
 
+body .live_chatting_guide_icon__HX2cT rect,
 body .navigator_button_fold__nOkxo:active .navigator_icon_arrow__37j2I path,
 body .navigator_button_fold__nOkxo:focus-visible .navigator_icon_arrow__37j2I path,
 body .navigator_button_fold__nOkxo:hover .navigator_icon_arrow__37j2I path,
