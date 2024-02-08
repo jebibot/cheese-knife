@@ -430,6 +430,7 @@ const createPopupPlayer = (url, left, top) => {
   return popup;
 };
 
+let routeNavigator;
 const attachLayoutObserver = async () => {
   const init = async (node) => {
     const sidebar = node.querySelector("#navigation");
@@ -461,6 +462,12 @@ const attachLayoutObserver = async () => {
   layoutObserver.observe(layoutWrap, { childList: true });
 
   await init(layoutWrap);
+
+  try {
+    routeNavigator = (
+      await findReactContext(layoutWrap, (context) => context.navigator != null)
+    )?.navigator;
+  } catch (e) {}
 };
 
 const initSidebarFeatures = (sidebar) => {
@@ -549,12 +556,13 @@ const attachBodyObserver = async () => {
     hidePreview();
     const features = [];
     if (node.className.startsWith("live_")) {
-      features.push(attachPlayerObserver(true));
       features.push(attachLiveObserver(node));
     } else if (node.className.startsWith("vod_")) {
-      features.push(attachPlayerObserver(false));
+      features.push(attachPlayerObserver(node, false));
     } else if (node.className.startsWith("lives_")) {
       features.push(initLivesFeatures(node));
+    } else if (node.className.startsWith("channel_")) {
+      features.push(initChannelFeatures(node));
     }
     return Promise.all(features);
   };
@@ -683,6 +691,27 @@ const initLivesFeatures = async (node) => {
   listObserver.observe(list, { childList: true });
 };
 
+const initChannelFeatures = async (node) => {
+  const list = node.querySelector('[class^="channel_list__"]');
+  if (list == null) {
+    return;
+  }
+
+  const live = document.createElement("button");
+  live.type = "button";
+  live.className = list.lastElementChild.className;
+  live.textContent = "↗ 채팅";
+  live.addEventListener("click", () => {
+    const href = `/live/${location.pathname.split("/")[1]}`;
+    if (routeNavigator != null) {
+      routeNavigator.push(href);
+    } else {
+      location.href = href;
+    }
+  });
+  list.appendChild(live);
+};
+
 const cloneButton = (pzp, className, name, iconSvg, onClick, after = false) => {
   const button = pzp?.querySelector(`.${className}`);
   if (button == null) {
@@ -758,17 +787,19 @@ FPS: ${info.fps}
   license.parentNode.insertBefore(stats, license);
 };
 
-let pzpVue;
-const attachPlayerObserver = async (isLive, tries = 0) => {
-  const playerLayout = document.getElementById(
-    isLive ? "live_player_layout" : "player_layout"
+const attachPlayerObserver = async (node, isLive, tries = 0) => {
+  if (node == null) {
+    return;
+  }
+  const playerLayout = node.querySelector(
+    isLive ? "#live_player_layout" : "#player_layout"
   );
   if (playerLayout == null) {
     if (tries > 500) {
       return;
     }
     return new Promise((r) => setTimeout(r, 50)).then(() =>
-      attachPlayerObserver(isLive, tries + 1)
+      attachPlayerObserver(node, isLive, tries + 1)
     );
   }
   const playerObserver = new MutationObserver((mutations) => {
@@ -785,6 +816,7 @@ const attachPlayerObserver = async (isLive, tries = 0) => {
   await initPlayerFeatures(playerLayout, isLive);
 };
 
+let pzpVue;
 const initPlayerFeatures = async (node, isLive, tries = 0) => {
   if (node == null) {
     return;
@@ -1140,7 +1172,27 @@ const attachLiveObserver = async (node) => {
   });
   liveObserver.observe(node, { childList: true });
 
-  await initChatFeatures(node.querySelector("aside"));
+  const player = node.querySelector('[class^="live_information_player__"]');
+  if (player != null) {
+    const playerObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const n of mutation.addedNodes) {
+          if (n.className?.startsWith?.("live_information_video_container__")) {
+            attachPlayerObserver(n, true);
+          }
+        }
+      }
+    });
+    playerObserver.observe(player, { childList: true });
+  }
+
+  return Promise.all([
+    attachPlayerObserver(
+      node.querySelector('[class^="live_information_video_container__"]'),
+      true
+    ),
+    initChatFeatures(node.querySelector("aside")),
+  ]);
 };
 
 window.addEventListener("popstate", (e) => {
