@@ -110,8 +110,9 @@ const rootObserver = new MutationObserver((mutations) => {
         continue;
       }
       for (const elem of waiting) {
-        if (n.querySelector(elem.query)) {
-          elem.resolve(n);
+        const node = n.querySelector(elem.query);
+        if (node != null) {
+          elem.resolve(node);
         }
       }
     }
