@@ -88,10 +88,6 @@ body .webkit_cafe_pc .webkit_cafe_head .webkit_cafe_tab > div .btn_tab:hover {
   background-color: #c8c8d0;
 }
 
-body .knife-categories::-webkit-scrollbar-thumb {
-  background-color: #adadb8;
-}
-
 body .pagination_button__\+Tzu0[aria-current="page"]:active,
 body .pagination_button__\+Tzu0[aria-current="page"]:focus-visible,
 body .pagination_button__\+Tzu0[aria-current="page"]:hover {

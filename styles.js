@@ -96,10 +96,6 @@ const STYLES = [
         name: "top-explore",
         description: "사이드바 대신 툴바에 표시",
       },
-      {
-        name: "hide-category",
-        description: "카테고리 목록 숨기기",
-      },
     ],
   },
   {

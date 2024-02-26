@@ -560,8 +560,6 @@ const attachBodyObserver = async () => {
       features.push(attachLiveObserver(node));
     } else if (node.className.startsWith("vod_")) {
       features.push(attachPlayerObserver(node, false));
-    } else if (node.className.startsWith("lives_")) {
-      features.push(initLivesFeatures(node));
     } else if (node.className.startsWith("channel_")) {
       features.push(initChannelFeatures(node));
     }
@@ -596,100 +594,6 @@ const attachBodyObserver = async () => {
   });
 
   await init(layoutBody.querySelector("section"));
-};
-
-let setFilter;
-const initLivesFeatures = async (node) => {
-  const list = node.querySelector('[class^="component_list__"]');
-  if (list == null) {
-    return;
-  }
-
-  const res = await fetch("https://api.chz.app/categories");
-  if (!res.ok) {
-    return;
-  }
-  const liveCategories = (await res.json()) || [];
-
-  let currentCategory;
-  const applyFilter = (item) => {
-    if (
-      currentCategory != null &&
-      (item.querySelector('[class^="video_card_category__"]')?.textContent ||
-        "") !== currentCategory
-    ) {
-      item.style.display = "none";
-    } else {
-      item.style.display = "";
-    }
-  };
-  setFilter = (category) => {
-    currentCategory = category;
-    for (const c of liveCategories) {
-      c.button?.classList.toggle("knife-category-active", c.name === category);
-    }
-    for (const item of list.querySelectorAll("li")) {
-      applyFilter(item);
-    }
-  };
-
-  const categories = document.createElement("div");
-  categories.classList.add("knife-categories");
-  categories.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    categories.scrollLeft += e.deltaY;
-  });
-  node.prepend(categories);
-
-  for (const c of liveCategories) {
-    const button = document.createElement("button");
-    c.button = button;
-    button.classList.add("knife-category");
-    button.title = c.name || "없음";
-    button.addEventListener("click", () => {
-      let category;
-      const url = new URL(location.href);
-      if (c.name !== currentCategory) {
-        category = c.name;
-        url.searchParams.set("category", category);
-      } else {
-        category = null;
-        url.searchParams.delete("category");
-      }
-      history.pushState({ category }, "", url);
-      setFilter(category);
-    });
-    categories.appendChild(button);
-
-    if (c.logo) {
-      const logo = document.createElement("img");
-      logo.classList.add("knife-category-logo");
-      logo.loading = "lazy";
-      logo.src = c.logo;
-      button.appendChild(logo);
-    } else {
-      button.textContent = button.title;
-    }
-
-    const count = document.createElement("span");
-    count.classList.add("knife-category-count");
-    count.textContent = `${numberFormatter.format(c.count)}명`;
-    button.appendChild(count);
-  }
-
-  const url = new URL(location.href);
-  setFilter(url.searchParams.get("category"));
-
-  const listObserver = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      for (const n of mutation.addedNodes) {
-        if (n.tagName === "LI") {
-          applyFilter(n);
-        }
-      }
-    }
-  });
-  listObserver.observe(list, { childList: true });
 };
 
 const initChannelFeatures = async (node) => {
@@ -1195,12 +1099,6 @@ const attachLiveObserver = async (node) => {
     initChatFeatures(node.querySelector("aside")),
   ]);
 };
-
-window.addEventListener("popstate", (e) => {
-  if (location.pathname === "/lives") {
-    setFilter?.(e.state.category);
-  }
-});
 
 document.body.addEventListener("keydown", (e) => {
   if (
