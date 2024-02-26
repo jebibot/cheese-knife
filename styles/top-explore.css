@@ -1,7 +1,7 @@
 @media (min-width: 1200px) {
   [class^="header_section__"] [class^="header_service__"]:first-of-type {
     position: absolute !important;
-    top: -3px;
+    top: 4px;
     left: 160px;
     display: flex;
     align-items: center;
@@ -13,7 +13,7 @@
   [class*="header_is_expanded__"]
     [class^="header_section__"]
     [class^="header_service__"]:first-of-type {
-    top: -6px;
+    top: 7px;
   }
 
   [class^="header_section__"] [class^="header_service__"]:first-of-type:before,

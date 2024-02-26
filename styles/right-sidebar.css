@@ -9,7 +9,7 @@
 
 [class^="layout_body"] {
   padding-left: 0 !important;
-  padding-right: 66px;
+  padding-right: 78px;
 }
 
 @media (min-width: 1200px) {
@@ -31,7 +31,7 @@
 }
 
 [class^="toolbar_section__"] {
-  padding-right: 68px !important;
+  padding-right: 80px !important;
 }
 
 [class*="header_is_expanded__"]
