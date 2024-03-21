@@ -18,7 +18,6 @@ async function registerStyles(styles) {
       "hide-studio",
       "hide-ticket",
       "left-chat",
-      "light-mode",
       "rectangle-profile",
       "right-sidebar",
       "top-explore",

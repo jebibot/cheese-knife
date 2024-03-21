@@ -1,14 +1,5 @@
 const STYLES = [
   {
-    name: "일반",
-    styles: [
-      {
-        name: "light-mode",
-        description: "라이트 모드",
-      },
-    ],
-  },
-  {
     name: "플레이어",
     styles: [
       {
