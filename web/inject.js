@@ -546,7 +546,7 @@ const refreshSidebar = async (sidebar) => {
       );
       sidebarEffect?.create?.();
     }
-  }, 60000);
+  }, 40000);
 };
 
 const attachBodyObserver = async () => {
