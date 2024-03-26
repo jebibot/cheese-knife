@@ -273,7 +273,9 @@ const showPreview = async (href, node, tooltip) => {
 
   const previewAvailable =
     previewPlayer != null && info.livePlayback != null && config.livePreview;
-  const openDate = info.openDate ? new Date(info.openDate).getTime() : 0;
+  const openDate = info.openDate
+    ? new Date(`${info.openDate}+0900`).getTime()
+    : 0;
   const delay = Math.floor(config.previewDelay * 10);
   let step = 0;
   previewInterval = setInterval(() => {
