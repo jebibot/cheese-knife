@@ -23,7 +23,7 @@
   background-color: #2e3033;
   border-radius: 5px;
   overflow: hidden;
-  z-index: 1000;
+  z-index: 20000;
   pointer-events: none;
 }
 

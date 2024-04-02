@@ -191,7 +191,7 @@ const showPreview = async (href, node, tooltip) => {
 
   let Player;
   try {
-    Player = (await getWebpackRequire)(4772);
+    Player = (await getWebpackRequire)(64772);
   } catch {}
 
   hidePreview();
