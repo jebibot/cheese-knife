@@ -766,24 +766,6 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
     );
   }
 
-  if (document.pictureInPictureEnabled) {
-    cloneButton(
-      pzp,
-      "pzp-pc-viewmode-button",
-      "PIP 모드",
-      '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><path fill="#fff" d="M27 9c.55 0 1 .45 1 1v7h-2v-6H10v14h6v2H9c-.55 0-1-.45-1-1V10c0-.55.45-1 1-1h18Zm0 10c.55 0 1 .45 1 1v6c0 .55-.45 1-1 1h-8c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h8Zm-1 2h-6v4h6v-4Z"/></svg>',
-      () => {
-        const video = pzp.querySelector("video");
-        video.disablePictureInPicture = false;
-        if (document.pictureInPictureElement) {
-          document.exitPictureInPicture();
-        } else {
-          video.requestPictureInPicture();
-        }
-      }
-    );
-  }
-
   if (isLive) {
     try {
       addStatsMenu();
