@@ -25,6 +25,7 @@ if (
             arrowSeek: true,
             rememberTime: true,
             hideDonation: false,
+            optimizeEmotes: false,
             resizeChat: false,
           },
         });
