@@ -13,7 +13,7 @@
   [class*="header_is_expanded__"]
     [class^="header_section__"]
     [class^="header_service__"]:first-of-type {
-    top: 7px;
+    top: -3px;
   }
 
   [class^="header_section__"] [class^="header_service__"]:first-of-type:before,

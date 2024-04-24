@@ -1,3 +1,3 @@
-#navigation [class^="navigator_wrapper__"]:last-child {
+#navigation [class^="navigator_wrapper__"]:nth-last-child(2) {
   display: none !important;
 }

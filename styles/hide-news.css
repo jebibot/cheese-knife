@@ -1,3 +1,0 @@
-[class^="component_container__"]:has([class^="news_list__"]) {
-  display: none !important;
-}

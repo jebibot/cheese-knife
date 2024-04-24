@@ -37,6 +37,10 @@ const STYLES = [
         description: "추천 채널 숨기기",
       },
       {
+        name: "hide-sidebar-partner",
+        description: "파트너 스트리머 숨기기",
+      },
+      {
         name: "hide-shortcut",
         description: "서비스 바로가기 숨기기",
       },
@@ -69,14 +73,6 @@ const STYLES = [
       {
         name: "hide-recommended-live",
         description: "추천 방송 숨기기",
-      },
-      {
-        name: "hide-partner",
-        description: "파트너 스트리머 소개 숨기기",
-      },
-      {
-        name: "hide-news",
-        description: "최근 소식 숨기기",
       },
     ],
   },

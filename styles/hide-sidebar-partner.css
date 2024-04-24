@@ -1,0 +1,3 @@
+#navigation [class^="navigator_wrapper__"]:last-child {
+  display: none !important;
+}
