@@ -1132,6 +1132,12 @@ document.body.addEventListener("keydown", (e) => {
   }
 });
 
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") {
+    hidePreview();
+  }
+});
+
 document.addEventListener("mouseout", (e) => {
   if (e.relatedTarget?.className?.startsWith?.("video_card_thumbnail__")) {
     if (config.livePreview) {
