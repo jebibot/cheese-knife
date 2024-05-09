@@ -54,6 +54,10 @@ const STYLES = [
     name: "툴바",
     styles: [
       {
+        name: "static-logo",
+        description: "정적 로고",
+      },
+      {
         name: "hide-studio",
         description: "스튜디오 버튼 숨기기",
       },

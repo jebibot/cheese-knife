@@ -19,6 +19,7 @@ async function registerStyles(styles) {
       "left-chat",
       "rectangle-profile",
       "right-sidebar",
+      "static-logo",
       "top-explore",
       "volume-percentage",
     ].includes(t)
