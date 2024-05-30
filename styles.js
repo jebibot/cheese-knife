@@ -87,6 +87,10 @@ const STYLES = [
         name: "top-explore",
         description: "사이드바 대신 툴바에 표시",
       },
+      {
+        name: "hide-blocked",
+        description: "차단한 유저 방송 숨기기",
+      },
     ],
   },
   {
