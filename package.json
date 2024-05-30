@@ -8,10 +8,10 @@
     "build:firefox": "mkdir -p dist && cp -r web styles *.html *.js *.css *.png dist && jq '.background = {scripts: [\"background.js\"]}' manifest.json > dist/manifest.json",
     "postversion": "manifest=\"$(jq \".version = `jq '.version' package.json`\" manifest.json)\" && echo \"$manifest\" > manifest.json",
     "publish": "chrome-webstore-upload upload --source=extension.zip --auto-publish",
-    "publish:firefox": "cd dist && web-ext sign --use-submission-api --channel listed --timeout 60000"
+    "publish:firefox": "cd dist && web-ext sign --channel listed --approval-timeout 60000"
   },
   "devDependencies": {
     "chrome-webstore-upload-cli": "^3.1.0",
-    "web-ext": "^7.11.0"
+    "web-ext": "^8.0.0"
   }
 }
