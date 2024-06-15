@@ -996,6 +996,52 @@ const addResizeHandle = (container) => {
   });
 };
 
+const attachChatObserver = (chattingContainer) => {
+  const wrapper = chattingContainer?.querySelector?.(
+    '[class^="live_chatting_list_wrapper__"'
+  );
+  if (wrapper == null) {
+    return;
+  }
+
+  if (
+    !window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue("--knife-chat-timestamp")
+  ) {
+    return;
+  }
+
+  const chatObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((n) => {
+        if (n.className?.startsWith("live_chatting_list_item__")) {
+          const props = getReactProps(n);
+          const t = props?.children?.props?.chatMessage?.time;
+          if (t == null) {
+            return;
+          }
+          const wrapper = n.querySelector(
+            '[class^="live_chatting_message_wrapper__"]'
+          );
+          if (wrapper == null || wrapper.dataset.timestamp) {
+            return;
+          }
+          const time = new Date(t);
+          wrapper.dataset.timestamp = `${time
+            .getHours()
+            .toString()
+            .padStart(2, "0")}:${time
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`;
+        }
+      });
+    });
+  });
+  chatObserver.observe(wrapper, { childList: true });
+};
+
 const initChatFeatures = async (chattingContainer, tries = 0) => {
   if (chattingContainer == null) {
     return;
@@ -1068,6 +1114,16 @@ const initChatFeatures = async (chattingContainer, tries = 0) => {
     }
     return true;
   };
+
+  attachChatObserver(chattingContainer);
+  const containerObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((n) => {
+        attachChatObserver(n);
+      });
+    });
+  });
+  containerObserver.observe(chattingContainer, { childList: true });
 };
 
 const attachLiveObserver = async (node) => {

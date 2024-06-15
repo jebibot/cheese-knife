@@ -16,6 +16,10 @@ const STYLES = [
     name: "채팅창",
     styles: [
       {
+        name: "chat-timestamp",
+        description: "채팅 타임스탬프 표시",
+      },
+      {
         name: "hide-ranking",
         description: "후원 랭킹 숨기기",
       },

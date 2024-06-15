@@ -6,6 +6,7 @@ async function registerStyles(styles) {
   styles = styles.filter((t) =>
     [
       "auto-hide-toolbar",
+      "chat-timestamp",
       "fit-player",
       "hide-blocked",
       "hide-live-badge",
