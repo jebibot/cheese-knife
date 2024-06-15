@@ -34,7 +34,7 @@ svg {
 .box {
   border: 1px solid black;
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   margin: 0.75rem;
 }
 
