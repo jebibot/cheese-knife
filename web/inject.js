@@ -1101,7 +1101,7 @@ const initChatFeatures = async (chattingContainer, tries = 0) => {
               src.startsWith(
                 "https://ssl.pstatic.net/static/nng/glive/icon/"
               ) &&
-              src.endsWith(".gif")
+              src.includes(".gif")
             ) {
               n.props.src = src.replace(
                 "https://ssl.pstatic.net/static/nng/glive/icon/",
