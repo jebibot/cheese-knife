@@ -11,7 +11,7 @@
     "publish:firefox": "cd dist && web-ext sign --channel listed --approval-timeout 60000"
   },
   "devDependencies": {
-    "chrome-webstore-upload-cli": "^3.1.0",
+    "chrome-webstore-upload-cli": "^3.3.0",
     "web-ext": "^8.1.0"
   }
 }
