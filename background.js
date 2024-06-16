@@ -1,15 +1,30 @@
 async function initConfig() {
-  let { config, styles } = await chrome.storage.local.get(["config", "styles"]);
+  let changed = false;
+  let { config, styles, t } = await chrome.storage.local.get([
+    "config",
+    "styles",
+    "t",
+  ]);
   if (config?.resizeChat) {
+    changed = true;
     delete config.resizeChat;
     styles ||= [];
     if (!styles.includes("chat-resize")) {
       styles.push("chat-resize");
     }
   }
-  chrome.storage.local.onChanged.removeListener(onStylesChanged);
-  await chrome.storage.local.set({ config, styles });
-  chrome.storage.local.onChanged.addListener(onStylesChanged);
+  if (t != null) {
+    if (!isNaN(t)) {
+      changed = true;
+      config.sharpness = t;
+    }
+    await chrome.storage.local.remove("t");
+  }
+  if (changed) {
+    chrome.storage.local.onChanged.removeListener(onStylesChanged);
+    await chrome.storage.local.set({ config, styles });
+    chrome.storage.local.onChanged.addListener(onStylesChanged);
+  }
 }
 
 function onStylesChanged({ styles }) {

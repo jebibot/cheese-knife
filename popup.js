@@ -10,12 +10,12 @@ chrome.storage.local
       popupPlayer: true,
       arrowSeek: true,
       rememberTime: true,
+      sharpness: 0,
       hideDonation: false,
       optimizeEmotes: false,
     },
-    t: 0,
   })
-  .then(({ config, t }) => {
+  .then(({ config }) => {
     for (const c in config) {
       const input = document.getElementById(c);
       if (input == null) {
@@ -38,18 +38,4 @@ chrome.storage.local
         });
       }
     }
-
-    if (isNaN(t)) {
-      t = 0;
-      chrome.storage.local.set({ t });
-    }
-    const sharpness = document.getElementById("sharpness");
-    const current = document.getElementById("current");
-    sharpness.value = t;
-    current.textContent = t;
-    sharpness.addEventListener("input", (e) => {
-      const t = Number(e.target.value);
-      chrome.storage.local.set({ t });
-      current.textContent = t;
-    });
   });
