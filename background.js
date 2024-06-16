@@ -1,3 +1,23 @@
+async function initConfig() {
+  let { config, styles } = await chrome.storage.local.get(["config", "styles"]);
+  if (config?.resizeChat) {
+    delete config.resizeChat;
+    styles ||= [];
+    if (!styles.includes("chat-resize")) {
+      styles.push("chat-resize");
+    }
+  }
+  chrome.storage.local.onChanged.removeListener(onStylesChanged);
+  await chrome.storage.local.set({ config, styles });
+  chrome.storage.local.onChanged.addListener(onStylesChanged);
+}
+
+function onStylesChanged({ styles }) {
+  if (styles != null) {
+    registerStyles(styles.newValue);
+  }
+}
+
 async function registerStyles(styles) {
   await chrome.scripting.unregisterContentScripts();
   if (!Array.isArray(styles)) {
@@ -6,6 +26,7 @@ async function registerStyles(styles) {
   styles = styles.filter((t) =>
     [
       "auto-hide-toolbar",
+      "chat-resize",
       "chat-timestamp",
       "fit-player",
       "hide-blocked",
@@ -51,6 +72,7 @@ async function checkPermission() {
 }
 
 async function init() {
+  await initConfig();
   const { styles } = await chrome.storage.local.get({ styles: [] });
   await registerStyles(styles);
   await checkPermission();
@@ -59,9 +81,4 @@ async function init() {
 chrome.runtime.onInstalled.addListener(init);
 chrome.runtime.onStartup.addListener(init);
 chrome.permissions.onRemoved.addListener(checkPermission);
-
-chrome.storage.local.onChanged.addListener(async ({ styles }) => {
-  if (styles != null) {
-    await registerStyles(styles.newValue);
-  }
-});
+chrome.storage.local.onChanged.addListener(onStylesChanged);

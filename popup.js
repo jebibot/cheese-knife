@@ -12,7 +12,6 @@ chrome.storage.local
       rememberTime: true,
       hideDonation: false,
       optimizeEmotes: false,
-      resizeChat: false,
     },
     t: 0,
   })

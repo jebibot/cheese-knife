@@ -1,0 +1,38 @@
+html {
+  --knife-chat-resize: 1;
+}
+
+aside[class^="live_chatting_container__"]:not(
+    [class*="live_chatting_is_popup_chat__"]
+  ) {
+  width: var(--knife-chat-width, 353px);
+  max-width: calc(100% - 24px);
+}
+
+@media screen and (max-aspect-ratio: 1 / 1) {
+  aside[class^="live_chatting_container__"][class*="live_chatting_is_large__"] {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.knife-resize-handle {
+  width: 3px;
+  height: 100%;
+  cursor: col-resize;
+}
+
+.knife-resize-handle:hover {
+  background-color: #ffffff0f;
+}
+
+.knife-resize-handle:has(+ [class*="live_chatting_is_folded__"]),
+.knife-resize-handle:has(+ [class*="live_chatting_is_popup_chat__"]) {
+  display: none;
+}
+
+@media screen and (max-aspect-ratio: 1 / 1) {
+  [class*="live_is_large__"] .knife-resize-handle {
+    display: none;
+  }
+}

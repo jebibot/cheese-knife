@@ -16,6 +16,10 @@ const STYLES = [
     name: "채팅창",
     styles: [
       {
+        name: "chat-resize",
+        description: "채팅창 크기 조절",
+      },
+      {
         name: "chat-timestamp",
         description: "채팅 타임스탬프 표시",
       },

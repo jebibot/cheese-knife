@@ -7,7 +7,6 @@ if (
     if (!config.rememberTime) {
       window.localStorage.removeItem("vodResumeTimes");
     }
-    document.body.classList.toggle("knife-resize-chat", !!config.resizeChat);
   };
 
   window.addEventListener("message", async (e) => {
@@ -26,7 +25,6 @@ if (
             rememberTime: true,
             hideDonation: false,
             optimizeEmotes: false,
-            resizeChat: false,
           },
         });
         initConfig(config);

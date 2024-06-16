@@ -950,6 +950,14 @@ const seek = (backward) => {
 };
 
 const addResizeHandle = (container) => {
+  if (
+    !window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue("--knife-chat-resize")
+  ) {
+    return;
+  }
+
   container.parentNode.querySelector(".knife-resize-handle")?.remove();
   const resizeHandle = document.createElement("div");
   resizeHandle.classList.add("knife-resize-handle");
