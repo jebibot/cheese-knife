@@ -122,3 +122,29 @@
   margin-left: 4px;
   content: "(삭제됨)";
 }
+
+[data-knife-tooltip] {
+  position: relative;
+}
+
+[data-knife-tooltip]:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
+
+[data-knife-tooltip]::after {
+  position: absolute;
+  top: -6px;
+  left: calc(100% + 8px);
+  visibility: hidden;
+  opacity: 0;
+  padding: 6px 9px;
+  content: attr(data-knife-tooltip);
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 6px;
+  background-color: var(--color-bg-08);
+  color: var(--color-content-02);
+  transition: opacity 0.2s;
+  z-index: 200;
+}

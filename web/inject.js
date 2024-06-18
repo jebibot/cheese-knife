@@ -1228,13 +1228,66 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-document.addEventListener("mouseout", (e) => {
+const videoInfo = {};
+document.addEventListener("mouseout", async (e) => {
   if (e.relatedTarget?.className?.startsWith?.("video_card_thumbnail__")) {
     if (config.livePreview) {
       showPreview(e.relatedTarget.href, e.relatedTarget);
     }
   } else if (e.target?.className?.startsWith?.("video_card_thumbnail__")) {
     hidePreview(e.target.href);
+  }
+
+  if (e.relatedTarget?.className?.startsWith?.("video_information_count__")) {
+    if (
+      e.relatedTarget.textContent.endsWith(" 스트리밍 중") &&
+      !e.relatedTarget.dataset.knifeTooltip
+    ) {
+      const state = await findReactState(
+        e.relatedTarget,
+        (state) => state.key === "liveDetail" && state.loadable != null
+      );
+      const liveDetail = await state.loadable.toPromise();
+      if (liveDetail?.openDate) {
+        e.relatedTarget.dataset.knifeTooltip = `라이브 시작: ${liveDetail.openDate}`;
+      }
+    }
+  } else if (e.relatedTarget?.className?.startsWith?.("video_card_item__")) {
+    if (
+      e.relatedTarget.previousElementSibling?.className?.startsWith?.(
+        "video_card_item__"
+      )
+    ) {
+      const link = e.relatedTarget.parentNode.parentNode.querySelector("a");
+      if (link == null) {
+        return;
+      }
+      const url = new URL(link.href);
+      const parts = url.pathname.split("/");
+      if (parts.length < 3 || parts[1] !== "video") {
+        return;
+      }
+      const videoId = parts[2];
+      let info = videoInfo[videoId];
+      if (info === undefined) {
+        const res = await fetch(
+          `https://api.chzzk.naver.com/service/v2/videos/${videoId}`,
+          { credentials: "include" }
+        );
+        if (!res.ok) {
+          return;
+        }
+        const video = await res.json();
+        if (video.code !== 200) {
+          return;
+        }
+        info = video.content;
+        videoInfo[videoId] = info;
+      }
+      if (info?.liveOpenDate) {
+        e.relatedTarget.dataset.knifeTooltip = `라이브 시작: ${info.liveOpenDate}`;
+      }
+    }
   }
 });
 
