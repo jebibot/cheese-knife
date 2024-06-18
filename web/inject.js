@@ -30,8 +30,14 @@ const findReactState = async (node, criteria, raw = false, tries = 0) => {
   while (fiber != null) {
     let state = fiber.memoizedState;
     while (state != null) {
-      if (state.memoizedState != null && criteria(state.memoizedState)) {
-        return raw ? state : state.memoizedState;
+      let value = state.memoizedState;
+      if (state.queue?.pending?.hasEagerState) {
+        value = state.queue.pending.eagerState;
+      } else if (state.baseQueue?.hasEagerState) {
+        value = state.baseQueue.eagerState;
+      }
+      if (value != null && criteria(value)) {
+        return raw ? state : value;
       }
       state = state.next;
     }
@@ -752,20 +758,20 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
     );
   }
 
-  try {
-    const setLiveWide = await findReactState(
-      node.parentNode.parentNode.parentNode,
-      (state) =>
-        state[0]?.length === 1 &&
-        state[1]?.length === 2 &&
-        state[1]?.[1]?.key === "isLiveWide"
-    );
-    if (isPopup) {
-      setLiveWide?.[0](true);
-    }
-  } catch (e) {}
-
   if (isLive) {
+    if (isPopup) {
+      try {
+        const setLiveWide = await findReactState(
+          node,
+          (state) =>
+            state[0]?.length === 1 &&
+            state[1]?.length === 2 &&
+            state[1]?.[1]?.key === "isLiveWide"
+        );
+        setLiveWide?.[0](true);
+      } catch (e) {}
+    }
+
     cloneButton(
       pzp,
       "pzp-pc-playback-switch",
@@ -777,16 +783,14 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
       },
       true
     );
-  }
 
-  if (isLive) {
     try {
       addStatsMenu();
     } catch (e) {}
   }
 
-  corePlayer = await getPlayer(pzp, isLive);
-
+  const player = await findReactState(node, (s) => s._corePlayer != null);
+  corePlayer = player?._corePlayer;
   if (!isLive && corePlayer != null) {
     const getVodResumeTimes = () => {
       let result;
@@ -829,26 +833,6 @@ const initPlayerFeatures = async (node, isLive, tries = 0) => {
       }, 5000);
     });
   }
-};
-
-const getPlayer = async (pzp, isLive, tries = 0) => {
-  const playerHeader = pzp.querySelector(
-    isLive ? ".header_info" : ".prev_button_tooltip"
-  )?.firstChild;
-  const player = await findReactState(
-    playerHeader,
-    (state) => state._corePlayer != null
-  );
-  const corePlayer = player?._corePlayer;
-  if (corePlayer == null) {
-    if (tries > 500) {
-      return;
-    }
-    return new Promise((r) => setTimeout(r, 50)).then(() =>
-      getPlayer(pzp, isLive, tries + 1)
-    );
-  }
-  return corePlayer;
 };
 
 const patchHls = (hls) => {
