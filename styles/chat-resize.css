@@ -9,10 +9,22 @@ aside[class^="live_chatting_container__"]:not(
   max-width: calc(100% - 24px);
 }
 
+div.miniplayer:not(.is_large) {
+  width: var(--knife-chat-width, 353px) !important;
+  height: calc(var(--knife-chat-width, 353px) * 9 / 16) !important;
+}
+
 @media screen and (max-aspect-ratio: 1 / 1) {
   aside[class^="live_chatting_container__"][class*="live_chatting_is_large__"] {
     width: 100%;
     max-width: none;
+  }
+}
+
+@media screen and (min-aspect-ratio: 1 / 1) {
+  div.miniplayer.is_large {
+    width: var(--knife-chat-width, 353px) !important;
+    height: calc(var(--knife-chat-width, 353px) * 9 / 16) !important;
   }
 }
 
@@ -23,7 +35,7 @@ aside[class^="live_chatting_container__"]:not(
 }
 
 .knife-resize-handle:hover {
-  background-color: #ffffff0f;
+  background-color: var(--color-bg-overlay-03);
 }
 
 .knife-resize-handle:has(+ [class*="live_chatting_is_folded__"]),

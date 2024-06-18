@@ -2,7 +2,7 @@
   [class^="header_section__"] [class^="header_service__"]:first-of-type {
     position: absolute !important;
     top: 4px;
-    left: 160px;
+    left: 140px;
     display: flex;
     align-items: center;
     gap: 2px;
@@ -32,9 +32,6 @@
     width: auto !important;
     margin: 0 !important;
     padding: 7px 8px;
-    font-size: 10px;
-    line-height: 15px;
-    color: #dfe2ea;
   }
 
   [class*="header_is_expanded__"]

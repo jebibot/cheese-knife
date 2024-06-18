@@ -4,7 +4,7 @@
 
 .knife-preview {
   aspect-ratio: 16/9;
-  background-color: #2e3033;
+  background-color: var(--color-bg-04);
   border-radius: 5px;
   overflow: hidden;
   z-index: 20000;
@@ -39,7 +39,7 @@
   top: 0;
   left: 0;
   height: 2px;
-  background-color: #00ffa3;
+  background-color: var(--color-content-chzzk-01);
 }
 
 .knife-popup {
