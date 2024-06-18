@@ -112,3 +112,13 @@
   color: white;
   font-weight: bold;
 }
+
+.knife-deleted {
+  text-decoration: line-through;
+  color: var(--color-content-04);
+}
+
+.knife-deleted::after {
+  margin-left: 4px;
+  content: "(삭제됨)";
+}

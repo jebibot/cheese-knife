@@ -1084,8 +1084,8 @@ const initChatFeatures = async (chattingContainer, tries = 0) => {
   chatController.knifePatched = true;
 
   const originalFilter = chatController.messageFilter;
-  chatController.messageFilter = (message) => {
-    if (!originalFilter.call(chatController, message)) {
+  chatController.messageFilter = function (message) {
+    if (!originalFilter.call(this, message)) {
       return false;
     }
     if (config.hideDonation && message.type === 10) {
@@ -1119,6 +1119,35 @@ const initChatFeatures = async (chattingContainer, tries = 0) => {
     }
     return true;
   };
+
+  let jsx;
+  try {
+    jsx = (await getWebpackRequire)(46417).jsx;
+  } catch {}
+  if (jsx != null) {
+    const originalBlindListener = chatController.notiBlindListener;
+    chatController.notiBlindListener = function (message) {
+      if (!config.showDeleted || message.blindType === "CANCEL") {
+        originalBlindListener.call(this, message);
+        return;
+      }
+      const n = chatController.messageList.findIndex(
+        (t) => t.time === message.messageTime && t.user === message.userId
+      );
+      if (n === -1) {
+        return;
+      }
+      const originalMessage = chatController.messageList[n];
+      chatController.messageList[n] = {
+        ...originalMessage,
+        content: jsx("span", {
+          className: "knife-deleted",
+          children: originalMessage.content,
+        }),
+      };
+      chatController.notiUpdateMessageList();
+    };
+  }
 
   attachChatObserver(chattingContainer);
   const containerObserver = new MutationObserver((mutations) => {

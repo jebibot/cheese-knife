@@ -16,6 +16,7 @@ chrome.storage.local
       gamma: 1,
       sharpness: 0,
       hideDonation: false,
+      showDeleted: false,
       optimizeEmotes: false,
     },
   })
