@@ -41,6 +41,7 @@ async function registerStyles(styles) {
   styles = styles.filter((t) =>
     [
       "auto-hide-toolbar",
+      "chat-font-size",
       "chat-resize",
       "chat-timestamp",
       "fit-player",

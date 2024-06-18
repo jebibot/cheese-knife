@@ -82,6 +82,11 @@ header a:hover {
   margin-bottom: 0.25rem;
 }
 
+.slider {
+  width: 120px;
+  vertical-align: bottom;
+}
+
 #list {
   display: flex;
   flex-direction: column;

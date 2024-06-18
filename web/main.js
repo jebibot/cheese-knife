@@ -11,7 +11,18 @@ if (
     window.postMessage({ type: "config", config }, location.origin);
   };
 
-  const configPromise = chrome.storage.local.get({
+  const initStyleParameters = (styleParameters) => {
+    if (!isNaN(styleParameters["chat-font-size"])) {
+      for (const t of [1, 2, 10, 20]) {
+        document.documentElement.style.setProperty(
+          `--knife-chat-size-${t}`,
+          `${styleParameters["chat-font-size"] / t}px`
+        );
+      }
+    }
+  };
+
+  const storagePromise = chrome.storage.local.get({
     config: {
       preview: true,
       livePreview: true,
@@ -29,12 +40,15 @@ if (
       hideDonation: false,
       optimizeEmotes: false,
     },
+    styleParameters: {},
   });
 
   window.addEventListener("message", async (e) => {
     switch (e.data.type) {
       case "getConfig":
-        initConfig((await configPromise).config);
+        const { config, styleParameters } = await storagePromise;
+        initConfig(config);
+        initStyleParameters(styleParameters);
         break;
     }
   });
@@ -42,6 +56,9 @@ if (
   chrome.storage.local.onChanged.addListener((changes) => {
     if (changes.config != null) {
       initConfig(changes.config.newValue);
+    }
+    if (changes.styleParameters != null) {
+      initStyleParameters(changes.styleParameters.newValue);
     }
   });
 

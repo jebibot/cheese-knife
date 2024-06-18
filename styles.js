@@ -20,6 +20,14 @@ const STYLES = [
         description: "채팅창 크기 조절",
       },
       {
+        name: "chat-font-size",
+        description: "폰트 크기 조절",
+        type: "range",
+        min: -6,
+        max: 16,
+        step: 1,
+      },
+      {
         name: "chat-timestamp",
         description: "채팅 타임스탬프 표시",
       },
@@ -124,7 +132,10 @@ reload.addEventListener("click", () => {
 });
 
 (async () => {
-  const { styles } = await chrome.storage.local.get({ styles: [] });
+  const { styles, styleParameters } = await chrome.storage.local.get({
+    styles: [],
+    styleParameters: {},
+  });
   const stylesSet = new Set(styles);
   for (const c of STYLES) {
     const category = document.createElement("div");
@@ -159,6 +170,45 @@ reload.addEventListener("click", () => {
       label.textContent = style.description;
       label.htmlFor = style.name;
       item.appendChild(label);
+
+      if (style.type) {
+        checkbox.disabled = true;
+
+        const input = document.createElement("input");
+        if (style.type === "range") {
+          input.type = "range";
+          input.classList.add("slider");
+          input.min = style.min;
+          input.max = style.max;
+          input.step = style.step;
+        }
+        input.value = styleParameters[style.name] ?? 0;
+        input.addEventListener("input", async (e) => {
+          const wasChecked = checkbox.checked;
+          styleParameters[style.name] = Number(e.target.value);
+          if (styleParameters[style.name]) {
+            checkbox.checked = true;
+            stylesSet.add(style.name);
+          } else {
+            checkbox.checked = false;
+            stylesSet.delete(style.name);
+          }
+          current.textContent = e.target.value;
+
+          await chrome.storage.local.set({
+            styles: [...stylesSet],
+            styleParameters,
+          });
+          if (checkbox.checked !== wasChecked) {
+            reload.style.display = "inline-flex";
+          }
+        });
+        item.appendChild(input);
+
+        const current = document.createElement("span");
+        current.textContent = input.value;
+        item.appendChild(current);
+      }
     }
   }
 })();
