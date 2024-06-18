@@ -143,7 +143,7 @@
   text-align: center;
   white-space: nowrap;
   border-radius: 6px;
-  background-color: var(--color-bg-08);
+  background-color: var(--color-bg-05);
   color: var(--color-content-02);
   transition: opacity 0.2s;
   z-index: 200;
