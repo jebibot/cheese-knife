@@ -10,6 +10,9 @@ chrome.storage.local
       popupPlayer: true,
       arrowSeek: true,
       rememberTime: true,
+      brightness: 1,
+      contrast: 1,
+      gamma: 1,
       sharpness: 0,
       hideDonation: false,
       optimizeEmotes: false,
@@ -29,13 +32,24 @@ chrome.storage.local
         });
       } else {
         const current = input.parentElement.querySelector(".current");
+        const setCurrent = (v) => {
+          current.textContent = current.dataset.digits
+            ? Number(v).toFixed(current.dataset.digits)
+            : v;
+        };
         input.value = config[c];
-        current.textContent = config[c];
+        setCurrent(config[c]);
         input.addEventListener("input", (e) => {
           config[e.target.id] = Number(e.target.value);
-          current.textContent = e.target.value;
+          setCurrent(e.target.value);
           chrome.storage.local.set({ config });
         });
+        if (input.dataset.default) {
+          input.addEventListener("dblclick", () => {
+            input.value = Number(input.dataset.default);
+            input.dispatchEvent(new Event("input"));
+          });
+        }
       }
     }
   });

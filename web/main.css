@@ -1,5 +1,5 @@
-.knife-sharpen video {
-  filter: url(#filterSharpen);
+.knife-filter video {
+  filter: url(#knifeFilter);
 }
 
 .knife-preview {
