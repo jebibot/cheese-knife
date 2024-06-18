@@ -88,11 +88,24 @@ try {
   }
 } catch {}
 
+let first = true;
 let config = {};
+const initConfig = (c) => {
+  config = c;
+  if (first) {
+    first = false;
+    if (c.expandFollowings) {
+      setTimeout(() => {
+        document.querySelector('[class^="navigator_button_more__"]')?.click();
+      }, 300);
+    }
+  }
+};
+
 window.addEventListener("message", (e) => {
   switch (e.data.type) {
     case "config":
-      config = e.data.config;
+      initConfig(e.data.config);
       break;
   }
 });
