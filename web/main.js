@@ -16,9 +16,6 @@ if (
 ) {
   const initConfig = (config) => {
     setFilters(config);
-    if (!config.rememberTime) {
-      window.localStorage.removeItem("vodResumeTimes");
-    }
     window.postMessage({ type: "config", config }, location.origin);
   };
 
