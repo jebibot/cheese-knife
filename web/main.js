@@ -1,7 +1,18 @@
 if (
   location.hostname === "chzzk.naver.com" &&
-  !location.pathname.startsWith("/chat/") &&
-  !location.pathname.startsWith("/donation/")
+  ![
+    "/chat",
+    "/donation",
+    "/video-donation",
+    "/mission-donation",
+    "/close",
+    "/embed",
+    "/error",
+    "/subs_integration",
+    "/partner",
+    "/clip-editor",
+  ].some((p) => location.pathname.startsWith(p)) &&
+  !location.pathname.includes("/profile/")
 ) {
   const initConfig = (config) => {
     setFilters(config);
