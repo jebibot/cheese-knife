@@ -1,3 +1,10 @@
+let hardwareAcceleration = false;
+try {
+  const canvas = document.createElement("canvas");
+  const gl = canvas.getContext("webgl", { failIfMajorPerformanceCaveat: true });
+  hardwareAcceleration = !!gl;
+} catch {}
+
 getConfig().then(({ config }) => {
   const list = document.getElementById("list");
   const createRow = (c) => {
@@ -11,6 +18,25 @@ getConfig().then(({ config }) => {
     }
     label.textContent = c.name;
     row.appendChild(label);
+
+    let warning;
+    if (c.id === "sharpness") {
+      warning = document.createElement("a");
+      warning.style.visibility =
+        config[c.id] && !hardwareAcceleration ? "visible" : "hidden";
+      warning.href = "#";
+      warning.title =
+        "하드웨어 가속이 필요합니다. 클릭 시 설정으로 이동합니다.";
+      warning.textContent = "⚠️";
+      warning.addEventListener("click", () => {
+        chrome.tabs.create({
+          url: navigator.userAgent.includes("Firefox")
+            ? "about:preferences"
+            : "chrome://settings/system",
+        });
+      });
+      label.appendChild(warning);
+    }
 
     const input = document.createElement("input");
     input.id = c.id;
@@ -33,6 +59,11 @@ getConfig().then(({ config }) => {
         config[e.target.id] = Number(e.target.value);
         setCurrent(e.target.value);
         chrome.storage.local.set({ config });
+
+        if (warning != null) {
+          warning.style.visibility =
+            config[e.target.id] && !hardwareAcceleration ? "visible" : "hidden";
+        }
       });
       input.addEventListener("dblclick", () => {
         input.value = Number(c.defaultValue);
