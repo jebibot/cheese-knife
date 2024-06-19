@@ -983,7 +983,8 @@ FPS: ${info.fps}
     resizeHandle.classList.add("knife-resize-handle");
     container.parentNode.insertBefore(resizeHandle, container);
 
-    let x = 0;
+    let left = 0;
+    let right = 0;
     let reverse = false;
     let chatWidth = Number(window.localStorage.getItem("chatWidth"));
     if (chatWidth > 0) {
@@ -995,9 +996,7 @@ FPS: ${info.fps}
     const onMouseMove = (e) => {
       chatWidth = Math.max(
         24,
-        reverse
-          ? e.clientX - x - 1
-          : document.documentElement.clientWidth - e.clientX - 1
+        reverse ? e.clientX - left - 1 : right - e.clientX - 1
       );
       container.style.width = `${chatWidth}px`;
     };
@@ -1015,7 +1014,9 @@ FPS: ${info.fps}
     };
     resizeHandle.addEventListener("mousedown", (e) => {
       e.preventDefault();
-      x = container.getBoundingClientRect().x;
+      const rect = container.getBoundingClientRect();
+      left = rect.left;
+      right = rect.right;
       reverse = getComputedStyle(
         container.parentElement
       ).flexDirection.endsWith("reverse");
