@@ -42,6 +42,7 @@
     {
       "all_frames": true,
       "js": [
+        "config.js",
         "web/main.js"
       ],
       "css": [

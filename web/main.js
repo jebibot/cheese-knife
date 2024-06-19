@@ -30,33 +30,11 @@ if (
     }
   };
 
-  const storagePromise = chrome.storage.local.get({
-    config: {
-      preview: true,
-      livePreview: true,
-      previewWidth: 400,
-      previewDelay: 1,
-      previewVolume: 5,
-      updateSidebar: true,
-      expandFollowings: false,
-      popupPlayer: true,
-      arrowSeek: true,
-      rememberTime: true,
-      brightness: 1,
-      contrast: 1,
-      gamma: 1,
-      sharpness: 0,
-      hideDonation: false,
-      showDeleted: false,
-      optimizeEmotes: false,
-    },
-    styleParameters: {},
-  });
-
+  const configPromise = getConfig(true);
   window.addEventListener("message", async (e) => {
     switch (e.data.type) {
       case "getConfig":
-        const { config, styleParameters } = await storagePromise;
+        const { config, styleParameters } = await configPromise;
         initConfig(config);
         initStyleParameters(styleParameters);
         break;
