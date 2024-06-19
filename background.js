@@ -25,6 +25,7 @@ async function initConfig() {
     await chrome.storage.local.set({ config, styles });
     chrome.storage.local.onChanged.addListener(onStylesChanged);
   }
+  return { config, styles };
 }
 
 function onStylesChanged({ styles }) {
@@ -88,8 +89,7 @@ async function checkPermission() {
 }
 
 async function init() {
-  await initConfig();
-  const { styles } = await chrome.storage.local.get({ styles: [] });
+  const { styles } = await initConfig();
   await registerStyles(styles);
   await checkPermission();
 }
