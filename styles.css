@@ -16,6 +16,11 @@ input {
   margin-right: 0.5rem;
 }
 
+input[type="range"] {
+  width: 120px;
+  vertical-align: bottom;
+}
+
 svg {
   display: inline-block;
   width: 0.75rem;
@@ -82,11 +87,6 @@ header a:hover {
   margin-bottom: 0.25rem;
 }
 
-.slider {
-  width: 120px;
-  vertical-align: bottom;
-}
-
 #list {
   display: flex;
   flex-direction: column;
@@ -96,5 +96,11 @@ header a:hover {
 #reload {
   position: sticky;
   bottom: 0.75rem;
-  display: none;
+  transition: bottom ease-in-out 100ms;
+}
+
+#reload.hidden {
+  bottom: -2.5rem;
+  height: 0;
+  padding: 0;
 }
