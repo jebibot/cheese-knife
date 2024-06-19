@@ -5,6 +5,7 @@
 [class^="header_container__"] {
   left: auto !important;
   right: 0;
+  --knife-top-explore-left: calc(330px - 100vw);
 }
 
 [class^="layout_body"] {

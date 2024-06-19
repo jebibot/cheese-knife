@@ -1,5 +1,6 @@
 [class^="layout_glive__"] {
   padding-top: 15px !important;
+  --knife-top-explore-top: -48px;
 }
 
 [class^="header_logo__"],
@@ -15,10 +16,17 @@
   top: 0px !important;
 }
 
+[class^="layout_glive__"]:has(> [class^="header_logo__"]:hover),
+[class^="layout_glive__"]:has(> [class^="toolbar_container__"]:hover) {
+  --knife-top-explore-top: -3px;
+}
+
 [class^="live_container__"]:not([class*="live_type_pip__"]) {
   height: calc(100vh - 15px) !important;
 }
 
-[class^="live_container__"][class*="live_is_large__"]:not([class*="live_type_pip__"]) {
+[class^="live_container__"][class*="live_is_large__"]:not(
+    [class*="live_type_pip__"]
+  ) {
   height: auto !important;
 }
