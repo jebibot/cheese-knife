@@ -77,6 +77,8 @@ summary {
 }
 
 .desc {
+  margin-bottom: 0.25rem;
   font-size: 13px;
   color: gray;
+  word-break: normal;
 }

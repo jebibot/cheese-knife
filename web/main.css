@@ -149,3 +149,20 @@
   transition: opacity 0.2s;
   z-index: 200;
 }
+
+.pzp-pc .pzp-pc__volume-control:hover + .pzp-pc__volume-control,
+.pzp-pc--active-volume-control
+  .pzp-pc__volume-control
+  + .pzp-pc__volume-control {
+  margin-left: 10px;
+}
+
+.pzp-pc--active-volume-control .pzp-pc__volume-slider.knife-gain-slider {
+  overflow: hidden;
+  width: 0;
+}
+
+.pzp-pc__volume-slider.knife-gain-slider.pzp-ui-slider--pressed {
+  overflow: visible;
+  width: 80px;
+}
