@@ -85,7 +85,7 @@ var CONFIGS = [
       },
       {
         type: "details",
-        name: "영상 필터",
+        name: "비디오 필터",
         desc: "기본값으로 설정하려면 더블 클릭하세요.",
         configs: [
           {
