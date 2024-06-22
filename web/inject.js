@@ -769,7 +769,7 @@ FPS: ${info.fps}
     while (Vue != null && !Object.hasOwn(Vue, "$mount")) {
       Vue = Object.getPrototypeOf(Vue);
     }
-    Vue = Vue.constructor;
+    Vue = Vue?.constructor;
 
     if (isLive) {
       if (isPopup) {
