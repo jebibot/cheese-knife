@@ -47,6 +47,8 @@ async function registerStyles(styles) {
       "chat-timestamp",
       "fit-player",
       "hide-blocked",
+      "hide-comp",
+      "hide-ff",
       "hide-live-badge",
       "hide-offline",
       "hide-ranking",

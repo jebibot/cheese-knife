@@ -10,6 +10,14 @@ const STYLES = [
         id: "volume-percentage",
         name: "볼륨 퍼센트 표시",
       },
+      {
+        id: "hide-ff",
+        name: "빨리 감기 버튼 숨기기",
+      },
+      {
+        id: "hide-comp",
+        name: "오디오 컴프레서 버튼 숨기기",
+      },
     ],
   },
   {

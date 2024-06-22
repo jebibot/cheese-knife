@@ -780,7 +780,7 @@ FPS: ${info.fps}
         try {
           const ffButton = new Vue({
             template: `
-              <pzp-pc-ui-button class="pzp-pc__playback-switch" label="빨리 감기" aria-label="빨리 감기" tooltip="빨리 감기" @click="fastForward">
+              <pzp-pc-ui-button class="pzp-pc__playback-switch knife-ff" label="빨리 감기" aria-label="빨리 감기" tooltip="빨리 감기" @click="fastForward">
                 <ui-next-media-icon></ui-next-media-icon>
               </pzp-pc-ui-button>`,
             methods: {
@@ -807,7 +807,7 @@ FPS: ${info.fps}
       try {
         compressor = new Vue({
           template: `
-            <div class="pzp-pc__volume-control">
+            <div class="pzp-pc__volume-control knife-comp">
               <pzp-pc-ui-button class="pzp-pc__volume-button" :label="label" :aria-label="label" :tooltip="label" @click="toggle">
                 <ui-icon>
                   <svg v-if="enabled" xmlns="http://www.w3.org/2000/svg" viewBox="-300 -300 1600 1600"><path fill="currentColor" d="M850 200C877.7 200 900 222.3 900 250V750C900 777.7 877.7 800 850 800S800 777.7 800 750V250C800 222.3 822.3 200 850 200ZM570 250C597.7 250 620 272.3 620 300V700C620 727.7 597.7 750 570 750S520 727.7 520 700V300C520 272.3 542.3 250 570 250ZM710 225C737.7 225 760 247.3 760 275V725C760 752.7 737.7 775 710 775S660 752.7 660 725V275C660 247.3 682.3 225 710 225ZM430 250C457.7 250 480 272.3 480 300V700C480 727.7 457.7 750 430 750S380 727.7 380 700V300C380 272.3 402.3 250 430 250ZM290 225C317.7 225 340 247.3 340 275V725C340 752.7 317.7 775 290 775S240 752.7 240 725V275C240 247.3 262.3 225 290 225ZM150 200C177.7 200 200 222.3 200 250V750C200 777.7 177.7 800 150 800S100 777.7 100 750V250C100 222.3 122.3 200 150 200Z"/></svg>
