@@ -578,7 +578,7 @@
         );
         sidebarEffect?.create?.();
       }
-    }, 40000);
+    }, 30000);
   };
 
   const attachBodyObserver = async () => {
