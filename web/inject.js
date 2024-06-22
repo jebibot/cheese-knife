@@ -1318,11 +1318,13 @@ FPS: ${info.fps}
   });
 
   (async () => {
-    if (location.pathname.endsWith("/chat")) {
-      await initChatFeatures(await waitFor("aside"));
-    } else {
-      await Promise.all([attachLayoutObserver(), attachBodyObserver()]);
-    }
+    try {
+      if (location.pathname.endsWith("/chat")) {
+        await initChatFeatures(await waitFor("aside"));
+      } else {
+        await Promise.all([attachLayoutObserver(), attachBodyObserver()]);
+      }
+    } catch {}
     rootObserver.disconnect();
   })();
 })();
