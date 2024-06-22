@@ -466,7 +466,7 @@
 
   let routeNavigator;
   const attachLayoutObserver = async () => {
-    const init = async (node) => {
+    const init = (node) => {
       const sidebar = node.querySelector("#navigation");
       if (sidebar == null) {
         return;
@@ -475,7 +475,7 @@
         initSidebarFeatures(sidebar);
       } catch {}
       try {
-        await refreshSidebar(sidebar);
+        refreshSidebar(sidebar);
       } catch {}
     };
     const layoutWrap = await waitFor('[class^="layout_glive__"]');
@@ -495,7 +495,7 @@
     });
     layoutObserver.observe(layoutWrap, { childList: true });
 
-    await init(layoutWrap);
+    init(layoutWrap);
 
     try {
       routeNavigator = (
@@ -585,7 +585,7 @@
   };
 
   let refreshInterval;
-  const refreshSidebar = async (sidebar) => {
+  const refreshSidebar = (sidebar) => {
     clearInterval(refreshInterval);
     refreshInterval = setInterval(async () => {
       if (config.updateSidebar) {
