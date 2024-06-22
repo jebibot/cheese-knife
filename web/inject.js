@@ -835,7 +835,7 @@ FPS: ${info.fps}
             ratio: config.compressorRatio ?? 12,
             attack: config.compressorAttack ?? 0,
             release: config.compressorRelease ?? 0.25,
-            gain: 1,
+            gain: Number(window.localStorage.getItem("knifeGain") ?? 1),
           },
           methods: {
             toggle() {
@@ -850,6 +850,7 @@ FPS: ${info.fps}
                 this.comp.release.value = this.release;
                 this.gainNode.gain.value = this.gain;
               }
+              window.localStorage.setItem("knifeGain", this.gain);
             },
             setGain() {
               this.gain = this.$refs.slider?.track.value ?? 1;
