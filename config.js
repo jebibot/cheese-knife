@@ -134,7 +134,7 @@ var CONFIGS = [
       {
         type: "details",
         name: "오디오 컴프레서",
-        desc: "기본값으로 설정하려면 더블 클릭하세요. 버튼 숨기기는 스타일 설정에서 가능합니다.",
+        desc: "기본값으로 설정하려면 더블 클릭하세요. 볼륨 옆 버튼을 눌러 활성화할 수 있으며 스타일 설정에서 숨길 수 있습니다.",
         configs: [
           {
             id: "compressorThreshold",
