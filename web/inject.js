@@ -473,10 +473,10 @@
       }
       try {
         initSidebarFeatures(sidebar);
-      } catch (e) {}
+      } catch {}
       try {
         await refreshSidebar(sidebar);
-      } catch (e) {}
+      } catch {}
     };
     const layoutWrap = await waitFor('[class^="layout_glive__"]');
     if (layoutWrap == null) {
@@ -504,7 +504,7 @@
           (context) => context.navigator != null
         )
       )?.navigator;
-    } catch (e) {}
+    } catch {}
   };
 
   const initSidebarFeatures = (sidebar) => {
@@ -772,7 +772,7 @@ FPS: ${info.fps}
               state[1]?.[1]?.key === "isLiveWide"
           );
           setLiveWide?.[0](true);
-        } catch (e) {}
+        } catch {}
       }
 
       const playButton = pzp.querySelector(".pzp-pc-playback-switch");
@@ -794,12 +794,12 @@ FPS: ${info.fps}
           });
           ffButton.$mount();
           playButton.insertAdjacentElement("afterend", ffButton.$el);
-        } catch (e) {}
+        } catch {}
       }
 
       try {
         addStatsMenu();
-      } catch (e) {}
+      } catch {}
     }
 
     const volumeControl = pzp.querySelector(".pzp-pc__volume-control");
@@ -892,7 +892,7 @@ FPS: ${info.fps}
         });
         compressor.$mount();
         volumeControl.insertAdjacentElement("afterend", compressor.$el);
-      } catch (e) {}
+      } catch {}
     }
 
     const player = await findReactState(node, (s) => s._corePlayer != null);
@@ -902,7 +902,7 @@ FPS: ${info.fps}
         let result;
         try {
           result = JSON.parse(window.localStorage.getItem("vodResumeTimes"));
-        } catch (e) {}
+        } catch {}
         if (result == null || typeof result !== "object") {
           result = {};
         }
@@ -1173,7 +1173,7 @@ FPS: ${info.fps}
 
     try {
       addResizeHandle(chattingContainer);
-    } catch (e) {}
+    } catch {}
 
     if (isPopup) {
       setTimeout(() => {
