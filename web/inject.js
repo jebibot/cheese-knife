@@ -659,40 +659,6 @@
     list.appendChild(live);
   };
 
-  const cloneButton = (
-    pzp,
-    className,
-    name,
-    iconStyle,
-    iconSvg,
-    onClick,
-    after = false
-  ) => {
-    const button = pzp?.querySelector(`.${className}`);
-    if (button == null) {
-      return;
-    }
-    try {
-      const b = button.cloneNode(true);
-      b.classList.remove(className);
-      b.ariaLabel = name;
-      b.setAttribute("label", name);
-      b.addEventListener("click", onClick);
-      const tooltip = b.querySelector(".pzp-pc-ui-button__tooltip");
-      if (tooltip != null) {
-        tooltip.innerText = ` ${name} `;
-      }
-      const icon = b.querySelector(".pzp-ui-icon");
-      if (icon != null) {
-        icon.style = iconStyle;
-        icon.innerHTML = iconSvg;
-      } else {
-        b.innerHTML = iconSvg;
-      }
-      button.parentNode.insertBefore(b, after ? button.nextSibling : button);
-    } catch (e) {}
-  };
-
   let corePlayer;
   let seeking = false;
   const addStatsMenu = () => {
@@ -809,18 +775,27 @@ FPS: ${info.fps}
         } catch (e) {}
       }
 
-      cloneButton(
-        pzp,
-        "pzp-pc-playback-switch",
-        "빨리 감기",
-        "margin-bottom: 2px",
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 40"><path fill="#fff" d="M10.57 25.91c.35.17.77.11 1.07-.14L17 21.3V25a.997.997 0 0 0 1.64.77L24 21.3V25c0 .55.45 1 1 1s1-.45 1-1V15c0-.55-.45-1-1-1s-1 .45-1 1v3.7l-5.36-4.47c-.3-.25-.71-.3-1.07-.14-.35.17-.57.52-.57.91v3.7l-5.36-4.47c-.3-.25-.71-.3-1.07-.14-.35.17-.58.52-.58.91v10c0 .39.22.74.57.91Z"/></svg>',
-        () => {
-          const video = pzp.querySelector("video");
-          video.currentTime = video.buffered.end(video.buffered.length - 1);
-        },
-        true
-      );
+      const playButton = pzp.querySelector(".pzp-pc-playback-switch");
+      if (playButton != null) {
+        try {
+          const ffButton = new Vue({
+            template: `
+              <pzp-pc-ui-button class="pzp-pc__playback-switch" label="빨리 감기" aria-label="빨리 감기" tooltip="빨리 감기" @click="fastForward">
+                <ui-next-media-icon></ui-next-media-icon>
+              </pzp-pc-ui-button>`,
+            methods: {
+              fastForward() {
+                const video = pzp.querySelector("video");
+                video.currentTime = video.buffered.end(
+                  video.buffered.length - 1
+                );
+              },
+            },
+          });
+          ffButton.$mount();
+          playButton.insertAdjacentElement("afterend", ffButton.$el);
+        } catch (e) {}
+      }
 
       try {
         addStatsMenu();
