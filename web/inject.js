@@ -547,19 +547,9 @@
     const sidebarObserver = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         for (const n of mutation.addedNodes) {
-          if (n.querySelector == null) {
+          if (n.querySelectorAll == null) {
             continue;
           }
-          if (
-            config.expandFollowings &&
-            n.querySelector('[class^="navigator_title__"')?.textContent ===
-              "팔로잉 채널"
-          ) {
-            first = false;
-            n.querySelector('[class^="navigator_button_more__"]')?.click();
-            continue;
-          }
-
           const items = n.tagName === "A" ? [n] : n.querySelectorAll("a");
           for (const item of items) {
             addListeners(item);
