@@ -109,6 +109,9 @@
           document.querySelector('[class^="navigator_button_more__"]')?.click();
         }, 300);
       }
+      if (c.compressorDefault && compressor != null) {
+        compressor.enabled = true;
+      }
     }
 
     if (compressor != null) {
@@ -891,6 +894,9 @@ FPS: ${info.fps}
             gain: "updateCompressor",
           },
         });
+        if (config.compressorDefault) {
+          compressor.enabled = true;
+        }
         compressor.$mount();
         volumeControl.insertAdjacentElement("afterend", compressor.$el);
       } catch {}

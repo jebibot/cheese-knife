@@ -137,6 +137,11 @@ var CONFIGS = [
         desc: "기본값으로 설정하려면 더블 클릭하세요. 볼륨 옆 버튼을 눌러 활성화할 수 있으며 스타일 설정에서 숨길 수 있습니다.",
         configs: [
           {
+            id: "compressorDefault",
+            name: "기본적으로 활성화",
+            defaultValue: false,
+          },
+          {
             id: "compressorThreshold",
             name: "Thr.",
             desc: "이 크기보다 소리가 커지면 컴프레서가 작동합니다.",
