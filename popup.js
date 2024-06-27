@@ -1,3 +1,7 @@
+document.title = chrome.i18n.getMessage("ext_shortName");
+document.getElementById("stylesConfig").textContent =
+  chrome.i18n.getMessage("config_styles");
+
 let hardwareAcceleration = false;
 try {
   const canvas = document.createElement("canvas");
@@ -13,10 +17,11 @@ getConfig().then(({ config }) => {
 
     const label = document.createElement("label");
     label.htmlFor = c.id;
-    if (c.desc) {
-      label.title = c.desc;
+    const desc = chrome.i18n.getMessage(`config_${c.id}_desc`);
+    if (desc) {
+      label.title = desc;
     }
-    label.textContent = c.name;
+    label.textContent = chrome.i18n.getMessage(`config_${c.id}`);
     row.appendChild(label);
 
     let warning;
@@ -25,8 +30,7 @@ getConfig().then(({ config }) => {
       warning.style.visibility =
         config[c.id] && !hardwareAcceleration ? "visible" : "hidden";
       warning.href = "#";
-      warning.title =
-        "하드웨어 가속이 필요합니다. 클릭 시 설정으로 이동합니다.";
+      warning.title = chrome.i18n.getMessage(`config_${c.id}_warning`);
       warning.textContent = "⚠️";
       warning.addEventListener("click", () => {
         chrome.tabs.create({
@@ -84,14 +88,14 @@ getConfig().then(({ config }) => {
     return row;
   };
 
-  for (const { name, configs } of CONFIGS) {
+  for (const { id, configs } of CONFIGS) {
     const box = document.createElement("div");
     box.classList.add("box");
     list.appendChild(box);
 
     const title = document.createElement("div");
     title.classList.add("title");
-    title.textContent = name;
+    title.textContent = chrome.i18n.getMessage(`config_category_${id}`);
     box.appendChild(title);
 
     for (const c of configs) {
@@ -100,18 +104,19 @@ getConfig().then(({ config }) => {
         box.appendChild(details);
 
         const summary = document.createElement("summary");
-        summary.textContent = c.name;
+        summary.textContent = chrome.i18n.getMessage(`config_category_${c.id}`);
         details.appendChild(summary);
 
         for (const cc of c.configs) {
           details.appendChild(createRow(cc));
         }
 
-        if (c.desc) {
-          const desc = document.createElement("div");
-          desc.classList.add("desc");
-          desc.textContent = c.desc;
-          details.appendChild(desc);
+        const desc = chrome.i18n.getMessage(`config_category_${c.id}_desc`);
+        if (desc) {
+          const d = document.createElement("div");
+          d.classList.add("desc");
+          d.textContent = desc;
+          details.appendChild(d);
         }
         continue;
       }

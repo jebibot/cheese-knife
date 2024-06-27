@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "치즈 나이프 - 치지직 CHZZK 도구 모음",
-  "short_name": "치즈 나이프",
+  "name": "__MSG_ext_name__",
+  "short_name": "__MSG_ext_shortName__",
   "version": "2.2.0",
-  "description": "치지직에 유용한 기능과 도구를 추가합니다.",
+  "description": "__MSG_ext_description__",
+  "default_locale": "ko",
   "browser_specific_settings": {
     "gecko": {
       "id": "cheese-knife@chatlink.app"

@@ -88,6 +88,10 @@
     ]);
   });
 
+  const i18n = JSON.parse(
+    document.getElementById("knife-i18n")?.textContent || "{}"
+  );
+
   let isPopup = false;
   try {
     if (
@@ -456,7 +460,7 @@
 
     const button = document.createElement("button");
     button.classList.add("knife-popup-close-button");
-    button.title = "닫기";
+    button.title = i18n.close;
     button.textContent = "X";
     button.addEventListener("click", () => {
       player.src = "about:blank";
@@ -650,7 +654,7 @@
     const live = document.createElement("button");
     live.type = "button";
     live.className = list.lastElementChild.className;
-    live.textContent = "↗ 채팅";
+    live.textContent = `↗ ${i18n.chat}`;
     live.addEventListener("click", () => {
       const href = `/live/${location.pathname.split("/")[1]}`;
       if (routeNavigator != null) {
@@ -677,7 +681,7 @@
       return;
     }
     link.href = "#";
-    link.textContent = "통계";
+    link.textContent = i18n.stats;
     link.addEventListener("click", (e) => {
       e.preventDefault();
       const overlay = document.createElement("div");
@@ -691,11 +695,11 @@
           return;
         }
         const codecs = corePlayer?._currentCodecs;
-        content.innerText = `해상도: ${info.resolution}
-비트레이트: ${numberFormatter.format(info.bitrate)} kbps
-FPS: ${info.fps}
-지연 시간: ${numberFormatter.format(info.latency)} ms
-코덱: ${codecs ? `${codecs.video},${codecs.audio}` : "알 수 없음"}`;
+        content.innerText = `${i18n.resolution}: ${info.resolution}
+${i18n.bitrate}: ${numberFormatter.format(info.bitrate)} kbps
+${i18n.fps}: ${info.fps}
+${i18n.latency}: ${numberFormatter.format(info.latency)} ms
+${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       };
       update();
       const updateInterval = setInterval(update, 1000);
@@ -783,7 +787,7 @@ FPS: ${info.fps}
         try {
           const ffButton = new Vue({
             template: `
-              <pzp-pc-ui-button class="pzp-pc__playback-switch knife-ff" label="빨리 감기" aria-label="빨리 감기" tooltip="빨리 감기" @click="fastForward">
+              <pzp-pc-ui-button class="pzp-pc__playback-switch knife-ff" label="${i18n.fastForward}" aria-label="${i18n.fastForward}" tooltip="${i18n.fastForward}" @click="fastForward">
                 <ui-next-media-icon></ui-next-media-icon>
               </pzp-pc-ui-button>`,
             methods: {
@@ -852,7 +856,9 @@ FPS: ${info.fps}
           },
           computed: {
             label() {
-              return `오디오 컴프레서${this.enabled ? " 비활성화" : ""}`;
+              return this.enabled
+                ? i18n.disableCompressor
+                : i18n.enableCompressor;
             },
             ariaValuenow() {
               return Math.round(this.gain * 100);
@@ -1366,7 +1372,7 @@ FPS: ${info.fps}
         );
         const liveDetail = await state.loadable.toPromise();
         if (liveDetail?.openDate) {
-          e.relatedTarget.dataset.knifeTooltip = `라이브 시작: ${liveDetail.openDate}`;
+          e.relatedTarget.dataset.knifeTooltip = `${i18n.liveStart}: ${liveDetail.openDate}`;
         }
       }
     } else if (e.relatedTarget?.className?.startsWith?.("video_card_item__")) {
@@ -1402,7 +1408,7 @@ FPS: ${info.fps}
           videoInfo[videoId] = info;
         }
         if (info?.liveOpenDate) {
-          e.relatedTarget.dataset.knifeTooltip = `라이브 시작: ${info.liveOpenDate}`;
+          e.relatedTarget.dataset.knifeTooltip = `${i18n.liveStart}: ${info.liveOpenDate}`;
         }
       }
     }

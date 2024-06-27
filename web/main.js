@@ -50,6 +50,30 @@ if (
     }
   });
 
+  const i18n = {};
+  for (const m of [
+    "close",
+    "chat",
+    "stats",
+    "resolution",
+    "bitrate",
+    "fps",
+    "latency",
+    "codec",
+    "unknown",
+    "fastForward",
+    "enableCompressor",
+    "disableCompressor",
+    "liveStart",
+  ]) {
+    i18n[m] = chrome.i18n.getMessage(`content_${m}`);
+  }
+  const i18nScript = document.createElement("script");
+  i18nScript.id = "knife-i18n";
+  i18nScript.type = "application/json";
+  i18nScript.textContent = JSON.stringify(i18n);
+  document.body.appendChild(i18nScript);
+
   const script = document.createElement("script");
   script.src = chrome.runtime.getURL("web/inject.js");
   document.body.appendChild(script);

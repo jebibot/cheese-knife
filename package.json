@@ -1,11 +1,11 @@
 {
   "name": "cheese-knife",
   "version": "2.2.0",
-  "description": "치지직 도구 모음",
+  "description": "A CHZZK toolkit",
   "private": true,
   "scripts": {
-    "build": "zip -r extension.zip web styles *.html *.js *.css *.png manifest.json",
-    "build:firefox": "mkdir -p dist && cp -r web styles *.html *.js *.css *.png dist && jq '.background = {scripts: [\"background.js\"]}' manifest.json > dist/manifest.json",
+    "build": "zip -r extension.zip _locales web styles *.html *.js *.css *.png manifest.json",
+    "build:firefox": "mkdir -p dist && cp -r _locales web styles *.html *.js *.css *.png dist && jq '.background = {scripts: [\"background.js\"]}' manifest.json > dist/manifest.json",
     "postversion": "manifest=\"$(jq \".version = `jq '.version' package.json`\" manifest.json)\" && echo \"$manifest\" > manifest.json",
     "publish": "chrome-webstore-upload upload --source=extension.zip --auto-publish",
     "publish:firefox": "cd dist && web-ext sign --channel listed --approval-timeout 60000"

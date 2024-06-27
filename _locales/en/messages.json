@@ -1,0 +1,293 @@
+{
+  "ext_name": {
+    "message": "Cheese Knife - CHZZK Toolkit"
+  },
+  "ext_shortName": {
+    "message": "Cheese Knife"
+  },
+  "ext_description": {
+    "message": "Adds useful features and tools to CHZZK."
+  },
+  "config_category_preview": {
+    "message": "Preview"
+  },
+  "config_preview": {
+    "message": "Sidebar preview"
+  },
+  "config_livePreview": {
+    "message": "Video preview"
+  },
+  "config_previewWidth": {
+    "message": "Size"
+  },
+  "config_previewDelay": {
+    "message": "Video delay"
+  },
+  "config_previewDelay_desc": {
+    "message": "Play the preview after the specified amount of time has elapsed."
+  },
+  "config_previewVolume": {
+    "message": "Video volume"
+  },
+  "config_category_explore": {
+    "message": "Explore"
+  },
+  "config_updateSidebar": {
+    "message": "Refresh sidebar"
+  },
+  "config_updateSidebar_desc": {
+    "message": "Refresh the sidebar every 30 seconds."
+  },
+  "config_expandFollowings": {
+    "message": "Auto expand following channels"
+  },
+  "config_popupPlayer": {
+    "message": "Popup player"
+  },
+  "config_popupPlayer_desc": {
+    "message": "Dragging a channel from the sidebar will open the player in a small window."
+  },
+  "config_category_player": {
+    "message": "Player"
+  },
+  "config_arrowSeek": {
+    "message": "Seek with arrow keys"
+  },
+  "config_arrowSeek_desc": {
+    "message": "Rewind a short time in the live."
+  },
+  "config_rememberTime": {
+    "message": "Remember playback position"
+  },
+  "config_rememberTime_desc": {
+    "message": "Remember the last viewed position in VOD to resume playback."
+  },
+  "config_category_videoFilter": {
+    "message": "Video filter"
+  },
+  "config_category_videoFilter_desc": {
+    "message": "Double-click to set to the default value."
+  },
+  "config_brightness": {
+    "message": "Brightness"
+  },
+  "config_contrast": {
+    "message": "Contrast"
+  },
+  "config_gamma": {
+    "message": "Gamma"
+  },
+  "config_sharpness": {
+    "message": "Sharpness"
+  },
+  "config_sharpness_desc": {
+    "message": "Apply sharpen filter."
+  },
+  "config_sharpness_warning": {
+    "message": "Hardware acceleration is required. Click to go to settings."
+  },
+  "config_category_compressor": {
+    "message": "Audio compressor"
+  },
+  "config_category_compressor_desc": {
+    "message": "Double-click to set to the default value. The compressor can be activated by pressing the button next to the volume, and the gain can be adjusted with the slider."
+  },
+  "config_compressorDefault": {
+    "message": "Enable by default"
+  },
+  "config_compressorThreshold": {
+    "message": "Thr."
+  },
+  "config_compressorThreshold_desc": {
+    "message": "The decibel value above which the compression will start taking effect."
+  },
+  "config_compressorKnee": {
+    "message": "Knee"
+  },
+  "config_compressorKnee_desc": {
+    "message": "The higher the value, the more smoothly the compressor runs."
+  },
+  "config_compressorRatio": {
+    "message": "Ratio"
+  },
+  "config_compressorRatio_desc": {
+    "message": "The ratio by which to reduce the loudness of the sound."
+  },
+  "config_compressorAttack": {
+    "message": "Attack"
+  },
+  "config_compressorAttack_desc": {
+    "message": "The amount of time it takes for the gain to decrease when it gets louder."
+  },
+  "config_compressorRelease": {
+    "message": "Release"
+  },
+  "config_compressorRelease_desc": {
+    "message": "The amount of time it takes for the gain to increase again when it gets quieter."
+  },
+  "config_category_chat": {
+    "message": "Chat"
+  },
+  "config_hideDonation": {
+    "message": "Hide donation messages"
+  },
+  "config_showDeleted": {
+    "message": "Show deleted messages"
+  },
+  "config_optimizeEmotes": {
+    "message": "Optimize animated emotes"
+  },
+  "config_styles": {
+    "message": "Styles"
+  },
+  "config_reload": {
+    "message": "Reload to apply"
+  },
+  "content_close": {
+    "message": "Close"
+  },
+  "content_chat": {
+    "message": "Chat"
+  },
+  "content_stats": {
+    "message": "Stats"
+  },
+  "content_resolution": {
+    "message": "Resolution"
+  },
+  "content_bitrate": {
+    "message": "Bitrate"
+  },
+  "content_fps": {
+    "message": "FPS"
+  },
+  "content_latency": {
+    "message": "Latency"
+  },
+  "content_codec": {
+    "message": "Codec"
+  },
+  "content_unknown": {
+    "message": "Unknown"
+  },
+  "content_fastForward": {
+    "message": "Fast Forward"
+  },
+  "content_enableCompressor": {
+    "message": "Audio Compressor"
+  },
+  "content_disableCompressor": {
+    "message": "Disable Audio Compressor"
+  },
+  "content_liveStart": {
+    "message": "Live started"
+  },
+  "content_deletedMessage": {
+    "message": "(deleted)"
+  },
+  "permission_desc": {
+    "message": "Thank you for installing Cheese Knife! This extension requires the following permissions:"
+  },
+  "permission_host": {
+    "message": "Access to $HOST$",
+    "placeholders": {
+      "HOST": {
+        "content": "$1",
+        "example": "chzzk.naver.com"
+      }
+    }
+  },
+  "permission_grant": {
+    "message": "Allow"
+  },
+  "styles_category_player": {
+    "message": "Player"
+  },
+  "styles_fit_player": {
+    "message": "Fill screen"
+  },
+  "styles_volume_percentage": {
+    "message": "Show volume percentage"
+  },
+  "styles_hide_ff": {
+    "message": "Hide fast-forward button"
+  },
+  "styles_hide_comp": {
+    "message": "Hide audio compressor button"
+  },
+  "styles_category_chat": {
+    "message": "Chat"
+  },
+  "styles_chat_resize": {
+    "message": "Resize chat panel"
+  },
+  "styles_chat_font_size": {
+    "message": "Adjust font size"
+  },
+  "styles_chat_timestamp": {
+    "message": "Show timestamp"
+  },
+  "styles_hide_ranking": {
+    "message": "Hide leaderboard"
+  },
+  "styles_left_chat": {
+    "message": "Display in the left side"
+  },
+  "styles_category_sidebar": {
+    "message": "Sidebar"
+  },
+  "styles_hide_offline": {
+    "message": "Hide offline channels"
+  },
+  "styles_hide_recommended": {
+    "message": "Hide recommended channels"
+  },
+  "styles_hide_sidebar_partner": {
+    "message": "Hide partner streamers"
+  },
+  "styles_hide_shortcut": {
+    "message": "Hide service shortcuts"
+  },
+  "styles_right_sidebar": {
+    "message": "Display in the right side"
+  },
+  "styles_category_toolbar": {
+    "message": "Toolbar"
+  },
+  "styles_static_logo": {
+    "message": "Static logo"
+  },
+  "styles_hide_studio": {
+    "message": "Hide studio button"
+  },
+  "styles_hide_ticket": {
+    "message": "Hide lounge ticket button"
+  },
+  "styles_auto_hide_toolbar": {
+    "message": "Auto hide"
+  },
+  "styles_category_home": {
+    "message": "Home"
+  },
+  "styles_hide_recommended_live": {
+    "message": "Hide recommended live"
+  },
+  "styles_category_explore": {
+    "message": "Explore"
+  },
+  "styles_top_explore": {
+    "message": "Show sidebar menu in toolbar"
+  },
+  "styles_hide_blocked": {
+    "message": "Hide lives from blocked users"
+  },
+  "styles_category_misc": {
+    "message": "Misc"
+  },
+  "styles_hide_live_badge": {
+    "message": "Hide live badges"
+  },
+  "styles_rectangle_profile": {
+    "message": "Square profile images"
+  }
+}

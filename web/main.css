@@ -120,7 +120,7 @@
 
 [class^="live_chatting_message_text__"]:has(.knife-deleted)::after {
   margin-left: 4px;
-  content: "(삭제됨)";
+  content: "__MSG_content_deletedMessage__";
   color: var(--color-content-05);
 }
 

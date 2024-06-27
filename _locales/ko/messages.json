@@ -1,0 +1,296 @@
+{
+  "ext_name": {
+    "message": "치즈 나이프 - 치지직 CHZZK 도구 모음"
+  },
+  "ext_shortName": {
+    "message": "치즈 나이프"
+  },
+  "ext_description": {
+    "message": "치지직에 유용한 기능과 도구를 추가합니다."
+  },
+  "config_category_preview": {
+    "message": "미리보기"
+  },
+  "config_preview": {
+    "message": "사이드바 미리보기"
+  },
+  "config_livePreview": {
+    "message": "방송 미리보기"
+  },
+  "config_previewWidth": {
+    "message": "크기"
+  },
+  "config_previewDelay": {
+    "message": "영상 지연"
+  },
+  "config_previewDelay_desc": {
+    "message": "지정된 시간만큼 경과한 후 미리보기를 재생합니다."
+  },
+  "config_previewVolume": {
+    "message": "영상 볼륨"
+  },
+  "config_category_explore": {
+    "message": "탐색"
+  },
+  "config_updateSidebar": {
+    "message": "사이드바 갱신"
+  },
+  "config_updateSidebar_desc": {
+    "message": "30초마다 사이드바를 새로고침 합니다."
+  },
+  "config_expandFollowings": {
+    "message": "팔로잉 채널 자동 펼치기"
+  },
+  "config_popupPlayer": {
+    "message": "팝업 플레이어"
+  },
+  "config_popupPlayer_desc": {
+    "message": "사이드바에서 채널을 드래그하면 플레이어를 작은 창으로 띄웁니다."
+  },
+  "config_category_player": {
+    "message": "플레이어"
+  },
+  "config_arrowSeek": {
+    "message": "방향키 탐색"
+  },
+  "config_arrowSeek_desc": {
+    "message": "생방송에서 짧은 시간을 되돌려 볼 수 있습니다."
+  },
+  "config_rememberTime": {
+    "message": "재생 위치 기억"
+  },
+  "config_rememberTime_desc": {
+    "message": "다시보기에서 마지막으로 본 위치를 기억하여 이어 재생합니다."
+  },
+  "config_category_videoFilter": {
+    "message": "비디오 필터"
+  },
+  "config_category_videoFilter_desc": {
+    "message": "기본값으로 설정하려면 더블 클릭하세요."
+  },
+  "config_brightness": {
+    "message": "밝기"
+  },
+  "config_contrast": {
+    "message": "대비"
+  },
+  "config_gamma": {
+    "message": "감마"
+  },
+  "config_sharpness": {
+    "message": "선명도"
+  },
+  "config_sharpness_desc": {
+    "message": "샤픈 필터를 적용합니다."
+  },
+  "config_sharpness_warning": {
+    "message": "하드웨어 가속이 필요합니다. 클릭 시 설정으로 이동합니다."
+  },
+  "config_category_compressor": {
+    "message": "오디오 컴프레서"
+  },
+  "config_category_compressor_desc": {
+    "message": "기본값으로 설정하려면 더블 클릭하세요. 볼륨 옆 버튼을 눌러 활성화할 수 있으며 슬라이더로 Gain을 조절할 수 있습니다."
+  },
+  "config_compressorDefault": {
+    "message": "기본적으로 활성화"
+  },
+  "config_compressorThreshold": {
+    "message": "Thr."
+  },
+  "config_compressorThreshold_desc": {
+    "message": "이 크기보다 소리가 커지면 컴프레서가 작동합니다."
+  },
+  "config_compressorKnee": {
+    "message": "Knee"
+  },
+  "config_compressorKnee_desc": {
+    "message": "값이 높을수록 컴프레서가 좀 더 부드럽게 작동합니다."
+  },
+  "config_compressorRatio": {
+    "message": "Ratio"
+  },
+  "config_compressorRatio_desc": {
+    "message": "소리의 크기를 얼마나 줄일지 비율입니다."
+  },
+  "config_compressorAttack": {
+    "message": "Attack"
+  },
+  "config_compressorAttack_desc": {
+    "message": "소리가 커졌을 때 소리가 줄어드는데 걸리는 시간입니다."
+  },
+  "config_compressorRelease": {
+    "message": "Release"
+  },
+  "config_compressorRelease_desc": {
+    "message": "소리가 작아졌을 때 소리가 다시 커지는데 걸리는 시간입니다."
+  },
+  "config_category_chat": {
+    "message": "채팅"
+  },
+  "config_hideDonation": {
+    "message": "후원 메시지 숨기기"
+  },
+  "config_showDeleted": {
+    "message": "블라인드된 메시지 보기"
+  },
+  "config_showDeleted_desc": {
+    "message": "삭제된 채팅을 지우지 않고 취소선으로 표시합니다."
+  },
+  "config_optimizeEmotes": {
+    "message": "애니메이션 이모티콘 최적화"
+  },
+  "config_styles": {
+    "message": "스타일 설정"
+  },
+  "config_reload": {
+    "message": "새로고침 후 적용"
+  },
+  "content_close": {
+    "message": "닫기"
+  },
+  "content_chat": {
+    "message": "채팅"
+  },
+  "content_stats": {
+    "message": "통계"
+  },
+  "content_resolution": {
+    "message": "해상도"
+  },
+  "content_bitrate": {
+    "message": "비트레이트"
+  },
+  "content_fps": {
+    "message": "FPS"
+  },
+  "content_latency": {
+    "message": "지연 시간"
+  },
+  "content_codec": {
+    "message": "코덱"
+  },
+  "content_unknown": {
+    "message": "알 수 없음"
+  },
+  "content_fastForward": {
+    "message": "빨리 감기"
+  },
+  "content_enableCompressor": {
+    "message": "오디오 컴프레서"
+  },
+  "content_disableCompressor": {
+    "message": "오디오 컴프레서 비활성화"
+  },
+  "content_liveStart": {
+    "message": "라이브 시작"
+  },
+  "content_deletedMessage": {
+    "message": "(삭제됨)"
+  },
+  "permission_desc": {
+    "message": "치즈 나이프를 설치해주셔서 감사합니다! 본 확장 프로그램은 다음과 같은 권한이 필요합니다."
+  },
+  "permission_host": {
+    "message": "$HOST$에 접근",
+    "placeholders": {
+      "HOST": {
+        "content": "$1",
+        "example": "chzzk.naver.com"
+      }
+    }
+  },
+  "permission_grant": {
+    "message": "허용"
+  },
+  "styles_category_player": {
+    "message": "플레이어"
+  },
+  "styles_fit_player": {
+    "message": "화면 채우기"
+  },
+  "styles_volume_percentage": {
+    "message": "볼륨 퍼센트 표시"
+  },
+  "styles_hide_ff": {
+    "message": "빨리 감기 버튼 숨기기"
+  },
+  "styles_hide_comp": {
+    "message": "오디오 컴프레서 버튼 숨기기"
+  },
+  "styles_category_chat": {
+    "message": "채팅창"
+  },
+  "styles_chat_resize": {
+    "message": "채팅창 크기 조절"
+  },
+  "styles_chat_font_size": {
+    "message": "폰트 크기 조절"
+  },
+  "styles_chat_timestamp": {
+    "message": "타임스탬프 표시"
+  },
+  "styles_hide_ranking": {
+    "message": "후원 랭킹 숨기기"
+  },
+  "styles_left_chat": {
+    "message": "왼쪽 배치"
+  },
+  "styles_category_sidebar": {
+    "message": "사이드바"
+  },
+  "styles_hide_offline": {
+    "message": "방송 중이 아닌 채널 숨기기"
+  },
+  "styles_hide_recommended": {
+    "message": "추천 채널 숨기기"
+  },
+  "styles_hide_sidebar_partner": {
+    "message": "파트너 스트리머 숨기기"
+  },
+  "styles_hide_shortcut": {
+    "message": "서비스 바로가기 숨기기"
+  },
+  "styles_right_sidebar": {
+    "message": "오른쪽 배치"
+  },
+  "styles_category_toolbar": {
+    "message": "툴바"
+  },
+  "styles_static_logo": {
+    "message": "정적 로고"
+  },
+  "styles_hide_studio": {
+    "message": "스튜디오 버튼 숨기기"
+  },
+  "styles_hide_ticket": {
+    "message": "라운지 티켓 버튼 숨기기"
+  },
+  "styles_auto_hide_toolbar": {
+    "message": "자동 숨기기"
+  },
+  "styles_category_home": {
+    "message": "홈"
+  },
+  "styles_hide_recommended_live": {
+    "message": "추천 방송 숨기기"
+  },
+  "styles_category_explore": {
+    "message": "탐색"
+  },
+  "styles_top_explore": {
+    "message": "사이드바 메뉴 툴바에 표시"
+  },
+  "styles_hide_blocked": {
+    "message": "차단한 유저 방송 숨기기"
+  },
+  "styles_category_misc": {
+    "message": "기타"
+  },
+  "styles_hide_live_badge": {
+    "message": "생방송 뱃지 숨기기"
+  },
+  "styles_rectangle_profile": {
+    "message": "사각 프로필 이미지"
+  }
+}
