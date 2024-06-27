@@ -792,6 +792,7 @@ FPS: ${info.fps}
                 video.currentTime = video.buffered.end(
                   video.buffered.length - 1
                 );
+                setSeeking(false);
               },
             },
           });
