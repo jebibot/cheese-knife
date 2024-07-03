@@ -200,7 +200,7 @@
     let info = liveInfo[uid];
     if (info === undefined) {
       const res = await fetch(
-        `https://api.chzzk.naver.com/service/v2/channels/${uid}/live-detail`,
+        `https://api.chzzk.naver.com/service/v3/channels/${uid}/live-detail`,
         { credentials: "include" }
       );
       if (!res.ok) {
@@ -1394,7 +1394,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         let info = videoInfo[videoId];
         if (info === undefined) {
           const res = await fetch(
-            `https://api.chzzk.naver.com/service/v2/videos/${videoId}`,
+            `https://api.chzzk.naver.com/service/v3/videos/${videoId}`,
             { credentials: "include" }
           );
           if (!res.ok) {
