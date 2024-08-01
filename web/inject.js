@@ -646,7 +646,7 @@
   };
 
   const initChannelFeatures = async (node) => {
-    const list = node.querySelector('[class^="channel_list__"]');
+    const list = node.querySelector('[class*="channel_area__"]');
     if (list == null) {
       return;
     }
