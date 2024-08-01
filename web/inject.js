@@ -1212,28 +1212,33 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       if (config.hideDonation && message.type === 10) {
         return false;
       }
-      if (config.optimizeEmotes && message.type === 1) {
-        if (Array.isArray(message.content)) {
-          for (const n of message.content) {
-            if (n.type === "img") {
-              const src = n.props.src || "";
-              if (src.startsWith("https://nng-phinf.pstatic.net/")) {
-                if (src.endsWith(".gif")) {
-                  n.props.src = `${src}?type=f24_24`;
-                } else if (src.endsWith(".gif?type=f60_60")) {
-                  n.props.src = src.replace("?type=f60_60", "?type=f24_24");
-                }
-              } else if (
-                src.startsWith(
-                  "https://ssl.pstatic.net/static/nng/glive/icon/"
-                ) &&
-                src.includes(".gif")
-              ) {
-                n.props.src = src.replace(
-                  "https://ssl.pstatic.net/static/nng/glive/icon/",
-                  "https://chz-emote.cdn.ntruss.com/"
-                );
+      if (
+        config.optimizeEmotes &&
+        message.type === 1 &&
+        typeof message.content !== "string"
+      ) {
+        const content = Array.isArray(message.content)
+          ? message.content
+          : [message.content];
+        for (const n of content) {
+          if (n.type === "img") {
+            const src = n.props.src || "";
+            if (src.startsWith("https://nng-phinf.pstatic.net/")) {
+              if (src.endsWith(".gif")) {
+                n.props.src = `${src}?type=f24_24`;
+              } else if (src.endsWith(".gif?type=f60_60")) {
+                n.props.src = src.replace("?type=f60_60", "?type=f24_24");
               }
+            } else if (
+              src.startsWith(
+                "https://ssl.pstatic.net/static/nng/glive/icon/"
+              ) &&
+              src.includes(".gif")
+            ) {
+              n.props.src = src.replace(
+                "https://ssl.pstatic.net/static/nng/glive/icon/",
+                "https://chz-emote.cdn.ntruss.com/"
+              );
             }
           }
         }
