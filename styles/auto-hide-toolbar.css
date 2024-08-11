@@ -21,6 +21,20 @@
   --knife-top-explore-top: -3px;
 }
 
+[class^="navigation_component_container__"],
+[class^="category_container__"] {
+  min-height: calc(100vh - 15px) !important;
+}
+
+[class^="navigation_broadcast_tab__"],
+[class^="category_tab__"] {
+  top: 15px !important;
+}
+
+[class^="navigation_component_filter__"] {
+  top: 58px !important;
+}
+
 [class^="live_container__"]:not([class*="live_type_pip__"]) {
   height: calc(100vh - 15px) !important;
 }
