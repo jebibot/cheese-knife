@@ -17,6 +17,18 @@
   "config_livePreview": {
     "message": "Video preview"
   },
+  "config_category_thumbnailPreview": {
+    "message": "Thumbnail preview"
+  },
+  "config_rightClickToUnmute": {
+    "message": "Right-click to unmute"
+  },
+  "config_rightClickToUnmute_desc": {
+    "message": "Only works with the built-in preview."
+  },
+  "config_customPreview": {
+    "message": "Use custom preview"
+  },
   "config_previewWidth": {
     "message": "Size"
   },

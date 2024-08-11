@@ -38,6 +38,20 @@ var CONFIGS = [
         unit: "%",
         defaultValue: 5,
       },
+      {
+        id: "thumbnailPreview",
+        type: "details",
+        configs: [
+          {
+            id: "rightClickToUnmute",
+            defaultValue: true,
+          },
+          {
+            id: "customPreview",
+            defaultValue: false,
+          },
+        ],
+      },
     ],
   },
   {

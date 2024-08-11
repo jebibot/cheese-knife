@@ -393,6 +393,28 @@
     previewProgress.style.display = "none";
   };
 
+  const toggleMute = async (e) => {
+    e.preventDefault();
+    const player = e.target.querySelector("video");
+    if (player != null) {
+      player.volume = config.previewVolume / 100;
+      player.muted = !player.muted;
+    }
+  };
+  const addUnmuteListener = (node) => {
+    const url = new URL(node.href);
+    const parts = url.pathname.split("/");
+    if (parts.length < 3 || parts[1] !== "live") {
+      return;
+    }
+    node.addEventListener("contextmenu", toggleMute);
+    node.title = "음소거를 해제하려면 우클릭하세요.";
+  };
+  const removeUnmuteListener = (node) => {
+    node.removeEventListener("contextmenu", toggleMute);
+    node.title = "";
+  };
+
   const numberFormatter = new Intl.NumberFormat("ko-KR");
   const padNumber = (n, len) => n.toString().padStart(len, "0");
   const formatTimestamp = (t) => {
@@ -1359,10 +1381,13 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
   const videoInfo = {};
   document.addEventListener("mouseout", async (e) => {
     if (e.relatedTarget?.className?.startsWith?.("video_card_thumbnail__")) {
-      if (config.livePreview) {
+      if (config.customPreview) {
         showPreview(e.relatedTarget.href, e.relatedTarget);
+      } else if (config.rightClickToUnmute) {
+        addUnmuteListener(e.relatedTarget);
       }
     } else if (e.target?.className?.startsWith?.("video_card_thumbnail__")) {
+      removeUnmuteListener(e.target);
       hidePreview(e.target.href);
     }
 

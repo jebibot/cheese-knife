@@ -17,6 +17,18 @@
   "config_livePreview": {
     "message": "방송 미리보기"
   },
+  "config_category_thumbnailPreview": {
+    "message": "썸네일 미리보기"
+  },
+  "config_rightClickToUnmute": {
+    "message": "우클릭으로 음소거 해제"
+  },
+  "config_rightClickToUnmute_desc": {
+    "message": "기본 미리보기에서만 작동합니다."
+  },
+  "config_customPreview": {
+    "message": "확장 미리보기 사용"
+  },
   "config_previewWidth": {
     "message": "크기"
   },
