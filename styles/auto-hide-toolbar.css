@@ -26,13 +26,19 @@
   min-height: calc(100vh - 15px) !important;
 }
 
-[class^="navigation_broadcast_tab__"],
-[class^="category_tab__"] {
+[class^="category_tab__"],
+[class^="channel_tab__"],
+[class^="navigation_broadcast_tab__"] {
   top: 15px !important;
 }
 
 [class^="navigation_component_filter__"] {
   top: 58px !important;
+}
+
+[class^="community_write_header__"],
+[class^="channel_component_header__"] {
+  top: 68px !important;
 }
 
 [class^="live_container__"]:not([class*="live_type_pip__"]) {
