@@ -229,7 +229,7 @@
 
     let Player;
     try {
-      Player = (await getWebpackRequire)(64772);
+      Player = (await getWebpackRequire)(49588);
     } catch {}
 
     hidePreview();
@@ -1270,7 +1270,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
 
     let jsx;
     try {
-      jsx = (await getWebpackRequire)(46417).jsx;
+      jsx = (await getWebpackRequire)(44414).jsx;
     } catch {}
     if (jsx != null) {
       const originalBlindListener = chatController.notiBlindListener;
