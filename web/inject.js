@@ -712,7 +712,25 @@
 
       const content = document.createElement("div");
       const update = () => {
-        const info = window.__getLiveInfo?.();
+        let info;
+        try {
+          info = window.__getLiveInfo?.();
+        } catch {
+          const selected = Array.from(corePlayer.videoTracks).find(
+            (t) => t.selected
+          );
+          const track = corePlayer.srcObject.data.media
+            .find((m) => (m.mediaId = "LLHLS"))
+            .encodingTrack.find((t) => selected.id.includes(t.encodingTrackId));
+          info = {
+            resolution: `${selected.label}${
+              track.avoidReencoding ? " (원본)" : ""
+            }`,
+            bitrate: selected.videoBitrate,
+            fps: selected.videoFrameRate,
+            latency: Math.floor(corePlayer.srcObject._getLiveLatency()),
+          };
+        }
         if (info == null) {
           return;
         }
