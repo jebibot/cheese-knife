@@ -719,12 +719,15 @@
           const selected = Array.from(corePlayer.videoTracks).find(
             (t) => t.selected
           );
-          const track = corePlayer.srcObject.data.media
-            .find((m) => (m.mediaId = "LLHLS"))
-            .encodingTrack.find((t) => selected.id.includes(t.encodingTrackId));
+          const tracks = corePlayer.srcObject.data?.media?.find(
+            (m) => (m.mediaId = "LLHLS")
+          )?.encodingTrack;
+          const track =
+            tracks?.find((t) => selected.id.includes(t.encodingTrackId)) ||
+            tracks?.find((t) => selected.height === t.videoHeight);
           info = {
             resolution: `${selected.label}${
-              track.avoidReencoding ? " (원본)" : ""
+              track?.avoidReencoding ? " (원본)" : ""
             }`,
             bitrate: selected.videoBitrate,
             fps: selected.videoFrameRate,
