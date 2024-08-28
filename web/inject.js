@@ -715,25 +715,29 @@
         let info;
         try {
           info = window.__getLiveInfo?.();
-        } catch {
+        } catch {}
+        try {
           const selected = Array.from(corePlayer.videoTracks).find(
             (t) => t.selected
           );
           const tracks = corePlayer.srcObject.data?.media?.find(
             (m) => (m.mediaId = "LLHLS")
           )?.encodingTrack;
-          const track =
-            tracks?.find((t) => selected.id.includes(t.encodingTrackId)) ||
-            tracks?.find((t) => selected.height === t.videoHeight);
-          info = {
-            resolution: `${selected.label}${
-              track?.avoidReencoding ? " (원본)" : ""
-            }`,
-            bitrate: selected.videoBitrate,
-            fps: selected.videoFrameRate,
-            latency: Math.floor(corePlayer.srcObject._getLiveLatency()),
-          };
-        }
+          const track = tracks?.find(
+            (t) => t.encodingTrackId === selected.label
+          );
+          if (info == null) {
+            info = {
+              resolution: selected.label,
+              bitrate: selected.videoBitrate,
+              fps: selected.videoFrameRate,
+              latency: Math.floor(corePlayer.srcObject._getLiveLatency()),
+            };
+          }
+          if (track?.avoidReencoding) {
+            info.resolution += " (원본)";
+          }
+        } catch {}
         if (info == null) {
           return;
         }
