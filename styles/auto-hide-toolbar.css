@@ -22,7 +22,7 @@
 }
 
 [class^="navigation_component_container__"],
-[class^="category_container__"] {
+[class^="category_container__"]:has([class^="category_section__"]) {
   min-height: calc(100vh - 15px) !important;
 }
 
