@@ -74,6 +74,12 @@
   "config_rememberTime_desc": {
     "message": "Remember the last viewed position in VOD to resume playback."
   },
+  "config_pressToFastForward": {
+    "message": "Press to fast forward"
+  },
+  "config_pressToFastForward_desc": {
+    "message": "Long-press in VOD to play at 2x speed."
+  },
   "config_category_videoFilter": {
     "message": "Video filter"
   },
@@ -196,6 +202,9 @@
   },
   "content_deletedMessage": {
     "message": "(deleted)"
+  },
+  "content_speed2x": {
+    "message": "x2 speed"
   },
   "permission_desc": {
     "message": "Thank you for installing Cheese Knife! This extension requires the following permissions:"

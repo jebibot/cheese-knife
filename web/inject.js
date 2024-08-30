@@ -999,6 +999,58 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
           throttled = false;
         }, 5000);
       });
+
+      const indicator = document.createElement("div");
+      indicator.classList.add("knife-ff-indicator");
+      indicator.style.display = "none";
+      indicator.textContent = i18n.speed2x;
+      pzp.appendChild(indicator);
+
+      const videoContainer = pzp.querySelector(".pzp-pc__video");
+      videoContainer?.addEventListener("mousedown", (e) => {
+        if (e.button !== 0 || !config.pressToFastForward) {
+          return;
+        }
+        e.preventDefault();
+
+        const x = e.clientX;
+        const y = e.clientY;
+        let originalRate = 1;
+        let originalPaused = false;
+        const fastForwardTimeout = setTimeout(() => {
+          videoContainer.style.pointerEvents = "none";
+          indicator.style.display = "";
+          pzpVue.showControls = false;
+
+          originalRate = corePlayer.playbackRate;
+          corePlayer.playbackRate = 2;
+          if (corePlayer.paused) {
+            originalPaused = true;
+            corePlayer.play();
+          }
+        }, 500);
+
+        const onMouseMove = (e) => {
+          e.preventDefault();
+          if (Math.abs(e.clientX - x) > 10 || Math.abs(e.clientY - y) > 10) {
+            document.removeEventListener("mousemove", onMouseMove);
+            clearTimeout(fastForwardTimeout);
+          }
+        };
+        const onMouseUp = () => {
+          document.removeEventListener("mousemove", onMouseMove);
+          document.removeEventListener("mouseup", onMouseUp);
+          clearTimeout(fastForwardTimeout);
+          corePlayer.playbackRate = originalRate;
+          if (originalPaused) {
+            corePlayer.pause();
+          }
+          indicator.style.display = "none";
+          videoContainer.style.pointerEvents = "";
+        };
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+      });
     }
   };
 

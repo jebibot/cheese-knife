@@ -83,6 +83,10 @@ var CONFIGS = [
         defaultValue: true,
       },
       {
+        id: "pressToFastForward",
+        defaultValue: true,
+      },
+      {
         id: "videoFilter",
         type: "details",
         configs: [

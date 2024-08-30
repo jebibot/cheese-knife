@@ -65,6 +65,7 @@ if (
     "enableCompressor",
     "disableCompressor",
     "liveStart",
+    "speed2x"
   ]) {
     i18n[m] = chrome.i18n.getMessage(`content_${m}`);
   }

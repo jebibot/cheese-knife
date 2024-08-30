@@ -74,6 +74,12 @@
   "config_rememberTime_desc": {
     "message": "다시보기에서 마지막으로 본 위치를 기억하여 이어 재생합니다."
   },
+  "config_pressToFastForward": {
+    "message": "길게 눌러 빨리 감기"
+  },
+  "config_pressToFastForward_desc": {
+    "message": "다시보기에서 길게 누르면 2배속으로 재생합니다."
+  },
   "config_category_videoFilter": {
     "message": "비디오 필터"
   },
@@ -199,6 +205,9 @@
   },
   "content_deletedMessage": {
     "message": "(삭제됨)"
+  },
+  "content_speed2x": {
+    "message": "2배속"
   },
   "permission_desc": {
     "message": "치즈 나이프를 설치해주셔서 감사합니다! 본 확장 프로그램은 다음과 같은 권한이 필요합니다."
