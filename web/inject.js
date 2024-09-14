@@ -1295,7 +1295,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
             ) {
               n.props.src = src.replace(
                 "https://ssl.pstatic.net/static/nng/glive/icon/",
-                "https://chz-emote.cdn.ntruss.com/"
+                "https://chz-emote.edge.naverncp.com/"
               );
             }
           }
