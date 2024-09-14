@@ -1180,9 +1180,9 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     });
   };
 
-  const attachChatObserver = (chattingContainer) => {
+  const attachChatObserver = async (chattingContainer) => {
     const wrapper = chattingContainer?.querySelector?.(
-      '[class^="live_chatting_list_wrapper__"'
+      '[class^="live_chatting_list_wrapper__"]'
     );
     if (wrapper == null) {
       return;
@@ -1224,6 +1224,19 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       });
     });
     chatObserver.observe(wrapper, { childList: true });
+
+    const mutationObserverEffect = await findReactState(
+      chattingContainer,
+      (state) =>
+        state.tag & 8 &&
+        state.deps?.length === 1 &&
+        typeof state.deps[0] === "function" &&
+        state.create.toString().includes("MutationObserver")
+    );
+    if (mutationObserverEffect?.destroy != null) {
+      mutationObserverEffect.destroy();
+      mutationObserverEffect.destroy = mutationObserverEffect.create();
+    }
   };
 
   const initChatFeatures = async (chattingContainer, tries = 0) => {
@@ -1333,7 +1346,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       };
     }
 
-    attachChatObserver(chattingContainer);
+    await attachChatObserver(chattingContainer);
     const containerObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((n) => {
