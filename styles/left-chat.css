@@ -1,4 +1,4 @@
-[class^="live_container__"] {
+[class^="live_wrapper__"] {
   flex-direction: row-reverse !important;
 }
 
@@ -7,7 +7,7 @@
 }
 
 @media screen and (max-aspect-ratio: 1 / 1) {
-  [class^="live_container__"][class*="live_is_large__"] {
+  [class^="live_container__"][class*="live_is_large__"] [class^="live_wrapper__"] {
     flex-direction: column-reverse !important;
   }
 }
