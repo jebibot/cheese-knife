@@ -18,7 +18,6 @@
 
 - **Stats Menu:** Select Stats from the right-click menu to view resolution, bitrate, FPS, latency, and codec.
 - **Seek with Arrow Keys:** Use the arrow keys to rewind a short amount of time.
-- **Remember Playback Position:** Remember where you left in the VOD.
 - **Video Filters:** Adjust video brightness, contrast, and gamma, and apply a sharpen filter.
 - **Audio Compressor:** Reduce loud sounds to adjust the dynamic range to make the sound more comfortable.
 

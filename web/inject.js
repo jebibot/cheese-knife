@@ -959,47 +959,6 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     const player = await findReactState(node, (s) => s._corePlayer != null);
     corePlayer = player?._corePlayer;
     if (!isLive && corePlayer != null) {
-      const getVodResumeTimes = () => {
-        let result;
-        try {
-          result = JSON.parse(window.localStorage.getItem("vodResumeTimes"));
-        } catch {}
-        if (result == null || typeof result !== "object") {
-          result = {};
-        }
-        return result;
-      };
-
-      const url = new URL(location.href);
-      const id = url.pathname.split("/").pop();
-      const time = Number(url.searchParams.get("t") || getVodResumeTimes()[id]);
-      if (time > 0) {
-        corePlayer.currentTime = time;
-        setTimeout(() => {
-          corePlayer.pause();
-          corePlayer.play();
-        }, 300);
-      }
-      let throttled = false;
-      corePlayer.addEventListener("timeupdate", () => {
-        if (throttled || !config.rememberTime) {
-          return;
-        }
-        throttled = true;
-        const vodResumeTimes = getVodResumeTimes();
-        vodResumeTimes[id] =
-          corePlayer.duration - corePlayer.currentTime > 120
-            ? Math.floor(corePlayer.currentTime)
-            : 0;
-        window.localStorage.setItem(
-          "vodResumeTimes",
-          JSON.stringify(vodResumeTimes)
-        );
-        setTimeout(() => {
-          throttled = false;
-        }, 5000);
-      });
-
       const indicator = document.createElement("div");
       indicator.classList.add("knife-ff-indicator");
       indicator.style.display = "none";

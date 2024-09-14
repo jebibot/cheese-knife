@@ -79,10 +79,6 @@ var CONFIGS = [
         defaultValue: true,
       },
       {
-        id: "rememberTime",
-        defaultValue: true,
-      },
-      {
         id: "pressToFastForward",
         defaultValue: true,
       },

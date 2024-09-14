@@ -68,12 +68,6 @@
   "config_arrowSeek_desc": {
     "message": "Rewind a short time in the live."
   },
-  "config_rememberTime": {
-    "message": "Remember playback position"
-  },
-  "config_rememberTime_desc": {
-    "message": "Remember the last viewed position in VOD to resume playback."
-  },
   "config_pressToFastForward": {
     "message": "Press to fast forward"
   },

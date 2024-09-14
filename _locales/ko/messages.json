@@ -68,12 +68,6 @@
   "config_arrowSeek_desc": {
     "message": "생방송에서 짧은 시간을 되돌려 볼 수 있습니다."
   },
-  "config_rememberTime": {
-    "message": "재생 위치 기억"
-  },
-  "config_rememberTime_desc": {
-    "message": "다시보기에서 마지막으로 본 위치를 기억하여 이어 재생합니다."
-  },
   "config_pressToFastForward": {
     "message": "길게 눌러 빨리 감기"
   },
