@@ -1,3 +1,3 @@
-[class^="live_badge_container__"] {
+[class*="thumbnail_badge_live__"] {
   display: none !important;
 }
