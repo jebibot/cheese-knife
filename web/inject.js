@@ -924,6 +924,10 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
                 }
                 if (this.source == null) {
                   this.ctx = new AudioContext();
+                  if (this.ctx.state === "suspended") {
+                    this.enabled = false;
+                    return;
+                  }
                   this.source = this.ctx.createMediaElementSource(video);
                   this.comp = this.ctx.createDynamicsCompressor();
                   this.gainNode = this.ctx.createGain();
