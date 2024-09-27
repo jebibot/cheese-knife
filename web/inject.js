@@ -688,7 +688,14 @@
     list.appendChild(live);
   };
 
-  let corePlayer;
+  const getCorePlayer = async () => {
+    const node =
+      document.getElementById("live_player_layout") ||
+      document.getElementById("player_layout");
+    const player = await findReactState(node, (s) => s._corePlayer != null);
+    return player?._corePlayer;
+  };
+
   let seeking = false;
   const addStatsMenu = () => {
     const license = document.getElementById("license");
@@ -711,7 +718,8 @@
       document.getElementById("live_player_layout").appendChild(overlay);
 
       const content = document.createElement("div");
-      const update = () => {
+      const update = async () => {
+        const corePlayer = await getCorePlayer();
         let info;
         try {
           info = window.__getLiveInfo?.();
@@ -960,9 +968,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       } catch {}
     }
 
-    const player = await findReactState(node, (s) => s._corePlayer != null);
-    corePlayer = player?._corePlayer;
-    if (!isLive && corePlayer != null) {
+    if (!isLive) {
       const indicator = document.createElement("div");
       indicator.classList.add("knife-ff-indicator");
       indicator.style.display = "none";
@@ -970,12 +976,16 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       pzp.appendChild(indicator);
 
       const videoContainer = pzp.querySelector(".pzp-pc__video");
-      videoContainer?.addEventListener("mousedown", (e) => {
+      videoContainer?.addEventListener("mousedown", async (e) => {
         if (e.button !== 0 || !config.pressToFastForward) {
           return;
         }
         e.preventDefault();
 
+        const corePlayer = await getCorePlayer();
+        if (corePlayer == null) {
+          return;
+        }
         const x = e.clientX;
         const y = e.clientY;
         let originalRate = 1;
@@ -1062,7 +1072,8 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
   let oldMaxBufferSize;
   let oldMaxBufferLength;
   let oldMaxMaxBufferLength;
-  const setSeeking = (value) => {
+  const setSeeking = async (value) => {
+    const corePlayer = await getCorePlayer();
     const hls = corePlayer?.player?._mediaController?._hls;
     if (hls?.config != null && seeking !== value) {
       seeking = value;
