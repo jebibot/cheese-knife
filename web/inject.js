@@ -1376,18 +1376,22 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     if (node == null) {
       return;
     }
-    const liveObserver = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        for (const n of mutation.addedNodes) {
-          if (n.querySelector != null) {
-            initChatFeatures(
-              n.tagName === "ASIDE" ? n : n.querySelector("aside")
-            );
+
+    const wrapper = node.querySelector('[class^="live_wrapper__"]');
+    if (wrapper != null) {
+      const liveObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const n of mutation.addedNodes) {
+            if (n.querySelector != null) {
+              initChatFeatures(
+                n.tagName === "ASIDE" ? n : n.querySelector("aside")
+              );
+            }
           }
         }
-      }
-    });
-    liveObserver.observe(node, { childList: true });
+      });
+      liveObserver.observe(wrapper, { childList: true });
+    }
 
     const player = node.querySelector('[class^="live_information_player__"]');
     if (player != null) {
