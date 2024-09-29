@@ -1212,8 +1212,8 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     }
 
     const chatObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((n) => {
+      for (const mutation of mutations) {
+        for (const n of mutation.addedNodes) {
           if (
             n.className?.startsWith(
               isLive ? "live_chatting_list_item__" : "vod_chatting_item__"
@@ -1222,13 +1222,13 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
             const props = getReactProps(n);
             const message = props?.children?.props?.chatMessage;
             if (message == null) {
-              return;
+              continue;
             }
             const wrapper = n.querySelector(
               '[class^="live_chatting_message_wrapper__"]'
             );
             if (wrapper == null || wrapper.dataset.timestamp) {
-              return;
+              continue;
             }
             if (isLive) {
               const time = new Date(message.time);
@@ -1243,8 +1243,8 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
             }
             props.children.props.messageChangeHandler?.();
           }
-        });
-      });
+        }
+      }
     });
     chatObserver.observe(wrapper, { childList: true });
   };
@@ -1360,11 +1360,11 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
 
     await attachChatObserver(chattingContainer, isLive);
     const containerObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((n) => {
+      for (const mutation of mutations) {
+        for (const n of mutation.addedNodes) {
           attachChatObserver(n, isLive);
-        });
-      });
+        }
+      }
     });
     containerObserver.observe(chattingContainer, { childList: true });
   };
@@ -1379,11 +1379,8 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       const liveObserver = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
           for (const n of mutation.addedNodes) {
-            if (n.querySelector != null) {
-              initChatFeatures(
-                n.tagName === "ASIDE" ? n : n.querySelector("aside"),
-                true
-              );
+            if (n.tagName === "ASIDE") {
+              initChatFeatures(n, true);
             }
           }
         }
