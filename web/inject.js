@@ -624,15 +624,13 @@
         return;
       }
       hidePreview();
-      const features = [];
       if (node.className.startsWith("live_")) {
-        features.push(attachLiveObserver(node));
+        return attachLiveObserver(node);
       } else if (node.className.startsWith("vod_")) {
-        features.push(attachPlayerObserver(node, false));
+        return attachVodObserver(node);
       } else if (node.className.startsWith("channel_")) {
-        features.push(initChannelFeatures(node));
+        return initChannelFeatures(node);
       }
-      return Promise.all(features);
     };
 
     const layoutBody = await waitFor("#layout-body");
@@ -1195,9 +1193,11 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     });
   };
 
-  const attachChatObserver = async (chattingContainer) => {
+  const attachChatObserver = async (chattingContainer, isLive) => {
     const wrapper = chattingContainer?.querySelector?.(
-      '[class^="live_chatting_list_wrapper__"]'
+      isLive
+        ? '[class^="live_chatting_list_wrapper__"]'
+        : '[class^="vod_chatting_list__"]'
     );
     if (wrapper == null) {
       return;
@@ -1214,10 +1214,14 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     const chatObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((n) => {
-          if (n.className?.startsWith("live_chatting_list_item__")) {
+          if (
+            n.className?.startsWith(
+              isLive ? "live_chatting_list_item__" : "vod_chatting_item__"
+            )
+          ) {
             const props = getReactProps(n);
-            const t = props?.children?.props?.chatMessage?.time;
-            if (t == null) {
+            const message = props?.children?.props?.chatMessage;
+            if (message == null) {
               return;
             }
             const wrapper = n.querySelector(
@@ -1226,35 +1230,26 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
             if (wrapper == null || wrapper.dataset.timestamp) {
               return;
             }
-            const time = new Date(t);
-            wrapper.dataset.timestamp = `${time
-              .getHours()
-              .toString()
-              .padStart(2, "0")}:${time
-              .getMinutes()
-              .toString()
-              .padStart(2, "0")}`;
+            if (isLive) {
+              const time = new Date(message.time);
+              wrapper.dataset.timestamp = `${padNumber(
+                time.getHours(),
+                2
+              )}:${padNumber(time.getMinutes(), 2)}`;
+            } else {
+              wrapper.dataset.timestamp = formatTimestamp(
+                message.playerMessageTime
+              );
+            }
+            props.children.props.messageChangeHandler?.();
           }
         });
       });
     });
     chatObserver.observe(wrapper, { childList: true });
-
-    const mutationObserverEffect = await findReactState(
-      chattingContainer,
-      (state) =>
-        state.tag & 8 &&
-        state.deps?.length === 1 &&
-        typeof state.deps[0] === "function" &&
-        state.create.toString().includes("MutationObserver")
-    );
-    if (mutationObserverEffect?.destroy != null) {
-      mutationObserverEffect.destroy();
-      mutationObserverEffect.destroy = mutationObserverEffect.create();
-    }
   };
 
-  const initChatFeatures = async (chattingContainer, tries = 0) => {
+  const initChatFeatures = async (chattingContainer, isLive, tries = 0) => {
     if (chattingContainer == null) {
       return;
     }
@@ -1267,15 +1262,17 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         return;
       }
       return new Promise((r) => setTimeout(r, 50)).then(() =>
-        initChatFeatures(chattingContainer, tries + 1)
+        initChatFeatures(chattingContainer, isLive, tries + 1)
       );
     }
 
     try {
-      addResizeHandle(chattingContainer);
+      addResizeHandle(
+        isLive ? chattingContainer : chattingContainer.parentNode
+      );
     } catch {}
 
-    if (isPopup) {
+    if (isLive && isPopup) {
       setTimeout(() => {
         chattingContainer
           .querySelector(
@@ -1336,7 +1333,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     try {
       jsx = (await getWebpackRequire)(44414).jsx;
     } catch {}
-    if (jsx != null) {
+    if (isLive && jsx != null) {
       const originalBlindListener = chatController.notiBlindListener;
       chatController.notiBlindListener = function (message) {
         if (!config.showDeleted || message.blindType === "CANCEL") {
@@ -1361,11 +1358,11 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       };
     }
 
-    await attachChatObserver(chattingContainer);
+    await attachChatObserver(chattingContainer, isLive);
     const containerObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((n) => {
-          attachChatObserver(n);
+          attachChatObserver(n, isLive);
         });
       });
     });
@@ -1384,7 +1381,8 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
           for (const n of mutation.addedNodes) {
             if (n.querySelector != null) {
               initChatFeatures(
-                n.tagName === "ASIDE" ? n : n.querySelector("aside")
+                n.tagName === "ASIDE" ? n : n.querySelector("aside"),
+                true
               );
             }
           }
@@ -1414,7 +1412,38 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         node.querySelector('[class^="live_information_video_container__"]'),
         true
       ),
-      initChatFeatures(node.querySelector("aside")),
+      initChatFeatures(node.querySelector("aside"), true),
+    ]);
+  };
+
+  const attachVodObserver = async (node) => {
+    if (node == null) {
+      return;
+    }
+
+    const player = node.querySelector('[class^="vod_player__"]');
+    if (player != null) {
+      const vodObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const n of mutation.addedNodes) {
+            if (n.className?.startsWith?.("vod_chatting__")) {
+              initChatFeatures(
+                n.querySelector('[class^="vod_chatting_container__"]'),
+                false
+              );
+            }
+          }
+        }
+      });
+      vodObserver.observe(player, { childList: true });
+    }
+
+    return Promise.all([
+      attachPlayerObserver(node, false),
+      initChatFeatures(
+        node.querySelector('[class^="vod_chatting_container__"]'),
+        false
+      ),
     ]);
   };
 
@@ -1515,7 +1544,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
   (async () => {
     try {
       if (location.pathname.endsWith("/chat")) {
-        await initChatFeatures(await waitFor("aside"));
+        await initChatFeatures(await waitFor("aside"), true);
       } else {
         await Promise.all([attachLayoutObserver(), attachBodyObserver()]);
       }

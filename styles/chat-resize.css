@@ -4,7 +4,8 @@ html {
 
 aside[class^="live_chatting_container__"]:not(
     [class*="live_chatting_is_popup_chat__"]
-  ) {
+  ),
+div[class^="vod_chatting__"] {
   width: var(--knife-chat-width, 353px);
   max-width: calc(100% - 24px);
 }
@@ -15,7 +16,8 @@ div.miniplayer:not(.is_large) {
 }
 
 @media screen and (max-aspect-ratio: 1 / 1) {
-  aside[class^="live_chatting_container__"][class*="live_chatting_is_large__"] {
+  aside[class^="live_chatting_container__"][class*="live_chatting_is_large__"],
+  [class*="vod_is_large__"] [class^="vod_chatting__"] {
     width: 100%;
     max-width: none;
   }
@@ -44,7 +46,8 @@ div.miniplayer:not(.is_large) {
 }
 
 @media screen and (max-aspect-ratio: 1 / 1) {
-  [class*="live_is_large__"] .knife-resize-handle {
+  [class*="live_is_large__"] .knife-resize-handle,
+  [class*="vod_is_large__"] .knife-resize-handle {
     display: none;
   }
 }
