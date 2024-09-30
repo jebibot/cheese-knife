@@ -930,7 +930,10 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
                 }
                 if (this.source == null) {
                   this.ctx = new AudioContext();
-                  if (this.ctx.state === "suspended") {
+                  if (
+                    !navigator.userAgent.includes("Firefox") &&
+                    this.ctx.state === "suspended"
+                  ) {
                     this.enabled = false;
                     return;
                   }
