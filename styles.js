@@ -15,6 +15,7 @@ const STYLES = [
       { id: "chat-font-size", type: "range", min: -6, max: 16, step: 1 },
       { id: "chat-timestamp" },
       { id: "hide-ranking" },
+      { id: "hide-fixed-mission" },
       { id: "left-chat" },
     ],
   },

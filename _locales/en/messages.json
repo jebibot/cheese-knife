@@ -245,6 +245,9 @@
   "styles_hide_ranking": {
     "message": "Hide leaderboard"
   },
+  "styles_hide_fixed_mission": {
+    "message": "Hide pinned mission"
+  },
   "styles_left_chat": {
     "message": "Display in the left side"
   },
