@@ -49,7 +49,7 @@ async function registerStyles(styles) {
       "hide-blocked",
       "hide-comp",
       "hide-ff",
-      "hide-fixed-mission",
+      "hide-mission",
       "hide-live-badge",
       "hide-offline",
       "hide-ranking",

@@ -248,8 +248,8 @@
   "styles_hide_ranking": {
     "message": "후원 랭킹 숨기기"
   },
-  "styles_hide_fixed_mission": {
-    "message": "상단 고정 미션 숨기기"
+  "styles_hide_mission": {
+    "message": "진행 중인 미션 숨기기"
   },
   "styles_left_chat": {
     "message": "왼쪽 배치"
