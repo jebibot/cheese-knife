@@ -2,3 +2,9 @@
 [class^="live_chatting_fixed_mission_item__"] {
   display: none;
 }
+
+[class^="live_chatting_fixed_mission_mission_button__"]:hover
+  + [class^="live_chatting_fixed_mission_item__"],
+[class^="live_chatting_fixed_mission_item__"]:hover {
+  display: block;
+}
