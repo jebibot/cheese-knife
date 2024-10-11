@@ -77,6 +77,11 @@
 
 .live_chatting_fixed_header__rPqp7,
 .live_chatting_fixed_footer__tjXIL,
+.live_chatting_mission_message_container__05yWF:not(
+    .live_chatting_mission_message_is_message__nAFAr,
+    .live_chatting_mission_message_is_overlay__bzuSz
+  )
+  .live_chatting_mission_message_username__s2Icl,
 .live_chatting_subscription_message_text__xm6EI {
   font-size: calc(var(--knife-chat-size-1) + 13px) !important;
   line-height: 1.231 !important;
