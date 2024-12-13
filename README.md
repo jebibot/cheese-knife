@@ -1,6 +1,6 @@
 # ![로고](./icon48.png) 치즈 나이프
 
-> 치지직 도구 모음
+> 치지직™ 도구 모음
 
 [Website](https://www.chz.app/) | [Discord](https://discord.gg/9kq3UNKAkz) | [Chrome Web Store (Chromium, Edge, Whale 호환)](https://chromewebstore.google.com/detail/nfkfgkkhgglkgnlppncolmpekidapkjh) | [Firefox Add-ons](https://addons.mozilla.org/addon/cheese-knife/) | [English](./README-en.md)
 
@@ -36,4 +36,4 @@
 - [ ] Modularize
 - [ ] Webpack/Vite
 
-> 본 확장 프로그램은 치지직과 관련이 없으며, 치지직, CHZZK은 NAVER㈜의 등록상표입니다. 본 확장 프로그램을 사용하여 발생하는 결과에 대한 모든 책임은 사용자에게 있습니다.
+> 본 확장 프로그램은 치지직™과 관련이 없으며, 치지직™, CHZZK™은 NAVER㈜의 등록상표입니다. 본 확장 프로그램을 사용하여 발생하는 결과에 대한 모든 책임은 사용자에게 있습니다.
