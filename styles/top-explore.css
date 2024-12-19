@@ -71,4 +71,8 @@
     [class^="header_text__"] {
     margin-top: 0;
   }
+
+  [class^="header_recap_link__"] {
+    display: none;
+  }
 }

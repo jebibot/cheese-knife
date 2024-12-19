@@ -4,19 +4,26 @@
 }
 
 [class^="header_logo__"],
+[class^="header_recap_link__"],
 [class^="toolbar_container__"] {
   top: -45px !important;
   transition: top ease-in-out 100ms;
 }
 
 [class^="header_logo__"]:hover,
-[class^="header_logo__"]:has(~ [class^="toolbar_container__"]:hover),
+[class^="header_logo__"]:hover ~ [class^="header_recap_link__"],
+[class^="header_logo__"]:hover ~ [class^="toolbar_container__"],
+[class^="header_recap_link__"]:hover,
+[class^="header_logo__"]:has(~ [class^="header_recap_link__"]:hover),
+[class^="header_recap_link__"]:hover ~ [class^="toolbar_container__"],
 [class^="toolbar_container__"]:hover,
-[class^="header_logo__"]:hover ~ [class^="toolbar_container__"] {
+[class^="header_logo__"]:has(~ [class^="toolbar_container__"]:hover),
+[class^="header_recap_link__"]:has(~ [class^="toolbar_container__"]:hover) {
   top: 0px !important;
 }
 
 [class^="layout_glive__"]:has(> [class^="header_logo__"]:hover),
+[class^="layout_glive__"]:has(> [class^="header_recap_link__"]:hover),
 [class^="layout_glive__"]:has(> [class^="toolbar_container__"]:hover) {
   --knife-top-explore-top: -3px;
 }

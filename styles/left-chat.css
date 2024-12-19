@@ -3,8 +3,12 @@
   flex-direction: row-reverse !important;
 }
 
-[class^="live_chatting_popup_profile_container__"] {
+[class*="live_chatting_popup_profile_container__"] {
   right: auto !important;
+}
+
+[class^="vod_chatting__"] {
+  margin-bottom: 0 !important;
 }
 
 @media screen and (max-aspect-ratio: 1 / 1) {
