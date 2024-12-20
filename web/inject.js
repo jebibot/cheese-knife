@@ -835,7 +835,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         } catch {}
       }
 
-      const playButton = pzp.querySelector(".pzp-pc-playback-switch");
+      const playButton = pzp.querySelector(".pzp-pc__playback-switch");
       if (playButton != null) {
         try {
           const ffButton = new Vue({
