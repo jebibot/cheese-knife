@@ -53,7 +53,11 @@
 .live_chatting_message_container__vrI-y:not(
     .live_chatting_message_is_overlay__cALCf
   )
-  button.live_chatting_message_wrapper__xpYre,
+  button.live_chatting_message_nickname__UdLXa,
+.live_chatting_message_container__vrI-y:not(
+    .live_chatting_message_is_overlay__cALCf
+  )
+  .live_chatting_message_chatting_message__7TKns,
 .live_chatting_mission_message_container__05yWF.live_chatting_mission_message_is_fixed__STwnu
   .live_chatting_mission_message_text_container__pj6Kx,
 .live_chatting_mission_message_container__05yWF.live_chatting_mission_message_is_message__nAFAr
@@ -111,7 +115,7 @@
 .live_chatting_message_container__vrI-y:not(
     .live_chatting_message_is_overlay__cALCf
   )
-  button.live_chatting_message_wrapper__xpYre,
+  button.live_chatting_message_nickname__UdLXa,
 .live_chatting_scroll_button_chatting__kqgzN,
 .live_chatting_subscription_message_message__7yZhi,
 .vod_chatting_list__\+LZHw {
@@ -126,7 +130,7 @@
 .live_chatting_message_container__vrI-y:not(
     .live_chatting_message_is_overlay__cALCf
   )
-  button.live_chatting_message_wrapper__xpYre {
+  .live_chatting_message_chatting_message__7TKns {
   padding: calc(var(--knife-chat-size-20) + 4px)
     calc(var(--knife-chat-size-20) + 8px) calc(var(--knife-chat-size-20) + 4px)
     calc(var(--knife-chat-size-20) + 6px) !important;

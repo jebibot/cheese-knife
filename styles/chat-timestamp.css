@@ -2,7 +2,7 @@ html {
   --knife-chat-timestamp: 1;
 }
 
-[class^="live_chatting_message_wrapper__"]::before {
+[class^="live_chatting_message_chatting_message__"]::before {
   content: attr(data-timestamp);
   color: var(--color-content-04);
   margin-right: 4px;

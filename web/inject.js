@@ -1228,7 +1228,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
               continue;
             }
             const wrapper = n.querySelector(
-              '[class^="live_chatting_message_wrapper__"]'
+              '[class^="live_chatting_message_chatting_message__"]'
             );
             if (wrapper == null || wrapper.dataset.timestamp) {
               continue;
