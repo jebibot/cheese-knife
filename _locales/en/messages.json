@@ -146,9 +146,6 @@
   "config_showDeleted": {
     "message": "Show deleted messages"
   },
-  "config_optimizeEmotes": {
-    "message": "Optimize animated emotes"
-  },
   "config_styles": {
     "message": "Styles"
   },

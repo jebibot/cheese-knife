@@ -149,9 +149,6 @@
   "config_showDeleted_desc": {
     "message": "삭제된 채팅을 지우지 않고 취소선으로 표시합니다."
   },
-  "config_optimizeEmotes": {
-    "message": "애니메이션 이모티콘 최적화"
-  },
   "config_styles": {
     "message": "스타일 설정"
   },

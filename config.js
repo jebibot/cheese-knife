@@ -194,10 +194,6 @@ var CONFIGS = [
         id: "showDeleted",
         defaultValue: false,
       },
-      {
-        id: "optimizeEmotes",
-        defaultValue: false,
-      },
     ],
   },
 ];
