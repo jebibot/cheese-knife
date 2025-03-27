@@ -1106,7 +1106,8 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     if (
       video == null ||
       video.duration !== Infinity ||
-      video.buffered.length === 0
+      video.buffered.length === 0 ||
+      pzpVue?.timeMachine
     ) {
       return;
     }
