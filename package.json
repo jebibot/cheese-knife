@@ -1,6 +1,6 @@
 {
   "name": "cheese-knife",
-  "version": "2.7.8",
+  "version": "2.7.9",
   "description": "A CHZZK toolkit",
   "private": true,
   "scripts": {
