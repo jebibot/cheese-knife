@@ -824,14 +824,11 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     if (isLive) {
       if (isPopup) {
         try {
-          const setLiveWide = await findReactState(
+          const liveWide = await findReactState(
             node,
-            (state) =>
-              state[0]?.length === 1 &&
-              state[1]?.length === 2 &&
-              state[1]?.[1]?.key === "isLiveWide"
+            (state) => state.length === 3 && state[2]?.toString?.() === "atom7"
           );
-          setLiveWide?.[0](true);
+          liveWide?.[1].set(liveWide[2], true);
         } catch {}
       }
 
@@ -1463,13 +1460,12 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         e.relatedTarget.textContent.endsWith(" 스트리밍 중") &&
         !e.relatedTarget.dataset.knifeTooltip
       ) {
-        const state = await findReactState(
+        const liveDetail = await findReactState(
           e.relatedTarget,
-          (state) => state.key === "liveDetail" && state.loadable != null
+          (state) => state[0]?.openDate != null
         );
-        const liveDetail = await state.loadable.toPromise();
-        if (liveDetail?.openDate) {
-          e.relatedTarget.dataset.knifeTooltip = `${i18n.liveStart}: ${liveDetail.openDate}`;
+        if (liveDetail?.[0].openDate) {
+          e.relatedTarget.dataset.knifeTooltip = `${i18n.liveStart}: ${liveDetail[0].openDate}`;
         }
       }
     } else if (e.relatedTarget?.className?.startsWith?.("video_card_item__")) {
