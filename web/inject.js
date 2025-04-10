@@ -200,7 +200,7 @@
     let info = liveInfo[uid];
     if (info === undefined) {
       const res = await fetch(
-        `https://api.chzzk.naver.com/service/v3/channels/${uid}/live-detail`,
+        `https://api.chzzk.naver.com/service/v3.1/channels/${uid}/live-detail`,
         { credentials: "include" }
       );
       if (!res.ok) {
