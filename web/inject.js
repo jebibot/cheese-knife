@@ -300,8 +300,8 @@
       info.liveImageUrl ||
       info.livePlayback?.thumbnail?.snapshotThumbnailTemplate ||
       (info.adult
-        ? "https://ssl.pstatic.net/static/nng/glive/resource/p/static/media/image_age_restriction.c04b98f818ed01f04be9.png"
-        : "https://ssl.pstatic.net/static/nng/glive/resource/p/static/media/bg-video-placeholder.938697e8023d630ed7a8.png")
+        ? "https://ssl.pstatic.net/static/nng/glive/resource/p/static/media/image_age_restriction.3ef1507fcf16665ace28.png"
+        : "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==")
     ).replace("{type}", 480);
 
     if (previewPlayer != null) {
