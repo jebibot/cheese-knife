@@ -926,12 +926,22 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
                   return;
                 }
                 if (this.source == null) {
-                  this.ctx = new AudioContext();
-                  if (
-                    !navigator.userAgent.includes("Firefox") &&
-                    this.ctx.state === "suspended"
-                  ) {
+                  this.ctx ||= new AudioContext();
+                  if (this.ctx.state === "suspended") {
                     this.enabled = false;
+                    let timer;
+                    const tryEnable = () => {
+                      clearTimeout(timer);
+                      this.ctx.removeEventListener("statechange", tryEnable);
+                      if (this.ctx.state !== "suspended") {
+                        compressor.enabled = true;
+                      }
+                    };
+                    timer = setTimeout(tryEnable, 100);
+                    try {
+                      this.ctx.addEventListener("statechange", tryEnable);
+                      this.ctx.resume();
+                    } catch {}
                     return;
                   }
                   this.source = this.ctx.createMediaElementSource(video);
