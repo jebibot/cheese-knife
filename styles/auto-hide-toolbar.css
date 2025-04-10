@@ -49,7 +49,9 @@
 }
 
 [class^="live_container__"]:not([class*="live_type_pip__"]),
-[class^="vod_container__"]:not([class*="vod_is_large__"])
+[class^="vod_container__"]:not([class*="vod_is_large__"]):not(
+    [class*="vod_type_pip__"]
+  )
   [class^="vod_wrapper__"] {
   height: calc(100vh - 15px) !important;
 }
