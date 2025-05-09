@@ -545,6 +545,7 @@
       if (url.hostname !== "chzzk.naver.com") {
         return;
       }
+      item.draggable = true;
       item.addEventListener("dragstart", (e) => {
         if (!config.popupPlayer) {
           return;
