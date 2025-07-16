@@ -44,3 +44,15 @@
 [class^="header_button__"] {
   float: right;
 }
+
+@media screen and (min-width: 736px) {
+  [class^="clip_viewer_comment__"] {
+    right: 103px !important;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  [class*="layout_is_expanded__"] [class^="clip_viewer_comment__"] {
+    right: 265px !important;
+  }
+}
