@@ -1,0 +1,25 @@
+html {
+  --knife-top-offset: -45px;
+}
+
+[class^="layout_glive__"] {
+  --knife-top-explore-top: -101px;
+}
+
+[class^="layout_glive__"]:has(> [class^="header_container__"]:hover),
+[class^="layout_glive__"]:has(
+    [class^="aside_content__"]
+      [class^="navigation_bar_section__"]:first-child:hover
+  ) {
+  --knife-top-explore-top: -56px;
+}
+
+[class^="header_container__"] {
+  top: -45px !important;
+  margin-top: -45px;
+  transition: transform ease-in-out 100ms;
+}
+
+[class^="header_container__"]:hover {
+  transform: translateY(45px);
+}

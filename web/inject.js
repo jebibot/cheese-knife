@@ -110,7 +110,9 @@
       first = false;
       if (c.expandFollowings) {
         setTimeout(() => {
-          document.querySelector('[class*="navigation_bar_more_button__"]')?.click();
+          document
+            .querySelector('[class*="navigation_bar_more_button__"]')
+            ?.click();
         }, 300);
       }
       if (c.compressorDefault && compressor != null) {
@@ -534,6 +536,20 @@
         )
       )?.navigator;
     } catch {}
+
+    const offset = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue("--knife-top-offset");
+    if (offset) {
+      try {
+        const topOffset = await findReactState(
+          layoutWrap,
+          (state) => console.log(state),
+          state.length === 3 && state[2]?.toString?.() === "atom103"
+        );
+        topOffset?.[1].set(topOffset[2], parseInt(offset));
+      } catch {}
+    }
   };
 
   const initSidebarFeatures = (sidebar) => {
@@ -1304,7 +1320,6 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       return;
     }
     chatController.knifePatched = true;
-    console.log(chatController);
 
     const originalFilter = chatController.messageFilter;
     chatController.messageFilter = function (message) {
