@@ -33,6 +33,7 @@ const STYLES = [
     id: "toolbar",
     styles: [
       { id: "static-logo" },
+      { id: "hide-topics" },
       { id: "hide-studio" },
       { id: "auto-hide-toolbar" },
     ],

@@ -272,6 +272,9 @@
   "styles_static_logo": {
     "message": "Static logo"
   },
+  "styles_hide_topics": {
+    "message": "Hide topics tab"
+  },
   "styles_hide_studio": {
     "message": "Hide studio button"
   },

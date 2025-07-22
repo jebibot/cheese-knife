@@ -58,6 +58,7 @@ async function registerStyles(styles) {
       "hide-sidebar-partner",
       "hide-shortcut",
       "hide-studio",
+      "hide-topics",
       "left-chat",
       "rectangle-profile",
       "right-sidebar",

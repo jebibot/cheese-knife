@@ -275,6 +275,9 @@
   "styles_static_logo": {
     "message": "정적 로고"
   },
+  "styles_hide_topics": {
+    "message": "주제 탭 숨기기"
+  },
   "styles_hide_studio": {
     "message": "스튜디오 버튼 숨기기"
   },

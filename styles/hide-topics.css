@@ -1,0 +1,7 @@
+html {
+  --knife-top-explore-offset: -250px;
+}
+
+[class^="topic_tab_tab_list__"] {
+  display: none !important;
+}
