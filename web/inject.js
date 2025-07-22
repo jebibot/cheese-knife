@@ -110,7 +110,7 @@
       first = false;
       if (c.expandFollowings) {
         setTimeout(() => {
-          document.querySelector('[class^="navigator_button_more__"]')?.click();
+          document.querySelector('[class*="navigation_bar_more_button__"]')?.click();
         }, 300);
       }
       if (c.compressorDefault && compressor != null) {
@@ -496,7 +496,7 @@
   let routeNavigator;
   const attachLayoutObserver = async () => {
     const init = (node) => {
-      const sidebar = node.querySelector("#navigation");
+      const sidebar = node.querySelector('[class^="aside_content__"]');
       if (sidebar == null) {
         return;
       }
@@ -606,11 +606,17 @@
 
   let refreshInterval;
   const refreshSidebar = (sidebar) => {
+    let section;
     clearInterval(refreshInterval);
     refreshInterval = setInterval(async () => {
       if (config.updateSidebar) {
+        if (section == null) {
+          section = sidebar.querySelector(
+            '[class^="navigation_bar_header__"]'
+          ).parentNode;
+        }
         const sidebarEffect = await findReactState(
-          sidebar,
+          section,
           (state) =>
             state.tag === 8 && state.destroy == null && state.deps?.length > 2
         );
@@ -1298,6 +1304,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       return;
     }
     chatController.knifePatched = true;
+    console.log(chatController);
 
     const originalFilter = chatController.messageFilter;
     chatController.messageFilter = function (message) {

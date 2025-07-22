@@ -258,7 +258,7 @@
     "message": "방송 중이 아닌 채널 숨기기"
   },
   "styles_hide_recommended": {
-    "message": "추천 채널 숨기기"
+    "message": "인기 카테고리 숨기기"
   },
   "styles_hide_sidebar_partner": {
     "message": "파트너 스트리머 숨기기"
@@ -277,9 +277,6 @@
   },
   "styles_hide_studio": {
     "message": "스튜디오 버튼 숨기기"
-  },
-  "styles_hide_ticket": {
-    "message": "라운지 티켓 버튼 숨기기"
   },
   "styles_auto_hide_toolbar": {
     "message": "자동 숨기기"

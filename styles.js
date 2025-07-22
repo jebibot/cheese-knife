@@ -34,7 +34,6 @@ const STYLES = [
     styles: [
       { id: "static-logo" },
       { id: "hide-studio" },
-      { id: "hide-ticket" },
       { id: "auto-hide-toolbar" },
     ],
   },

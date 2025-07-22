@@ -255,7 +255,7 @@
     "message": "Hide offline channels"
   },
   "styles_hide_recommended": {
-    "message": "Hide recommended channels"
+    "message": "Hide popular categories"
   },
   "styles_hide_sidebar_partner": {
     "message": "Hide partner streamers"
@@ -274,9 +274,6 @@
   },
   "styles_hide_studio": {
     "message": "Hide studio button"
-  },
-  "styles_hide_ticket": {
-    "message": "Hide lounge ticket button"
   },
   "styles_auto_hide_toolbar": {
     "message": "Auto hide"

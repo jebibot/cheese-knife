@@ -11,6 +11,10 @@ if (
     "/subs_integration",
     "/partner",
     "/clip-editor",
+    "/account-interlock",
+    "/event",
+    "/watchparty-source",
+    "/prime",
   ].some((p) => location.pathname.startsWith(p)) &&
   !location.pathname.includes("/profile/")
 ) {

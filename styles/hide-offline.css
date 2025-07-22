@@ -1,3 +1,3 @@
-[class^="navigator_item__"]:not([href^="/live"]) {
+a[class^="navigator_item__"]:not([href^="/live"]) {
   display: none !important;
 }
