@@ -544,8 +544,7 @@
       try {
         const topOffset = await findReactState(
           layoutWrap,
-          (state) => console.log(state),
-          state.length === 3 && state[2]?.toString?.() === "atom103"
+          (state) => state.length === 3 && state[2]?.toString?.() === "atom103"
         );
         topOffset?.[1].set(topOffset[2], parseInt(offset));
       } catch {}
@@ -602,13 +601,16 @@
           }
 
           if (n.className?.startsWith?.("navigator_tooltip__")) {
-            if (config.preview) {
+            if (config.preview && mutation.target.href) {
               showPreview(mutation.target.href, n, true);
             }
           }
         }
         for (const n of mutation.removedNodes) {
-          if (n.className?.startsWith?.("navigator_tooltip__")) {
+          if (
+            n.className?.startsWith?.("navigator_tooltip__") &&
+            mutation.target.href
+          ) {
             hidePreview(mutation.target.href);
           }
         }
