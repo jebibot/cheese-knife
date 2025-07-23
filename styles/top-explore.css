@@ -6,7 +6,8 @@
   [class^="aside_content__"] [class^="navigation_bar_section__"]:first-child {
     position: absolute;
     left: calc(
-      var(--knife-top-explore-left, 390px) + var(--knife-top-explore-offset, 0)
+      var(--knife-top-explore-left, 406px) +
+        var(--knife-top-explore-offset, 0px)
     );
     top: var(--knife-top-explore-top, -56px);
     transition: top ease-in-out 100ms;

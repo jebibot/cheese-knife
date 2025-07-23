@@ -1,11 +1,11 @@
 [class^="aside_container__"] {
   left: auto !important;
   right: 0;
-  --knife-top-explore-left: calc(442px - 100vw);
+  --knife-top-explore-left: calc(458px - 100vw);
 }
 
 [class^="aside_container__"][class*="aside_is_expanded__"] {
-  --knife-top-explore-left: calc(602px - 100vw);
+  --knife-top-explore-left: calc(618px - 100vw);
 }
 
 [class^="layout_body"] {
