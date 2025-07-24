@@ -2,16 +2,12 @@ html {
   --knife-top-offset: -45px;
 }
 
-[class^="layout_glive__"] {
-  --knife-top-explore-top: -101px;
-}
-
 [class^="layout_glive__"]:has(> [class^="header_container__"]:hover),
 [class^="layout_glive__"]:has(
     [class^="aside_content__"]
       [class^="navigation_bar_section__"]:first-child:hover
   ) {
-  --knife-top-explore-top: -56px;
+  --knife-top-explore-top: -11px;
 }
 
 [class^="header_container__"] {
