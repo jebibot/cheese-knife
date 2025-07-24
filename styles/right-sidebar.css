@@ -39,7 +39,7 @@
 
 [class^="navigation_bar_menu_logo__"] button {
   position: absolute;
-  right: 20px;
+  left: calc(100vw - 80px);
 }
 
 [class^="toolbar_section__"] {
