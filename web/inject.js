@@ -109,10 +109,20 @@
     if (first) {
       first = false;
       if (c.expandFollowings) {
+        let expand_flag = true;
+        const expand_btn = document.querySelector('[class*="button_container__"][class*="button_only_icon__"][class*="button_larger__"][class*="button_not_selected_style__"]');
+        if (expand_btn.getAttribute('aria-expanded') === 'false'){
+          expand_flag = false;
+          expand_btn.click();
+        }
         setTimeout(() => {
           document
             .querySelector('[class*="navigation_bar_more_button__"]')
             ?.click();
+            if (expand_flag === false){
+              expand_flag = true;
+              expand_btn.click();
+            }
         }, 300);
       }
       if (c.compressorDefault && compressor != null) {
