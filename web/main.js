@@ -5,6 +5,7 @@ if (
     "/donation",
     "/video-donation",
     "/mission-donation",
+    "/party-donation",
     "/close",
     "/embed",
     "/error",
