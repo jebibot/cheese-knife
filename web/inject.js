@@ -601,17 +601,18 @@
           }
 
           if (n.className?.startsWith?.("navigator_tooltip__")) {
-            if (config.preview && mutation.target.href) {
-              showPreview(mutation.target.href, n, true);
+            const href = mutation.target.querySelector("a")?.href;
+            if (config.preview && href) {
+              showPreview(href, n, true);
             }
           }
         }
         for (const n of mutation.removedNodes) {
-          if (
-            n.className?.startsWith?.("navigator_tooltip__") &&
-            mutation.target.href
-          ) {
-            hidePreview(mutation.target.href);
+          if (n.className?.startsWith?.("navigator_tooltip__")) {
+            const href = mutation.target.querySelector("a")?.href;
+            if (href) {
+              hidePreview(mutation.target.href);
+            }
           }
         }
       }
