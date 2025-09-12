@@ -547,7 +547,7 @@
       try {
         const topOffset = await findReactState(
           layoutWrap,
-          (state) => state.length === 3 && state[2]?.toString?.() === "atom101"
+          (state) => state.length === 3 && state[2]?.toString() === "atom101"
         );
         topOffset?.[1].set(topOffset[2], parseInt(offset));
       } catch {}
@@ -603,7 +603,7 @@
             addListeners(item);
           }
 
-          if (n.className?.startsWith?.("navigator_tooltip__")) {
+          if (n.className.startsWith?.("navigator_tooltip__")) {
             const href = mutation.target.querySelector(
               'a[class^="navigator_item_link__"]'
             )?.href;
@@ -613,7 +613,7 @@
           }
         }
         for (const n of mutation.removedNodes) {
-          if (n.className?.startsWith?.("navigator_tooltip__")) {
+          if (n.className.startsWith?.("navigator_tooltip__")) {
             const href = mutation.target.querySelector(
               'a[class^="navigator_item_link__"]'
             )?.href;
@@ -657,11 +657,11 @@
         return;
       }
       hidePreview();
-      if (node.className.startsWith("live_")) {
+      if (node.className.startsWith?.("live_")) {
         return attachLiveObserver(node);
-      } else if (node.className.startsWith("vod_")) {
+      } else if (node.className.startsWith?.("vod_")) {
         return attachVodObserver(node);
-      } else if (node.className.startsWith("channel_")) {
+      } else if (node.className.startsWith?.("channel_")) {
         return initChannelFeatures(node);
       }
     };
@@ -799,7 +799,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       });
       overlay.appendChild(closeButton);
     });
-    license.parentNode.insertBefore(stats, license);
+    license.before(stats);
   };
 
   const attachPlayerObserver = async (node, isLive, tries = 0) => {
@@ -859,7 +859,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         try {
           const liveWide = await findReactState(
             node,
-            (state) => state.length === 3 && state[2]?.toString?.() === "atom7"
+            (state) => state.length === 3 && state[2]?.toString() === "atom7"
           );
           liveWide?.[1].set(liveWide[2], true);
         } catch {}
@@ -1193,7 +1193,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     container.parentNode.querySelector(".knife-resize-handle")?.remove();
     const resizeHandle = document.createElement("div");
     resizeHandle.classList.add("knife-resize-handle");
-    container.parentNode.insertBefore(resizeHandle, container);
+    container.before(resizeHandle);
 
     let left = 0;
     let right = 0;
@@ -1259,7 +1259,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       for (const mutation of mutations) {
         for (const n of mutation.addedNodes) {
           if (
-            n.className?.startsWith(
+            n.className?.startsWith?.(
               isLive ? "live_chatting_list_item__" : "vod_chatting_item__"
             )
           ) {
@@ -1487,18 +1487,18 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
 
   const videoInfo = {};
   document.addEventListener("mouseout", async (e) => {
-    if (e.relatedTarget?.className?.startsWith?.("video_card_thumbnail__")) {
+    if (e.relatedTarget?.className.startsWith?.("video_card_thumbnail__")) {
       if (config.customPreview) {
         showPreview(e.relatedTarget.href, e.relatedTarget);
       } else if (config.rightClickToUnmute) {
         addUnmuteListener(e.relatedTarget);
       }
-    } else if (e.target?.className?.startsWith?.("video_card_thumbnail__")) {
+    } else if (e.target?.className.startsWith?.("video_card_thumbnail__")) {
       removeUnmuteListener(e.target);
       hidePreview(e.target.href);
     }
 
-    if (e.relatedTarget?.className?.startsWith?.("video_information_count__")) {
+    if (e.relatedTarget?.className.startsWith?.("video_information_count__")) {
       if (
         e.relatedTarget.textContent.endsWith(" 스트리밍 중") &&
         !e.relatedTarget.dataset.knifeTooltip
@@ -1511,41 +1511,39 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
           e.relatedTarget.dataset.knifeTooltip = `${i18n.liveStart}: ${liveDetail[0].openDate}`;
         }
       }
-    } else if (e.relatedTarget?.className?.startsWith?.("video_card_item__")) {
-      if (
-        e.relatedTarget.previousElementSibling?.className?.startsWith?.(
-          "video_card_item__"
-        )
-      ) {
-        const link = e.relatedTarget.parentNode.parentNode.querySelector("a");
-        if (link == null) {
+    } else if (
+      e.relatedTarget?.tagName === "SPAN" &&
+      e.relatedTarget.className.startsWith("video_card_item__") &&
+      e.relatedTarget.nextElementSibling == null
+    ) {
+      const link = e.relatedTarget.parentNode.parentNode.querySelector("a");
+      if (link == null) {
+        return;
+      }
+      const url = new URL(link.href);
+      const parts = url.pathname.split("/");
+      if (parts.length < 3 || parts[1] !== "video") {
+        return;
+      }
+      const videoId = parts[2];
+      let info = videoInfo[videoId];
+      if (info === undefined) {
+        const res = await fetch(
+          `https://api.chzzk.naver.com/service/v3/videos/${videoId}`,
+          { credentials: "include" }
+        );
+        if (!res.ok) {
           return;
         }
-        const url = new URL(link.href);
-        const parts = url.pathname.split("/");
-        if (parts.length < 3 || parts[1] !== "video") {
+        const video = await res.json();
+        if (video.code !== 200) {
           return;
         }
-        const videoId = parts[2];
-        let info = videoInfo[videoId];
-        if (info === undefined) {
-          const res = await fetch(
-            `https://api.chzzk.naver.com/service/v3/videos/${videoId}`,
-            { credentials: "include" }
-          );
-          if (!res.ok) {
-            return;
-          }
-          const video = await res.json();
-          if (video.code !== 200) {
-            return;
-          }
-          info = video.content;
-          videoInfo[videoId] = info;
-        }
-        if (info?.liveOpenDate) {
-          e.relatedTarget.dataset.knifeTooltip = `${i18n.liveStart}: ${info.liveOpenDate}`;
-        }
+        info = video.content;
+        videoInfo[videoId] = info;
+      }
+      if (info?.liveOpenDate) {
+        e.relatedTarget.dataset.knifeTooltip = `${i18n.liveStart}: ${info.liveOpenDate}`;
       }
     }
   });
