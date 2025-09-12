@@ -572,7 +572,7 @@
         const rect = item.getBoundingClientRect();
         e.dataTransfer.effectAllowed = "copy";
         e.dataTransfer.setDragImage(
-          item,
+          item.parentElement,
           e.clientX - rect.x,
           e.clientY - rect.y
         );
@@ -601,7 +601,9 @@
           }
 
           if (n.className?.startsWith?.("navigator_tooltip__")) {
-            const href = mutation.target.querySelector("a")?.href;
+            const href = mutation.target.querySelector(
+              'a[class^="navigator_item_link__"]'
+            )?.href;
             if (config.preview && href) {
               showPreview(href, n, true);
             }
@@ -609,9 +611,11 @@
         }
         for (const n of mutation.removedNodes) {
           if (n.className?.startsWith?.("navigator_tooltip__")) {
-            const href = mutation.target.querySelector("a")?.href;
+            const href = mutation.target.querySelector(
+              'a[class^="navigator_item_link__"]'
+            )?.href;
             if (href) {
-              hidePreview(mutation.target.href);
+              hidePreview(href);
             }
           }
         }
