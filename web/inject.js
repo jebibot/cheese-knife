@@ -110,9 +110,12 @@
       first = false;
       if (c.expandFollowings) {
         setTimeout(() => {
-          document
-            .querySelector('[class*="navigation_bar_more_button__"]')
-            ?.click();
+          const button = document.querySelector(
+            '[class*="navigation_bar_more_button__"]'
+          );
+          if (button?.ariaExpanded === "false") {
+            button.click();
+          }
         }, 300);
       }
       if (c.compressorDefault && compressor != null) {
