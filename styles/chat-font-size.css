@@ -18,6 +18,7 @@
     calc(var(--knife-chat-size-10) + 8px) !important;
 }
 
+.live_chatting_add_cheese_header__G7sbo,
 .live_chatting_donation_message_header__O3BVA,
 .live_chatting_donation_message_profile_button__H1k75,
 .live_chatting_guide_container__vr6hZ.live_chatting_guide_default__dQqbW,
@@ -48,6 +49,7 @@
     calc(var(--knife-chat-size-10) + 7px) !important;
 }
 
+.live_chatting_add_cheese_row__-ID8j,
 .live_chatting_donation_message_text__XbDKP,
 .live_chatting_fixed_message__\+S3S9,
 .live_chatting_guide_container__vr6hZ.live_chatting_guide_welcome__o8iup,
@@ -207,9 +209,10 @@
     calc(var(--knife-chat-size-20) + 9px) !important;
 }
 
+.live_chatting_add_cheese_container__Uqf3I,
 .live_chatting_stacking_mission_container__GQ2Lc {
   padding: calc(var(--knife-chat-size-10) + 12px)
-    calc(var(--knife-chat-size-10) + 12px) calc(var(--knife-chat-size-10) + 8px) !important;
+    calc(var(--knife-chat-size-10) + 12px) !important;
 }
 
 .live_chatting_subscription_message_container__KdrCf.live_chatting_subscription_message_type_anniversary__TbqZo {
