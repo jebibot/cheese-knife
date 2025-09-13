@@ -605,6 +605,11 @@
       addListeners(item);
     }
 
+    const getHref = (el) =>
+      el.tagName === "A"
+        ? el.href
+        : el.querySelector('a[class^="navigator_item_link__"]')?.href;
+
     const sidebarObserver = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         for (const n of mutation.addedNodes) {
@@ -617,9 +622,7 @@
           }
 
           if (n.className.startsWith?.("navigator_tooltip__")) {
-            const href = mutation.target.querySelector(
-              'a[class^="navigator_item_link__"]'
-            )?.href;
+            const href = getHref(mutation.target);
             if (config.preview && href) {
               showPreview(href, n, true);
             }
@@ -627,9 +630,7 @@
         }
         for (const n of mutation.removedNodes) {
           if (n.className.startsWith?.("navigator_tooltip__")) {
-            const href = mutation.target.querySelector(
-              'a[class^="navigator_item_link__"]'
-            )?.href;
+            const href = getHref(mutation.target);
             if (href) {
               hidePreview(href);
             }
