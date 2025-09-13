@@ -246,7 +246,7 @@
     "message": "주간 랭킹 숨기기"
   },
   "styles_hide_mission": {
-    "message": "진행 중인 미션 숨기기"
+    "message": "진행 중인 미션 및 파티 숨기기"
   },
   "styles_left_chat": {
     "message": "왼쪽 배치"
