@@ -575,7 +575,9 @@
         const rect = item.getBoundingClientRect();
         e.dataTransfer.effectAllowed = "copy";
         e.dataTransfer.setDragImage(
-          item.parentElement,
+          item.className.startsWith("navigator_item_link__")
+            ? item.parentElement
+            : item,
           e.clientX - rect.x,
           e.clientY - rect.y
         );
@@ -585,6 +587,17 @@
         item.style.opacity = "";
         document.body.classList.remove("knife-dragging");
       });
+
+      if (item.className.startsWith("navigator_group__")) {
+        item.addEventListener("mouseenter", () => {
+          if (config.preview) {
+            showPreview(item.href, item.parentNode.parentNode, true);
+          }
+        });
+        item.addEventListener("mouseleave", () => {
+          hidePreview(item.href);
+        });
+      }
     };
 
     const items = sidebar.querySelectorAll("a");
