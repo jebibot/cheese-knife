@@ -50,6 +50,12 @@ jobs:
       - name: Build
         run: npm run build:chrome
 
+      - name: Upload dist.crx
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist.crx
+          path: dist.crx
+
       - name: Build Firefox
         run: npm run build:firefox
 
@@ -58,9 +64,3 @@ jobs:
         env:
           WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
           WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
-
-      - name: Upload dist.crx
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist.crx
-          path: dist.crx
