@@ -32,9 +32,11 @@ jobs:
         run: npm ci
 
       - name: Increment version
+        if: ${{ github.event.inputs.version != 'none' }}
         run: npm version --no-git-tag-version ${{ github.event.inputs.version }}
 
       - name: Push and tag version
+        if: ${{ github.event.inputs.version != 'none' }}
         run: |
           VERSION=$(jq -r ".version" package.json)
           git config user.name "Jebibot"
@@ -45,7 +47,9 @@ jobs:
           git push --follow-tags
 
       - name: Create key.pem
-        run: echo "${{ secrets.CHROME_CRX_KEY }}" > key.pem
+        run: |
+          echo "${{ secrets.CHROME_CRX_KEY }}" > key.pem
+          chmod 600 key.pem
 
       - name: Build
         run: npm run build:chrome
