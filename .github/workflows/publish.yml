@@ -48,7 +48,7 @@ jobs:
         run: echo "${{ secrets.CHROME_CRX_KEY }}" > key.pem
 
       - name: Build
-        run: npm run build:chrome
+        run: npm run build
 
       - name: Publish to Chrome Web Store
         uses: puzzlers-labs/chrome-webstore-publish@010fc578dea8e3a05e15af75b836be821ee9ab74
