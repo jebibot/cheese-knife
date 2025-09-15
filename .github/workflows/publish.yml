@@ -50,18 +50,21 @@ jobs:
       - name: Build
         run: npm run build:chrome
 
-      - name: Publish extension
-        run: npm run publish:chrome
-        env:
-          CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
-          EXTENSION_ID: ${{ secrets.CHROME_APP_ID }}
+      - name: Publish to Chrome Web Store
+        uses: puzzlers-labs/chrome-webstore-publish@010fc578dea8e3a05e15af75b836be821ee9ab74
+        with:
+          mode: publish
+          extension_id: ${{ secrets.CHROME_APP_ID }}
+          zip_file_path: ./extension.zip
+          client_id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          client_secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          refresh_token: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          crx_private_key: ${{ secrets.CHROME_CRX_KEY }}
 
       - name: Build Firefox
         run: npm run build:firefox
 
-      - name: Publish Firefox add-on
+      - name: Publish to Firefox add-on
         run: npm run publish:firefox
         env:
           WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
