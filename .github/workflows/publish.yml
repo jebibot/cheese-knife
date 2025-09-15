@@ -50,11 +50,13 @@ jobs:
       - name: Build
         run: npm run build:chrome
 
-      - name: Upload dist.crx
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist.crx
-          path: dist.crx
+      - name: Publish extension
+        run: npm run publish:chrome
+        env:
+          CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          EXTENSION_ID: ${{ secrets.CHROME_APP_ID }}
 
       - name: Build Firefox
         run: npm run build:firefox
