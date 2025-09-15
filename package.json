@@ -4,14 +4,15 @@
   "description": "A CHZZK toolkit",
   "private": true,
   "scripts": {
-    "build": "zip -r extension.zip _locales web styles *.html *.js *.css *.png manifest.json",
-    "build:firefox": "mkdir -p dist && cp -r _locales web styles *.html *.js *.css *.png dist && jq '.background = {scripts: [\"background.js\"]}' manifest.json > dist/manifest.json",
+    "build": "rm -rf dist && mkdir -p dist && cp -r _locales web styles *.html *.js *.css *.png manifest.json dist",
+    "build:chrome": "npm run build && google-chrome --pack-extension=./dist --pack-extension-key=key.pem",
+    "build:firefox": "npm run build && jq '.background = {scripts: [\"background.js\"]}' manifest.json > dist/manifest.json",
     "postversion": "manifest=\"$(jq \".version = `jq '.version' package.json`\" manifest.json)\" && echo \"$manifest\" > manifest.json",
-    "publish": "chrome-webstore-upload upload --source=extension.zip --auto-publish",
+    "publish:chrome": "node lib/upload.js",
     "publish:firefox": "cd dist && web-ext sign --channel listed --approval-timeout 60000"
   },
   "devDependencies": {
-    "chrome-webstore-upload-cli": "^3.4.0",
+    "chrome-webstore-upload": "^3.2.0",
     "web-ext": "^8.9.0"
   }
 }

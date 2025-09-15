@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install latest npm
@@ -44,8 +44,19 @@ jobs:
           git tag -a "v$VERSION" -m "v$VERSION"
           git push --follow-tags
 
+      - name: Create key.pem
+        run: echo "${{ secrets.CHROME_CRX_KEY }}" > key.pem
+
       - name: Build
-        run: npm run build
+        run: npm run build:chrome
+
+      - name: Publish extension
+        run: npm run publish:chrome
+        env:
+          CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          EXTENSION_ID: ${{ secrets.CHROME_APP_ID }}
 
       - name: Build Firefox
         run: npm run build:firefox
