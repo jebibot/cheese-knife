@@ -51,7 +51,7 @@ jobs:
         run: npm run build:chrome
 
       - name: Publish to Chrome Web Store
-        uses: puzzlers-labs/chrome-webstore-publish@010fc578dea8e3a05e15af75b836be821ee9ab74
+        uses: puzzlers-labs/chrome-webstore-publish@67add299febc50e2bc2f37c0dce14daf975f1e11
         with:
           mode: publish
           extension_id: ${{ secrets.CHROME_APP_ID }}
