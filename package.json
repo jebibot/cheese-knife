@@ -5,10 +5,8 @@
   "private": true,
   "scripts": {
     "build": "rm -rf dist && mkdir -p dist && cp -r _locales web styles *.html *.js *.css *.png manifest.json dist",
-    "build:chrome": "npm run build && google-chrome --pack-extension=./dist --pack-extension-key=key.pem",
-    "build:firefox": "npm run build && jq '.background = {scripts: [\"background.js\"]}' manifest.json > dist/manifest.json",
     "postversion": "manifest=\"$(jq \".version = `jq '.version' package.json`\" manifest.json)\" && echo \"$manifest\" > manifest.json",
-    "publish:chrome": "node lib/upload.mjs",
+    "publish:chrome": "google-chrome --headless --no-sandbox --disable-crash-reporter --no-crashpad --pack-extension=./dist --pack-extension-key=key.pem && node lib/upload.mjs",
     "publish:firefox": "cd dist && web-ext sign --channel listed --approval-timeout 60000"
   },
   "devDependencies": {
