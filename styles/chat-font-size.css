@@ -56,10 +56,6 @@
 .live_chatting_message_container__vrI-y:not(
     .live_chatting_message_is_overlay__cALCf
   )
-  button.live_chatting_message_nickname__UdLXa,
-.live_chatting_message_container__vrI-y:not(
-    .live_chatting_message_is_overlay__cALCf
-  )
   .live_chatting_message_chatting_message__7TKns,
 .live_chatting_mission_message_container__05yWF.live_chatting_mission_message_is_fixed__STwnu
   .live_chatting_mission_message_text_container__pj6Kx,
@@ -237,12 +233,15 @@
     .live_chatting_username_is_overlay__A8Xmr
   ):not(.live_chatting_username_is_donation__eXMYs):not(
     .live_chatting_username_donation_alarm__xEM44
-  ):not(
-    .live_chatting_username_is_subscription__G\+gtA
+  ):not(.live_chatting_username_is_subscription__G\+gtA):not(
+    .live_chatting_username_is_mission__TVMIj
   ).live_chatting_username_is_message__jvTvP {
   line-height: 1.286 !important;
-  padding-left: calc(var(--knife-chat-size-20) + 2px) !important;
-  padding-right: calc(var(--knife-chat-size-20) + 4px) !important;
+  margin-top: calc(-1 * var(--knife-chat-size-20) - 3px) !important;
+  margin-bottom: calc(-1 * var(--knife-chat-size-20) - 3px) !important;
+  padding: calc(var(--knife-chat-size-20) + 2px)
+    calc(var(--knife-chat-size-20) + 4px) calc(var(--knife-chat-size-20) + 2px)
+    calc(var(--knife-chat-size-20) + 2px) !important;
 }
 
 .live_chatting_username_wrapper__iJpJB {
