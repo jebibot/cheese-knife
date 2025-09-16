@@ -272,9 +272,9 @@
       preview.style.position = "fixed";
       preview.style.marginTop = "0.25rem";
       if (parseInt(getComputedStyle(node).getPropertyValue("left")) < 0) {
-        right = rootRect.width - rect.right;
+        right = rootRect.width - rect.right + 5;
       } else {
-        left = rect.left;
+        left = rect.left + 5;
       }
       top = rect.bottom;
     } else {

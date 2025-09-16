@@ -22,6 +22,8 @@
 [class^="navigator_tooltip__"] {
   left: auto !important;
   right: calc(100% + 5px);
+  padding-left: 0 !important;
+  padding-right: 5px;
 }
 
 [class^="aside_content__"][class*="aside_show_tooltip__"] {
