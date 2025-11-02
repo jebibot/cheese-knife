@@ -511,6 +511,15 @@
       try {
         refreshSidebar(sidebar);
       } catch {}
+
+      const banner = node.querySelector('[class^="band_banner_container__"]');
+      if (banner && !banner.querySelector("button")) {
+        const button = document.createElement("button");
+        button.classList.add("band_banner_button__ozNIO");
+        button.innerHTML = `<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 10L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path><path d="M20.0001 10L10.0001 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg><span class="blind">닫기</span>`;
+        button.addEventListener("click", getReactFiber(banner).return.memoizedProps.closeHandler);
+        banner.appendChild(button);
+      }
     };
     const layoutWrap = await waitFor('[class^="layout_glive__"]');
     if (layoutWrap == null) {
