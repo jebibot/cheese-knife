@@ -100,7 +100,7 @@
     ) {
       isPopup = true;
     }
-  } catch {}
+  } catch { }
 
   let first = true;
   let config = {};
@@ -218,7 +218,7 @@
       info = live.content;
       try {
         info.livePlayback = JSON.parse(info.livePlaybackJson);
-      } catch {}
+      } catch { }
       liveInfo[uid] = info;
     }
     if (info == null) {
@@ -235,7 +235,7 @@
     let Player;
     try {
       Player = (await getWebpackRequire)(49588);
-    } catch {}
+    } catch { }
 
     hidePreview();
     currentPreview = uid;
@@ -502,17 +502,16 @@
   const attachLayoutObserver = async () => {
     const init = (node) => {
       const sidebar = node.querySelector('[class^="aside_content__"]');
-      if (sidebar == null) {
-        return;
+      if (sidebar != null) {
+        try {
+          initSidebarFeatures(sidebar);
+        } catch { }
+        try {
+          refreshSidebar(sidebar);
+        } catch { }
       }
-      try {
-        initSidebarFeatures(sidebar);
-      } catch {}
-      try {
-        refreshSidebar(sidebar);
-      } catch {}
 
-      const banner = node.querySelector('[class^="band_banner_container__"]');
+      const banner = node.className.startsWith("band_banner_container__") ? node : node.querySelector('[class^="band_banner_container__"]');
       if (banner && !banner.querySelector("button")) {
         const button = document.createElement("button");
         button.classList.add("band_banner_button__ozNIO");
@@ -547,7 +546,7 @@
           (context) => context.navigator != null
         )
       )?.navigator;
-    } catch {}
+    } catch { }
 
     const offset = window
       .getComputedStyle(document.documentElement)
@@ -559,7 +558,7 @@
           (state) => state.length === 3 && state[2]?.toString() === "atom100"
         );
         topOffset?.[1].set(topOffset[2], parseInt(offset));
-      } catch {}
+      } catch { }
     }
   };
 
@@ -777,7 +776,7 @@
         let info;
         try {
           info = window.__getLiveInfo?.();
-        } catch {}
+        } catch { }
         try {
           const selected = Array.from(corePlayer.videoTracks).find(
             (t) => t.selected
@@ -799,7 +798,7 @@
           if (track?.avoidReencoding) {
             info.resolution += " (원본)";
           }
-        } catch {}
+        } catch { }
         if (info == null) {
           return;
         }
@@ -885,7 +884,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
             (state) => state.length === 3 && state[2]?.toString() === "atom7"
           );
           liveWide?.[1].set(liveWide[2], true);
-        } catch {}
+        } catch { }
       }
 
       const playButton = pzp.querySelector(".pzp-pc__playback-switch");
@@ -908,12 +907,12 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
           });
           ffButton.$mount();
           playButton.insertAdjacentElement("afterend", ffButton.$el);
-        } catch {}
+        } catch { }
       }
 
       try {
         addStatsMenu();
-      } catch {}
+      } catch { }
     }
 
     const volumeControl = pzp.querySelector(".pzp-pc__volume-control");
@@ -997,7 +996,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
                     try {
                       this.ctx.addEventListener("statechange", tryEnable);
                       this.ctx.resume();
-                    } catch {}
+                    } catch { }
                     return;
                   }
                   this.source = this.ctx.createMediaElementSource(video);
@@ -1029,7 +1028,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         }
         compressor.$mount();
         volumeControl.insertAdjacentElement("afterend", compressor.$el);
-      } catch {}
+      } catch { }
     }
 
     if (!isLive) {
@@ -1337,7 +1336,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       addResizeHandle(
         isLive ? chattingContainer : chattingContainer.parentNode
       );
-    } catch {}
+    } catch { }
 
     if (isLive && isPopup) {
       setTimeout(() => {
@@ -1368,7 +1367,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     let jsx;
     try {
       jsx = (await getWebpackRequire)(44414).jsx;
-    } catch {}
+    } catch { }
     if (isLive && jsx != null) {
       const originalBlindListener = chatController.notiBlindListener;
       chatController.notiBlindListener = function (message) {
@@ -1578,7 +1577,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       } else {
         await Promise.all([attachLayoutObserver(), attachBodyObserver()]);
       }
-    } catch {}
+    } catch { }
     rootObserver.disconnect();
   })();
 })();
