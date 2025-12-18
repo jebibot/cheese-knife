@@ -1339,13 +1339,15 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     } catch { }
 
     if (isLive && isPopup) {
-      setTimeout(() => {
+      const foldChat = () => {
         chattingContainer
           .querySelector(
             '[class*="live_chatting_header_fold__"] > [class^="live_chatting_header_button__"]'
           )
           ?.click();
-      }, 300);
+      };
+      setTimeout(foldChat, 300);
+      setTimeout(foldChat, 2000);
     }
 
     if (chatController.knifePatched) {
