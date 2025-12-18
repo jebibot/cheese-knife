@@ -153,7 +153,7 @@
           continue;
         }
         for (const elem of waiting) {
-          const node = n.querySelector(elem.query);
+          const node = n.matches(elem.query) && n || n.querySelector(elem.query);
           if (node != null) {
             elem.resolve(node);
           }
