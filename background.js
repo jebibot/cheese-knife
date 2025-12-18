@@ -55,6 +55,7 @@ async function registerStyles(styles) {
       "hide-ranking",
       "hide-recommended-live",
       "hide-recommended",
+      "hide-schedule",
       "hide-sidebar-partner",
       "hide-shortcut",
       "hide-studio",

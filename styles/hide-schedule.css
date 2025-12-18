@@ -1,0 +1,3 @@
+[class^="aside_content__"] [class^="navigation_bar_section__"]:nth-last-child(4) {
+  display: none !important;
+}

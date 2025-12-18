@@ -24,6 +24,7 @@ const STYLES = [
     styles: [
       { id: "hide-offline" },
       { id: "hide-recommended" },
+      { id: "hide-schedule" },
       { id: "hide-sidebar-partner" },
       { id: "hide-shortcut" },
       { id: "right-sidebar" },

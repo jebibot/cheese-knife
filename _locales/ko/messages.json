@@ -260,6 +260,9 @@
   "styles_hide_recommended": {
     "message": "인기 카테고리 숨기기"
   },
+  "styles_hide_schedule": {
+    "message": "다가오는 방송 일정 숨기기"
+  },
   "styles_hide_sidebar_partner": {
     "message": "파트너 스트리머 숨기기"
   },

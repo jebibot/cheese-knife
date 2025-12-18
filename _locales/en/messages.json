@@ -257,6 +257,9 @@
   "styles_hide_recommended": {
     "message": "Hide popular categories"
   },
+  "styles_hide_schedule": {
+    "message": "Hide upcoming schedules"
+  },
   "styles_hide_sidebar_partner": {
     "message": "Hide partner streamers"
   },
