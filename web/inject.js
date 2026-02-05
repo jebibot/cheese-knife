@@ -564,7 +564,7 @@
       try {
         const topOffset = await findReactState(
           layoutWrap,
-          (state) => state.length === 3 && state[2]?.toString() === "atom103"
+          (state) => state.length === 3 && state[2]?.toString() === "atom104"
         );
         topOffset?.[1].set(topOffset[2], parseInt(offset));
       } catch { }
@@ -675,7 +675,7 @@
         const sidebarEffect = await findReactState(
           section,
           (state) =>
-            state.tag === 8 && state.destroy == null && state.deps?.length > 2
+            state.tag === 8 && state.destroy == null && state.deps?.length === 2
         );
         sidebarEffect?.create?.();
       }
@@ -1469,7 +1469,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       const vodObserver = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
           for (const n of mutation.addedNodes) {
-            if (n.className?.startsWith?.("vod_chatting__")) {
+            if (n.tagName === "ASIDE") {
               initChatFeatures(
                 n.querySelector('[class^="vod_chatting_container__"]'),
                 false

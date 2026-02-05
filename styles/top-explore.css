@@ -41,4 +41,8 @@
     + [class^="navigation_bar_item__"] {
     margin-top: 0;
   }
+
+  [class^="aside_banner__"] {
+    display: none !important;
+  }
 }

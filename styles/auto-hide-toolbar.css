@@ -11,11 +11,9 @@ html {
 }
 
 [class^="header_container__"] {
-  top: -45px !important;
-  margin-top: -45px;
   transition: transform ease-in-out 100ms;
 }
 
 [class^="header_container__"]:hover {
-  transform: translateY(45px);
+  transform: translateY(0px) !important;
 }
