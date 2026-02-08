@@ -1,6 +1,6 @@
 @media (min-width: 1200px) {
   [class^="aside_container__"] {
-    z-index: 14000 !important;
+    z-index: 13900 !important;
   }
 
   [class^="aside_content__"] [class^="navigation_bar_section__"]:first-child {

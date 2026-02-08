@@ -11,9 +11,19 @@ html {
 }
 
 [class^="header_container__"] {
+  margin-top: -45px;
   transition: transform ease-in-out 100ms;
 }
 
 [class^="header_container__"]:hover {
   transform: translateY(0px) !important;
+}
+
+[class^="skin_container__"] + [class^="header_container__"]:hover {
+  transform: translateY(160px) !important;
+}
+
+[class^="skin_container__"][class*="skin_is_scrolled__"]
+  + [class^="header_container__"]:hover {
+  transform: translateY(50px) !important;
 }

@@ -5,7 +5,7 @@ html {
 aside[class^="live_chatting_container__"]:not(
     [class*="live_chatting_is_popup_chat__"]
   ),
-div[class^="vod_chatting__"] {
+aside[class^="vod_aside__"] {
   width: var(--knife-chat-width, 353px);
   max-width: calc(100% - 24px);
 }
@@ -17,7 +17,7 @@ div.miniplayer:not(.is_large) {
 
 @media screen and (max-aspect-ratio: 1 / 1) {
   aside[class^="live_chatting_container__"][class*="live_chatting_is_large__"],
-  [class*="vod_is_large__"] [class^="vod_chatting__"] {
+  [class*="vod_is_large__"] [class^="vod_aside__"] {
     width: 100%;
     max-width: none;
   }
