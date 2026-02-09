@@ -646,7 +646,7 @@
           }
         }
         for (const n of mutation.removedNodes) {
-          if (n.className.startsWith?.("navigator_tooltip__")) {
+          if (n.className?.startsWith?.("navigator_tooltip__")) {
             const href = getHref(mutation.target);
             if (href) {
               hidePreview(href);
