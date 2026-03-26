@@ -564,7 +564,7 @@
       try {
         const topOffset = await findReactState(
           layoutWrap,
-          (state) => state.length === 3 && state[2]?.toString() === "atom104"
+          (state) => state.length === 3 && typeof state[0] === "number"
         );
         topOffset?.[1].set(topOffset[2], parseInt(offset));
       } catch { }
