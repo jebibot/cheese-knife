@@ -33,17 +33,6 @@
   "action": {
     "default_popup": "popup.html"
   },
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "web/inject.js"
-      ],
-      "matches": [
-        "*://*.chzzk.naver.com/*"
-      ],
-      "use_dynamic_url": true
-    }
-  ],
   "background": {
     "scripts": [
       "background.js"
@@ -61,11 +50,62 @@
         "web/main.css"
       ],
       "matches": [
-        "*://*.chzzk.naver.com/*"
+        "*://chzzk.naver.com/*"
       ],
-      "exclude_globs": [
-        "*://api.chzzk.naver.com/*"
+      "exclude_matches": [
+        "*://chzzk.naver.com/chat/*",
+        "*://chzzk.naver.com/donation/*",
+        "*://chzzk.naver.com/video-donation/*",
+        "*://chzzk.naver.com/mission-donation/*",
+        "*://chzzk.naver.com/party-donation/*",
+        "*://chzzk.naver.com/gift-effect/*",
+        "*://chzzk.naver.com/product-purchase/*",
+        "*://chzzk.naver.com/close*",
+        "*://chzzk.naver.com/*/profile/*",
+        "*://chzzk.naver.com/embed/*",
+        "*://chzzk.naver.com/error*",
+        "*://chzzk.naver.com/subs_integration*",
+        "*://chzzk.naver.com/event/*",
+        "*://chzzk.naver.com/partner*",
+        "*://chzzk.naver.com/clip-editor*",
+        "*://chzzk.naver.com/account-interlock*",
+        "*://chzzk.naver.com/watchparty-source/*",
+        "*://chzzk.naver.com/prime/*",
+        "*://chzzk.naver.com/settings/*",
+        "*://chzzk.naver.com/broadcast-information*"
       ]
+    },
+    {
+      "all_frames": true,
+      "js": [
+        "web/inject.js"
+      ],
+      "matches": [
+        "*://chzzk.naver.com/*"
+      ],
+      "exclude_matches": [
+        "*://chzzk.naver.com/chat/*",
+        "*://chzzk.naver.com/donation/*",
+        "*://chzzk.naver.com/video-donation/*",
+        "*://chzzk.naver.com/mission-donation/*",
+        "*://chzzk.naver.com/party-donation/*",
+        "*://chzzk.naver.com/gift-effect/*",
+        "*://chzzk.naver.com/product-purchase/*",
+        "*://chzzk.naver.com/close*",
+        "*://chzzk.naver.com/*/profile/*",
+        "*://chzzk.naver.com/embed/*",
+        "*://chzzk.naver.com/error*",
+        "*://chzzk.naver.com/subs_integration*",
+        "*://chzzk.naver.com/event/*",
+        "*://chzzk.naver.com/partner*",
+        "*://chzzk.naver.com/clip-editor*",
+        "*://chzzk.naver.com/account-interlock*",
+        "*://chzzk.naver.com/watchparty-source/*",
+        "*://chzzk.naver.com/prime/*",
+        "*://chzzk.naver.com/settings/*",
+        "*://chzzk.naver.com/broadcast-information*"
+      ],
+      "world": "MAIN"
     }
   ]
 }
