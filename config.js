@@ -105,6 +105,15 @@ var CONFIGS = [
             defaultValue: 1,
           },
           {
+            id: "saturation",
+            type: "range",
+            min: 0,
+            max: 3,
+            step: 0.05,
+            digits: 2,
+            defaultValue: 1,
+          },
+          {
             id: "gamma",
             type: "range",
             min: 0,

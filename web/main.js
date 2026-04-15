@@ -129,6 +129,16 @@ if (
       }
     }
 
+    const sat = config.saturation;
+    if (!isNaN(sat) && sat !== 1) {
+      const color = createSVGElement("feColorMatrix");
+      color.setAttribute("type", "saturate");
+      const v = svg.createSVGNumber();
+      v.value = sat;
+      color.values.baseVal.initialize(v);
+      filters.push(color);
+    }
+
     const s = config.sharpness;
     if (s > 0) {
       const v = Number((s / 5).toFixed(2));

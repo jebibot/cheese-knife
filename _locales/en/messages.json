@@ -86,6 +86,9 @@
   "config_contrast": {
     "message": "Contrast"
   },
+  "config_saturation": {
+    "message": "Saturation"
+  },
   "config_gamma": {
     "message": "Gamma"
   },
