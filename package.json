@@ -10,7 +10,7 @@
     "publish:firefox": "cd dist && web-ext sign --channel listed --approval-timeout 60000"
   },
   "devDependencies": {
-    "chrome-webstore-upload": "^3.2.0",
+    "chrome-webstore-upload": "^4.0.3",
     "web-ext": "^8.9.0"
   }
 }
