@@ -1,3 +1,4 @@
+main[class^="_container_"],
 [class^="live_wrapper__"],
 [class^="vod_player__"] {
   flex-direction: row-reverse !important;
@@ -12,6 +13,7 @@
 }
 
 @media screen and (max-aspect-ratio: 1 / 1) {
+  [class*="_is_large_"] main[class^="_container_"],
   [class^="live_container__"][class*="live_is_large__"] [class^="live_wrapper__"],
   [class^="vod_container__"][class*="vod_is_large__"] [class^="vod_player__"] {
     flex-direction: column-reverse !important;

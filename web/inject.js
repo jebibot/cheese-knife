@@ -111,7 +111,7 @@
       if (c.expandFollowings) {
         setTimeout(() => {
           const button = document.querySelector(
-            '[class*="navigation_bar_more_button__"]'
+            '[class*="_more_button_"], [class*="navigation_bar_more_button__"]'
           );
           if (
             button?.ariaExpanded === "false" &&
@@ -426,6 +426,10 @@
 
   const numberFormatter = new Intl.NumberFormat("ko-KR");
   const padNumber = (n, len) => n.toString().padStart(len, "0");
+  const hasGeneratedClass = (node, prefix) =>
+    String(node?.className || "")
+      .split(/\s+/)
+      .some((name) => name.startsWith(`_${prefix}_`));
   const formatTimestamp = (t) => {
     t = Math.floor(t / 1000);
     const h = Math.floor(t / 3600);
@@ -505,7 +509,9 @@
   let routeNavigator;
   const attachLayoutObserver = async () => {
     const init = (node) => {
-      const sidebar = node.querySelector('[class^="aside_content__"]');
+      const sidebar =
+        node.querySelector('aside[aria-label="사이드바"]') ||
+        node.querySelector('[class^="aside_content__"]');
       if (sidebar != null) {
         try {
           initSidebarFeatures(sidebar);
@@ -529,7 +535,9 @@
         banner.appendChild(button);
       }
     };
-    const layoutWrap = await waitFor('[class^="layout_glive__"]');
+    const layoutWrap = await waitFor(
+      '[class*="_glive_"], [class^="layout_glive__"]'
+    );
     if (layoutWrap == null) {
       return;
     }
@@ -668,9 +676,9 @@
     refreshInterval = setInterval(async () => {
       if (config.updateSidebar) {
         if (section == null) {
-          section = sidebar.querySelector(
-            '[class^="navigation_bar_header__"]'
-          ).parentNode;
+          section =
+            sidebar.querySelector('[class^="navigation_bar_header__"]')
+              ?.parentNode || sidebar.querySelector("nav");
         }
         const sidebarEffect = await findReactState(
           section,
@@ -688,9 +696,16 @@
         return;
       }
       hidePreview();
-      if (node.className.startsWith?.("live_")) {
+      const path = location.pathname;
+      if (
+        node.className.startsWith?.("live_") ||
+        (path.startsWith("/live/") && node.querySelector("aside"))
+      ) {
         return attachLiveObserver(node);
-      } else if (node.className.startsWith?.("vod_")) {
+      } else if (
+        node.className.startsWith?.("vod_") ||
+        path.startsWith("/video/")
+      ) {
         return attachVodObserver(node);
       } else if (node.className.startsWith?.("channel_")) {
         return initChannelFeatures(node);
@@ -1271,7 +1286,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
   const attachChatObserver = async (chattingContainer, isLive) => {
     const wrapper = chattingContainer?.querySelector?.(
       isLive
-        ? '[class^="live_chatting_list_wrapper__"]'
+        ? '[role="log"] [class^="_wrapper_"], [class^="live_chatting_list_wrapper__"]'
         : '[class^="vod_chatting_list__"]'
     );
     if (wrapper == null) {
@@ -1290,9 +1305,9 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       for (const mutation of mutations) {
         for (const n of mutation.addedNodes) {
           if (
-            n.className?.startsWith?.(
-              isLive ? "live_chatting_list_item__" : "vod_chatting_item__"
-            )
+            isLive
+              ? hasGeneratedClass(n, "item")
+              : n.className?.startsWith?.("vod_chatting_item__")
           ) {
             const props = getReactProps(n);
             const message = props?.children?.props?.chatMessage;
@@ -1300,7 +1315,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
               continue;
             }
             const wrapper = n.querySelector(
-              '[class^="live_chatting_message_chatting_message__"]'
+              '[class^="_chatting_message_"], [class^="live_chatting_message_chatting_message__"]'
             );
             if (wrapper == null || wrapper.dataset.timestamp) {
               continue;
@@ -1351,7 +1366,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       const foldChat = () => {
         chattingContainer
           .querySelector(
-            '[class*="live_chatting_header_fold__"] > [class^="live_chatting_header_button__"]'
+            '[class*="_fold_"] > [class^="_button_"], [class*="live_chatting_header_fold__"] > [class^="live_chatting_header_button__"]'
           )
           ?.click();
       };
@@ -1420,7 +1435,9 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       return;
     }
 
-    const wrapper = node.querySelector('[class^="live_wrapper__"]');
+    const wrapper =
+      node.querySelector("main") ||
+      node.querySelector('[class^="live_wrapper__"]');
     if (wrapper != null) {
       const liveObserver = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
@@ -1434,12 +1451,15 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       liveObserver.observe(wrapper, { childList: true });
     }
 
-    const player = node.querySelector('[class^="live_information_player__"]');
+    const player =
+      node.querySelector('[class^="_player_"]') ||
+      node.querySelector('[class^="live_information_player__"]');
     if (player != null) {
       const playerObserver = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
           for (const n of mutation.addedNodes) {
             if (
+              hasGeneratedClass(n, "player") ||
               n.className?.startsWith?.("live_information_video_container__")
             ) {
               attachPlayerObserver(n, true);
@@ -1452,7 +1472,9 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
 
     return Promise.all([
       attachPlayerObserver(
-        node.querySelector('[class^="live_information_video_container__"]'),
+        node.querySelector(
+          '[class^="_player_"], [class^="live_information_video_container__"]'
+        ),
         true
       ),
       initChatFeatures(node.querySelector("aside"), true),

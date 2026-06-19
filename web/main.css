@@ -118,6 +118,7 @@
   color: var(--color-content-04);
 }
 
+[role="log"] [class^="_text_"]:has(.knife-deleted)::after,
 [class^="live_chatting_message_text__"]:has(.knife-deleted)::after {
   margin-left: 4px;
   content: "__MSG_content_deletedMessage__";

@@ -2,7 +2,9 @@ html {
   --knife-top-offset: -45px;
 }
 
+[class*="_glive_"]:has(> header[aria-label="헤더"]:hover),
 [class^="layout_glive__"]:has(> [class^="header_container__"]:hover),
+[class*="_glive_"]:has(aside[aria-label="사이드바"] nav:first-child:hover),
 [class^="layout_glive__"]:has(
     [class^="aside_content__"]
       [class^="navigation_bar_section__"]:first-child:hover
@@ -10,11 +12,13 @@ html {
   --knife-top-explore-top: -11px;
 }
 
+header[aria-label="헤더"],
 [class^="header_container__"] {
   margin-top: -45px;
   transition: transform ease-in-out 100ms;
 }
 
+header[aria-label="헤더"]:hover,
 [class^="header_container__"]:hover {
   transform: translateY(0px) !important;
 }

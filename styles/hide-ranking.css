@@ -1,3 +1,4 @@
+[class^="_container_"]:has(> [class^="_ranking_button_"]),
 [class^="live_chatting_ranking_container__"] {
   display: none !important;
 }

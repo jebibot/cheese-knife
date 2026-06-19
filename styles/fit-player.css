@@ -2,10 +2,12 @@
   max-height: 100% !important;
 }
 
+[class^="_player_"],
 [class^="live_information_player__"] {
   max-height: calc(100vh - 60px);
 }
 
+[class*="_is_large_"] [class^="_player_"],
 [class*="live_information_is_large__"] [class^="live_information_player__"] {
   max-height: none;
 }

@@ -1,3 +1,4 @@
+aside[aria-label="사이드바"] nav:nth-last-of-type(4),
 [class^="aside_content__"] [class^="navigation_bar_section__"]:nth-last-child(4) {
   display: none !important;
 }
