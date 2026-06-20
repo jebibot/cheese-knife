@@ -77,15 +77,19 @@
 
   const getWebpackRequire = new Promise((resolve) => {
     const id = "knife";
-    window.webpackChunkglive_fe_pc.push([
-      [id],
-      {
-        [id]: (module, exports, __webpack_require__) => {
-          resolve(__webpack_require__);
+    try {
+      window.webpackChunkglive_fe_pc.push([
+        [id],
+        {
+          [id]: (module, exports, __webpack_require__) => {
+            resolve(__webpack_require__);
+          },
         },
-      },
-      (req) => req(id),
-    ]);
+        (req) => req(id),
+      ]);
+    } catch {
+      resolve(null);
+    }
   });
 
   const i18n = JSON.parse(
@@ -182,6 +186,15 @@
   rootObserver.observe(root, { childList: true, subtree: true });
 
   const liveInfo = {};
+  // HLS.js 동적 로드 (페이지 로드 시 미리 로드)
+  let hlsLib = null;
+  const loadHls = () => new Promise((resolve) => {
+    if (hlsLib != null) return resolve(hlsLib);
+    if (typeof Hls !== 'undefined') { hlsLib = Hls; return resolve(hlsLib); }
+    resolve(null);
+  });
+  // 페이지 로드 즉시 HLS.js 프리로드
+  loadHls();
   let currentPreview;
   let preview;
   let previewPlayer;
@@ -191,6 +204,7 @@
   let previewInterval;
   let previewAnimation;
   const playPreview = () => {
+    if (previewPlayer == null) return;
     previewPlayer.play().catch((e) => {
       if (e.name !== "AbortError") {
         previewPlayer.muted = true;
@@ -198,6 +212,7 @@
       }
     });
   };
+  let previewHls = null;
 
   const showPreview = async (href, node, tooltip) => {
     const url = new URL(href);
@@ -236,10 +251,24 @@
     const rootRect = root.getBoundingClientRect();
     const width = Math.max(config.previewWidth, rect.width);
 
-    let Player;
+    let Player = null;
     try {
       Player = (await getWebpackRequire)(49588);
     } catch { }
+    if (Player == null) {
+      try {
+        const corePlayer = await getCorePlayer();
+        if (corePlayer != null) {
+          Player = {
+            CorePlayer: corePlayer.constructor,
+            LiveProvider: corePlayer.srcObject?.constructor,
+          };
+        }
+      } catch { }
+    }
+
+    // 실패 시 HLS.js fallback
+    const HlsLib = Player == null ? await loadHls() : null;
 
     hidePreview();
     currentPreview = uid;
@@ -258,6 +287,11 @@
       if (Player?.CorePlayer != null) {
         previewPlayer = new Player.CorePlayer();
         playerContainer.appendChild(previewPlayer.shadowRoot);
+      } else if (HlsLib != null) {
+        previewPlayer = document.createElement('video');
+        previewPlayer.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;display:block;';
+        previewPlayer.playsInline = true;
+        playerContainer.appendChild(previewPlayer);
       }
 
       previewUptime = document.createElement("div");
@@ -314,7 +348,11 @@
     ).replace("{type}", 480);
 
     if (previewPlayer != null) {
-      previewPlayer.shadowRoot.style.visibility = "hidden";
+      if (Player?.CorePlayer != null) {
+        previewPlayer.shadowRoot.style.visibility = "hidden";
+      } else {
+        previewPlayer.style.visibility = "hidden";
+      }
       previewPlayer.volume = config.previewVolume / 100;
     }
 
@@ -331,20 +369,35 @@
       }
       if (previewAvailable) {
         if (step === Math.max(0, delay - 9)) {
-          previewPlayer.srcObject = Player.LiveProvider.fromJSON(
-            info.livePlayback,
-            {
-              devt: "HTML5_PC",
-              serviceId: 2099,
-              countryCode: "kr",
-              p2pDisabled: true,
-              maxLevel: 480,
+          if (Player?.LiveProvider != null) {
+            previewPlayer.srcObject = Player.LiveProvider.fromJSON(
+              info.livePlayback,
+              {
+                devt: "HTML5_PC",
+                serviceId: 2099,
+                countryCode: "kr",
+                p2pDisabled: true,
+                maxLevel: 480,
+              }
+            );
+          } else {
+            const m3u8 = info.livePlayback?.media
+              ?.find(m => m.mediaId === 'HLS')?.path;
+            if (m3u8) {
+              if (previewHls) { previewHls.destroy(); }
+              previewHls = new HlsLib({ maxBufferLength: 8, maxMaxBufferLength: 16 });
+              previewHls.loadSource(m3u8);
+              previewHls.attachMedia(previewPlayer);
             }
-          );
+          }
         }
         if (step === delay - 1) {
           previewProgress.style.display = "none";
-          previewPlayer.shadowRoot.style.visibility = "";
+          if (Player?.CorePlayer != null) {
+            previewPlayer.shadowRoot.style.visibility = "";
+          } else {
+            previewPlayer.style.visibility = "";
+          }
           if (previewPlayer.readyState) {
             playPreview();
           } else {
@@ -394,7 +447,11 @@
     cancelAnimationFrame(previewAnimation);
     if (previewPlayer != null) {
       previewPlayer.removeEventListener("loadedmetadata", playPreview);
+      if (previewHls) { previewHls.destroy(); previewHls = null; }
       previewPlayer.src = "";
+      if (previewPlayer.shadowRoot) {
+        previewPlayer.shadowRoot.style.visibility = "hidden";
+      }
     }
     preview.style.display = "none";
     previewThumbnail.src = "";

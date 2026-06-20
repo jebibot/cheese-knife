@@ -78,6 +78,7 @@
     {
       "all_frames": true,
       "js": [
+        "vendor/hls.min.js",
         "web/inject.js"
       ],
       "matches": [
