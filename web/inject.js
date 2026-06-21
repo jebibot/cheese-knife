@@ -697,6 +697,15 @@
       }
       hidePreview();
       const path = location.pathname;
+      const extractUid = (node) => {
+        const anchor = node.querySelector('a[href*="profile/"]');
+        if (!anchor) return null;
+        const href = anchor.getAttribute('href');
+        const match = href.match(/profile\/([a-f0-9]+)/);
+        return match ? match[1] : null;
+      };
+
+      const uid = extractUid(node);
       if (
         node.className.startsWith?.("live_") ||
         (path.startsWith("/live/") && node.querySelector("aside"))
@@ -707,7 +716,7 @@
         path.startsWith("/video/")
       ) {
         return attachVodObserver(node);
-      } else if (node.className.startsWith?.("channel_") || path.split("/").length === 2) {
+      } else if (node.className.startsWith?.("channel_") || (path.split("/").length === 2 && uid === path.split("/")[1])) {
         return initChannelFeatures(node);
       }
     };
