@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "chrome-webstore-upload-cli": "4.0.0-0",
-    "web-ext": "^10.1.0"
+    "web-ext": "^10.6.0"
   }
 }
