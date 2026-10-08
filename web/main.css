@@ -1,4 +1,7 @@
-.knife-filter video {
+/* Current PZP applies its own video filter. Compose outside that pipeline,
+   and exclude the direct video from our legacy rule to avoid double filtering. */
+.knife-filter video:not(.pzp-pc__video .webplayer-internal-source-wrapper > video),
+.knife-filter .pzp-pc__video .webplayer-internal-source-wrapper:has(> video) {
   filter: url(#knifeFilter);
 }
 
@@ -118,6 +121,14 @@
   color: var(--color-content-04);
 }
 
+[class^="_chatting_message_"] > span[class^="_text_"][data-knife-deleted="1"],
+[class^="live_chatting_message_chatting_message__"] > span[class^="live_chatting_message_text__"][data-knife-deleted="1"] {
+  text-decoration: line-through;
+  color: var(--color-content-04) !important;
+}
+
+[class^="_chatting_message_"] > span[class^="_text_"][data-knife-deleted="1"]::after,
+[class^="live_chatting_message_chatting_message__"] > span[class^="live_chatting_message_text__"][data-knife-deleted="1"]::after,
 [role="log"] [class^="_text_"]:has(.knife-deleted)::after,
 [class^="live_chatting_message_text__"]:has(.knife-deleted)::after {
   margin-left: 4px;
@@ -178,3 +189,12 @@
   background-color: #18181b99;
   z-index: 10;
 }
+
+.knife-preview[hidden] { display: none; }
+
+.knife-comp { display: inline-flex; align-items: center; gap: 4px; margin-inline-end: 8px; }
+.knife-comp .knife-gain-slider { width: 48px; accent-color: #00ffa3; }
+.knife-comp [hidden] { display: none; }
+.knife-comp[data-state="on"] > button { color: #00ffa3; }
+.knife-comp[data-state="pending"] > button { opacity: 0.5; }
+.knife-owned button:focus-visible, button.knife-owned:focus-visible { outline: 2px solid #00ffa3; outline-offset: -2px; }

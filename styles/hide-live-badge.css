@@ -1,3 +1,4 @@
+#layout-body [class*="_badge_"][class*="_live_"],
 [class*="thumbnail_badge_live__"] {
   display: none !important;
 }

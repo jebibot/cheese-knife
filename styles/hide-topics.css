@@ -2,6 +2,7 @@ html {
   --knife-top-explore-offset: -250px;
 }
 
+#header ul:has(> li > a[href^="/home/"]),
 [class^="topic_tab_tab_list__"] {
   display: none !important;
 }

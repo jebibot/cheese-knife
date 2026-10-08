@@ -2,6 +2,13 @@
   max-height: 100% !important;
 }
 
+/* Current VOD reserves information-row height with an inline max-height. */
+html:not(:fullscreen):not(:has(:fullscreen))
+  #layout-body
+  [class^="_player_"]:has(#player_layout.type_vod):not(.knife-popup, .knife-popup *) {
+  max-height: 100% !important;
+}
+
 [class^="_player_"],
 [class^="live_information_player__"] {
   max-height: calc(100vh - 60px);

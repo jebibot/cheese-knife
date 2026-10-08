@@ -1,4 +1,5 @@
-main[class^="_container_"],
+#layout-body :is(div, main):has(> :is(#aside-chatting, #vod-aside)),
+main[class^="_container_"]:has(> aside),
 [class^="live_wrapper__"],
 [class^="vod_player__"] {
   flex-direction: row-reverse !important;
@@ -13,7 +14,9 @@ main[class^="_container_"],
 }
 
 @media screen and (max-aspect-ratio: 1 / 1) {
-  [class*="_is_large_"] main[class^="_container_"],
+  [class*="_is_large_"] #layout-body :is(div, main):has(> :is(#aside-chatting, #vod-aside)),
+  #layout-body [class*="_is_large_"] :is(div, main):has(> :is(#aside-chatting, #vod-aside)),
+  [class*="_is_large_"] main[class^="_container_"]:has(> aside),
   [class^="live_container__"][class*="live_is_large__"] [class^="live_wrapper__"],
   [class^="vod_container__"][class*="vod_is_large__"] [class^="vod_player__"] {
     flex-direction: column-reverse !important;

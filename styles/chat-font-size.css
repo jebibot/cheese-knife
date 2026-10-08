@@ -253,3 +253,25 @@
   + .live_chatting_username_nickname__dDbbj {
   margin-left: calc(var(--knife-chat-size-20) + 1px) !important;
 }
+
+/* Current chat CSS modules; scope generic prefixes to actual chat messages. */
+:is(#aside-chatting, #vod-aside) [role="log"] [class^="_chatting_message_"],
+:is(#aside-chatting, #vod-aside) [role="log"] [class^="_nickname_"] {
+  font-size: calc(var(--knife-chat-size-1, 0px) + 14px) !important;
+}
+
+:is(#aside-chatting, #vod-aside) [role="log"] [class^="_chatting_message_"] img {
+  width: calc(var(--knife-chat-size-1, 0px) + 24px) !important;
+  height: calc(var(--knife-chat-size-1, 0px) + 24px) !important;
+}
+
+/* Nickname badges start at 18px, not the message-emote size of 24px.
+   Resize each icon so the native flex wrapper can fit one or more badges. */
+:is(#aside-chatting, #vod-aside)
+  [role="log"]
+  [class^="_chatting_message_"]
+  [class^="_nickname_"]
+  :is([class^="_icon_"], [class^="_icon_"] img) {
+  width: calc(var(--knife-chat-size-1, 0px) + 18px) !important;
+  height: calc(var(--knife-chat-size-1, 0px) + 18px) !important;
+}

@@ -310,5 +310,71 @@
   },
   "styles_rectangle_profile": {
     "message": "Square profile images"
+  },
+  "capability_title": {
+    "message": "Feature readiness on this tab"
+  },
+  "capability_player": {
+    "message": "Player controls"
+  },
+  "capability_compressor": {
+    "message": "Audio compressor"
+  },
+  "capability_preview": {
+    "message": "Thumbnail preview"
+  },
+  "capability_livePreview": {
+    "message": "Live preview"
+  },
+  "capability_chatResize": {
+    "message": "Chat resize"
+  },
+  "capability_donationChat": {
+    "message": "Hide donation chat"
+  },
+  "capability_deletedChat": {
+    "message": "Show deleted chat"
+  },
+  "capability_sidebarRefresh": {
+    "message": "Refresh sidebar"
+  },
+  "capability_statistics": {
+    "message": "Stats"
+  },
+  "capability_state_ready": {
+    "message": "Ready"
+  },
+  "capability_state_limited": {
+    "message": "Limited"
+  },
+  "capability_state_failed": {
+    "message": "Error"
+  },
+  "capability_state_pending": {
+    "message": "Pending"
+  },
+  "capability_state_disabled": {
+    "message": "Off"
+  },
+  "capability_reason_generic": {
+    "message": "Part of this feature is unavailable on the current page."
+  },
+  "capability_reload": {
+    "message": "Open a CHZZK tab and reload it after updating the extension."
+  },
+  "capability_reason_user_gesture_required": {
+    "message": "Click the compressor button again to activate audio."
+  },
+  "capability_reason_unsupported_media_source": {
+    "message": "This media source cannot safely be connected to the audio effect."
+  },
+  "capability_reason_internal_metrics_unavailable": {
+    "message": "Resolution and measured FPS are shown; unavailable internal metrics are marked unknown."
+  },
+  "capability_reason_age_restricted_stream": {
+    "message": "Age-restricted streams are not played in previews."
+  },
+  "content_measured": {
+    "message": "measured"
   }
 }

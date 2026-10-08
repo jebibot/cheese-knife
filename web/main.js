@@ -1,6 +1,7 @@
 const initConfig = (config) => {
-  setFilters(config);
-  window.postMessage({ type: "config", config }, location.origin);
+  currentConfig = normalizeConfig(config);
+  setFilters(currentConfig);
+  if (requestId) sendConfig();
 };
 
 const initStyleParameters = (styleParameters) => {
@@ -14,23 +15,59 @@ const initStyleParameters = (styleParameters) => {
   }
 };
 
+let currentConfig;
+let currentParameters = {};
+let revision = 0;
+let requestId;
+let statuses = {};
+let diagnostics = {};
+let changedBeforeLoad = false;
+let parametersChangedBeforeLoad = false;
+const sendConfig = () => window.postMessage({ namespace: "cheese-knife", protocol: 1,
+  type: "config", requestId, revision: revision++, config: currentConfig, i18n }, location.origin);
 const configPromise = getConfig(true);
 window.addEventListener("message", async (e) => {
-  switch (e.data.type) {
-    case "getConfig":
-      const { config, styleParameters } = await configPromise;
-      initConfig(config);
-      initStyleParameters(styleParameters);
-      break;
+  const data = e.data;
+  if (e.source !== window || e.origin !== location.origin || data == null || typeof data !== "object" ||
+    data.namespace !== "cheese-knife" || data.protocol !== 1) return;
+  if (data.type === "config-request" && typeof data.requestId === "string" && data.requestId.length <= 100) {
+    requestId = data.requestId;
+    try {
+      const stored = await configPromise;
+      if (!changedBeforeLoad || !currentConfig) currentConfig = stored.config;
+      if (!parametersChangedBeforeLoad) currentParameters = stored.styleParameters;
+      setFilters(currentConfig);
+      initStyleParameters(currentParameters);
+      sendConfig();
+    } catch { /* MAIN reports the bounded configuration timeout. */ }
+  } else if (data.type === "status" && data.statuses && typeof data.statuses === "object") {
+    const accepted = {};
+    for (const [key, value] of Object.entries(data.statuses).slice(0, 30)) {
+      if (/^[a-zA-Z][a-zA-Z0-9-]{0,39}$/.test(key) && value &&
+        ["pending", "ready", "limited", "failed", "disabled"].includes(value.state)) {
+        accepted[key] = { state: value.state, reason: typeof value.reason === "string" ? value.reason.slice(0, 80) : "" };
+      }
+    }
+    statuses = accepted;
+    diagnostics = data.diagnostics?.world === "MAIN" ? data.diagnostics : {};
+    let node = document.getElementById("knife-status");
+    if (!node) { node = document.createElement("script"); node.id = "knife-status"; node.type = "application/json"; document.body.appendChild(node); }
+    node.textContent = JSON.stringify({ statuses, diagnostics });
   }
+});
+chrome.runtime.onMessage.addListener((message, _sender, respond) => {
+  if (message?.type === "cheese-knife-status") respond({ statuses, diagnostics });
 });
 
 chrome.storage.local.onChanged.addListener((changes) => {
   if (changes.config != null) {
+    changedBeforeLoad = true;
     initConfig(changes.config.newValue);
   }
   if (changes.styleParameters != null) {
-    initStyleParameters(changes.styleParameters.newValue);
+    parametersChangedBeforeLoad = true;
+    currentParameters = changes.styleParameters.newValue || {};
+    initStyleParameters(currentParameters);
   }
 });
 
@@ -49,7 +86,8 @@ for (const m of [
   "enableCompressor",
   "disableCompressor",
   "liveStart",
-  "speed2x"
+  "speed2x",
+  "measured"
 ]) {
   i18n[m] = chrome.i18n.getMessage(`content_${m}`);
 }

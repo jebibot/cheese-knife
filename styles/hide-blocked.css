@@ -1,3 +1,5 @@
+#layout-body [class^="_container_"][class*=" _is_block_"]:has(> [class^="_thumbnail_"]):not(:has(div[style="position: absolute; left: 0px;"])),
+#layout-body :is(li, div)[class^="_item_"]:has(> [class^="_container_"][class*=" _is_block_"] > [class^="_thumbnail_"]):not(:has(div[style="position: absolute; left: 0px;"])),
 [class*="component_item__"]:has([class*="video_card_is_block__"]):not(:has(div[style="position: absolute; left: 0px;"])) {
   display: none;
 }

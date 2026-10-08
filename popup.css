@@ -82,3 +82,8 @@ summary {
   color: gray;
   word-break: normal;
 }
+
+.capability-row { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; margin: 3px 0; }
+.capability-state { color: #666; }
+.capability-state.ready { color: #047857; }
+.capability-state.limited, .capability-state.failed { color: #b45309; }

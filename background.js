@@ -1,40 +1,60 @@
+let stylesRevision = 0;
+let configRevision = 0;
+let latestConfig;
 async function initConfig() {
+  const startingStylesRevision = stylesRevision;
+  const startingConfigRevision = configRevision;
   let changed = false;
+  let migratedStyles = false;
   let { config, styles, t } = await chrome.storage.local.get([
     "config",
     "styles",
     "t",
   ]);
+  if (t != null) await chrome.storage.local.remove("t");
+  const newerConfig = configRevision !== startingConfigRevision;
+  if (newerConfig) config = latestConfig;
   if (config?.resizeChat) {
     changed = true;
+    migratedStyles = true;
     delete config.resizeChat;
-    styles ||= [];
+    if (!Array.isArray(styles)) styles = [];
     if (!styles.includes("chat-resize")) {
       styles.push("chat-resize");
     }
   }
-  if (t != null) {
+  if (t != null && !newerConfig) {
     if (!isNaN(t)) {
       changed = true;
+      config ||= {};
       config.sharpness = t;
     }
-    await chrome.storage.local.remove("t");
   }
   if (changed) {
-    chrome.storage.local.onChanged.removeListener(onStylesChanged);
-    await chrome.storage.local.set({ config, styles });
-    chrome.storage.local.onChanged.addListener(onStylesChanged);
+    await chrome.storage.local.set({ config,
+      ...(migratedStyles && stylesRevision === startingStylesRevision ? { styles } : {}),
+    });
   }
   return { config, styles };
 }
 
-function onStylesChanged({ styles }) {
+function onStylesChanged({ styles, config }) {
+  if (config != null) { configRevision++; latestConfig = config.newValue; }
   if (styles != null) {
+    stylesRevision++;
     registerStyles(styles.newValue);
   }
 }
 
-async function registerStyles(styles) {
+let stylesRegistration = Promise.resolve();
+function registerStyles(styles) {
+  const snapshot = Array.isArray(styles) ? [...styles] : styles;
+  const next = stylesRegistration.catch(() => {}).then(() => applyStyles(snapshot));
+  stylesRegistration = next;
+  return next;
+}
+
+async function applyStyles(styles) {
   await chrome.scripting.unregisterContentScripts();
   if (!Array.isArray(styles)) {
     return;
@@ -93,8 +113,10 @@ async function checkPermission() {
 }
 
 async function init() {
+  const startingStylesRevision = stylesRevision;
   const { styles } = await initConfig();
-  await registerStyles(styles);
+  if (stylesRevision === startingStylesRevision) await registerStyles(styles);
+  else await stylesRegistration;
   await checkPermission();
 }
 

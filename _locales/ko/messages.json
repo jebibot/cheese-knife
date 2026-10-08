@@ -313,5 +313,71 @@
   },
   "styles_rectangle_profile": {
     "message": "사각 프로필 이미지"
+  },
+  "capability_title": {
+    "message": "현재 탭의 기능 준비 상태"
+  },
+  "capability_player": {
+    "message": "플레이어 제어"
+  },
+  "capability_compressor": {
+    "message": "오디오 컴프레서"
+  },
+  "capability_preview": {
+    "message": "썸네일 미리보기"
+  },
+  "capability_livePreview": {
+    "message": "방송 미리보기"
+  },
+  "capability_chatResize": {
+    "message": "채팅 크기 조절"
+  },
+  "capability_donationChat": {
+    "message": "후원 채팅 숨기기"
+  },
+  "capability_deletedChat": {
+    "message": "삭제된 채팅 표시"
+  },
+  "capability_sidebarRefresh": {
+    "message": "사이드바 갱신"
+  },
+  "capability_statistics": {
+    "message": "통계"
+  },
+  "capability_state_ready": {
+    "message": "준비됨"
+  },
+  "capability_state_limited": {
+    "message": "지원 제한"
+  },
+  "capability_state_failed": {
+    "message": "오류"
+  },
+  "capability_state_pending": {
+    "message": "준비 중"
+  },
+  "capability_state_disabled": {
+    "message": "끔"
+  },
+  "capability_reason_generic": {
+    "message": "현재 페이지에서 이 기능의 일부를 사용할 수 없습니다."
+  },
+  "capability_reload": {
+    "message": "치지직 탭을 열고, 확장 업데이트 후 해당 탭을 새로고침하세요."
+  },
+  "capability_reason_user_gesture_required": {
+    "message": "컴프레서 버튼을 다시 눌러 오디오를 활성화하세요."
+  },
+  "capability_reason_unsupported_media_source": {
+    "message": "현재 영상 소스에 안전하게 오디오 효과를 연결할 수 없습니다."
+  },
+  "capability_reason_internal_metrics_unavailable": {
+    "message": "해상도와 측정 FPS를 제공하며 일부 내부 수치는 알 수 없음으로 표시합니다."
+  },
+  "capability_reason_age_restricted_stream": {
+    "message": "연령 제한 방송은 미리보기로 재생하지 않습니다."
+  },
+  "content_measured": {
+    "message": "측정"
   }
 }

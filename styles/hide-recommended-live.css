@@ -1,3 +1,5 @@
+/* The native responsive grid drops its two-column modifier on narrow screens. */
+#layout-body[data-knife-home="1"] [class*="_swap_"] > [class*="_content_"] > section:has(> ul[class*="_grid_"]),
 [class*="home_recommend_live_container__"] {
   display: none !important;
 }

@@ -2,9 +2,9 @@ html {
   --knife-top-offset: -45px;
 }
 
-[class*="_glive_"]:has(> header[aria-label="헤더"]:hover),
+[class*="_glive_"]:has(> header[aria-label="헤더"]:is(:hover, :focus-within)),
 [class^="layout_glive__"]:has(> [class^="header_container__"]:hover),
-[class*="_glive_"]:has(aside[aria-label="사이드바"] nav:first-child:hover),
+[class*="_glive_"]:has(aside[aria-label="사이드바"] nav:first-child:is(:hover, :focus-within)),
 [class^="layout_glive__"]:has(
     [class^="aside_content__"]
       [class^="navigation_bar_section__"]:first-child:hover
@@ -18,7 +18,12 @@ header[aria-label="헤더"],
   transition: transform ease-in-out 100ms;
 }
 
-header[aria-label="헤더"]:hover,
+/* Current sticky headers do not move with negative margin alone. */
+header[aria-label="헤더"] {
+  transform: translateY(-45px) !important;
+}
+
+header[aria-label="헤더"]:is(:hover, :focus-within),
 [class^="header_container__"]:hover {
   transform: translateY(0px) !important;
 }

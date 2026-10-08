@@ -1,3 +1,5 @@
+#layout-body aside:not([aria-label]) [class^="_container_"]:has(> [class^="_header_"] > button[class^="_mission_button_"] > svg[class^="_icon_mission_"]),
+#layout-body aside:not([aria-label]) [class^="_container_"]:has(> button[class^="_header_"][aria-controls="party-wrapper"] > em[class^="_highlight_"] > svg[class^="_icon_party_"]),
 [class*="live_chatting_fixed_mission_container__"],
 [class*="live_chatting_fixed_party_container__"] {
   display: none;

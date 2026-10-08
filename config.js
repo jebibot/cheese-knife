@@ -220,9 +220,37 @@ for (const { configs } of CONFIGS) {
   }
 }
 
-function getConfig(includeStyleParameters) {
-  return chrome.storage.local.get({
+function normalizeConfig(value) {
+  const result = { ...DEFAULT_CONFIGS };
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    return result;
+  }
+  for (const category of CONFIGS) {
+    for (const item of category.configs) {
+      for (const field of item.type === "details" ? item.configs : [item]) {
+        const stored = value[field.id];
+        if (field.type === "range") {
+          if (typeof stored === "number" && Number.isFinite(stored) && stored >= field.min && stored <= field.max) {
+            result[field.id] = stored;
+          }
+        } else if (typeof stored === "boolean") {
+          result[field.id] = stored;
+        }
+      }
+    }
+  }
+  return result;
+}
+
+async function getConfig(includeStyleParameters) {
+  const stored = await chrome.storage.local.get({
     config: DEFAULT_CONFIGS,
     ...(includeStyleParameters ? { styleParameters: {} } : {}),
   });
+  const result = { config: normalizeConfig(stored.config) };
+  if (includeStyleParameters) {
+    result.styleParameters = stored.styleParameters != null && typeof stored.styleParameters === "object" && !Array.isArray(stored.styleParameters)
+      ? stored.styleParameters : {};
+  }
+  return result;
 }

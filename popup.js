@@ -2,6 +2,32 @@ document.title = chrome.i18n.getMessage("ext_shortName");
 document.getElementById("stylesConfig").textContent =
   chrome.i18n.getMessage("config_styles");
 
+(async () => {
+  const box = document.getElementById("capabilities");
+  const message = (key, fallback) => chrome.i18n.getMessage(key) || fallback;
+  const title = document.createElement("div"); title.className = "title";
+  title.textContent = message("capability_title", "Current tab"); box.append(title);
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const result = await chrome.tabs.sendMessage(tab.id, { type: "cheese-knife-status" }, { frameId: 0 });
+    let shown = 0;
+    for (const feature of ["player", "compressor", "preview", "livePreview", "chatResize", "donationChat", "deletedChat", "sidebarRefresh", "statistics"]) {
+      const status = result?.statuses?.[feature];
+      if (!status) continue;
+      const row = document.createElement("div"); row.className = "capability-row";
+      const name = document.createElement("span"); name.textContent = message("capability_" + feature, feature);
+      const value = document.createElement("span"); value.className = "capability-state " + status.state;
+      value.textContent = message("capability_state_" + status.state, status.state);
+      if (status.reason) row.title = message("capability_reason_" + status.reason.replaceAll("-", "_"), message("capability_reason_generic", "This feature is not available on the current page."));
+      row.append(name, value); box.append(row); shown++;
+    }
+    if (!shown) throw new Error("no-active-features");
+  } catch {
+    const note = document.createElement("div"); note.className = "desc";
+    note.textContent = message("capability_reload", "Open a CHZZK tab and reload it after updating the extension."); box.append(note);
+  }
+})();
+
 let hardwareAcceleration = false;
 try {
   const canvas = document.createElement("canvas");

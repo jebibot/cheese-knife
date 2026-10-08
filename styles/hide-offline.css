@@ -1,3 +1,5 @@
+#sidebar [class*="_type_profile_"]:not(:has([class*="_is_live_"])),
+#sidebar [class^="_item_"]:has(> [class*="_type_profile_"]):not(:has([class*="_is_live_"])),
 [class*="navigator_type_profile__"]:not(:has([class*="navigator_is_live__"])) {
   display: none !important;
 }

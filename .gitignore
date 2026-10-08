@@ -91,6 +91,10 @@ out
 .nuxt
 dist
 
+# Local browser profiles, media and diagnostic output must not be published.
+output/
+.playwright-cli/
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
