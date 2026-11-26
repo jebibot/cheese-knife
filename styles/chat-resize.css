@@ -2,11 +2,8 @@ html {
   --knife-chat-resize: 1;
 }
 
-aside:not([aria-label])[class^="_container_"],
-aside[class^="live_chatting_container__"]:not(
-    [class*="live_chatting_is_popup_chat__"]
-  ),
-aside[class^="vod_aside__"] {
+#aside-chatting:not([class*="_is_popup_chat_"]),
+#vod-aside {
   width: var(--knife-chat-width, 353px);
   max-width: calc(100% - 24px);
 }
@@ -16,10 +13,10 @@ div.miniplayer:not(.is_large) {
   height: calc(var(--knife-chat-width, 353px) * 9 / 16) !important;
 }
 
+/* 넓은 화면 + 세로로 긴 창에서는 채팅이 영상 아래로 내려가므로 너비를 꽉 채운다 */
 @media screen and (max-aspect-ratio: 1 / 1) {
-  aside:not([aria-label])[class^="_container_"][class*="_is_large_"],
-  aside[class^="live_chatting_container__"][class*="live_chatting_is_large__"],
-  [class*="vod_is_large__"] [class^="vod_aside__"] {
+  #aside-chatting[class*="_is_large_"],
+  section[class*="_is_large_"] #vod-aside {
     width: 100%;
     max-width: none;
   }
@@ -33,6 +30,7 @@ div.miniplayer:not(.is_large) {
 }
 
 .knife-resize-handle {
+  flex: none;
   width: 3px;
   height: 100%;
   cursor: col-resize;
@@ -43,15 +41,12 @@ div.miniplayer:not(.is_large) {
 }
 
 .knife-resize-handle:has(+ [class*="_is_folded_"]),
-.knife-resize-handle:has(+ [class*="live_chatting_is_folded__"]),
-.knife-resize-handle:has(+ [class*="live_chatting_is_popup_chat__"]) {
+.knife-resize-handle:has(+ [class*="_is_popup_chat_"]) {
   display: none;
 }
 
 @media screen and (max-aspect-ratio: 1 / 1) {
-  [class*="_is_large_"] .knife-resize-handle,
-  [class*="live_is_large__"] .knife-resize-handle,
-  [class*="vod_is_large__"] .knife-resize-handle {
+  section[class*="_is_large_"] .knife-resize-handle {
     display: none;
   }
 }

@@ -1,0 +1,72 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>치즈 나이프 플레이어 시험</title>
+<!--
+    치지직 플레이어(pzp) 구조를 본뜬 시험 페이지. 실제 web/inject.js 를 올려
+    컴프레서 · 빨리감기 버튼이 붙고 동작하는지 본다. 영상 대신 blob 주소의 440Hz 사인파를 쓴다.
+    여는 법: 저장소 폴더를 정적 서버로 띄우고 /tests/player-harness.html 을 연다.
+-->
+<link rel="stylesheet" href="../web/main.css">
+<style>
+    body { background: #222; color: #fff; font-family: sans-serif; }
+    .pzp-pc { position: relative; width: 640px; padding: 12px; background: #000; }
+    .pzp-pc__bottom-buttons-left { display: flex; align-items: center; }
+    .pzp-button { width: 36px; height: 36px; color: #fff; background: none; border: 0; position: relative; }
+    .pzp-button__tooltip { position: absolute; top: -30px; left: 0; visibility: hidden; white-space: nowrap; }
+    .pzp-pc__volume-control { display: flex; align-items: center; }
+</style>
+<div id="root">
+    <div class="_glive_test_1">
+        <aside id="sidebar"><nav><ul><li><div><a class="_item_link_test_1" href="/live/abc"></a></div></li></ul></nav></aside>
+        <div id="layout-body">
+            <section>
+                <div id="live_player_layout" class="chzzk_player type_live">
+                    <div class="pzp pzp-pc pzp-pc--controls">
+                        <div class="pzp-pc__video"><video id="v" loop controls></video></div>
+                        <div class="pzp-pc__bottom-buttons">
+                            <div class="pzp-pc__bottom-buttons-left">
+                                <button class="pzp-button pzp-pc__playback-switch" type="button">▶</button>
+                                <div class="pzp-pc__volume-control"><button class="pzp-button pzp-pc__volume-button" type="button">🔊</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<script type="application/json" id="knife-i18n">{"close":"닫기","chat":"채팅","stats":"통계","fastForward":"실시간으로","enableCompressor":"컴프레서 켜기","disableCompressor":"컴프레서 끄기","liveStart":"시작","speed2x":"2배속"}</script>
+<script>
+    // web/main.js 가 하는 설정 응답을 흉내 낸다. ?default=1 이면 "기본으로 켜기"
+    const compressorDefault = new URLSearchParams(location.search).has("default");
+    window.addEventListener("message", (e) => {
+        if (e.data.type === "getConfig") {
+            window.postMessage({
+                type: "config",
+                config: {
+                    compressorDefault,
+                    compressorThreshold: -50, compressorKnee: 40, compressorRatio: 12,
+                    compressorAttack: 0, compressorRelease: 0.25,
+                    updateSidebar: true, preview: true, popupPlayer: true, arrowSeek: true,
+                },
+            }, location.origin);
+        }
+    });
+
+    // 2초짜리 440Hz 사인파 WAV 를 blob 주소로 건다 (치지직 본방 영상도 blob 주소다)
+    const rate = 8000;
+    const samples = rate * 2;
+    const buffer = new ArrayBuffer(44 + samples * 2);
+    const view = new DataView(buffer);
+    const text = (offset, s) => [...s].forEach((c, i) => view.setUint8(offset + i, c.charCodeAt(0)));
+    text(0, "RIFF"); view.setUint32(4, 36 + samples * 2, true); text(8, "WAVEfmt ");
+    view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+    view.setUint32(24, rate, true); view.setUint32(28, rate * 2, true);
+    view.setUint16(32, 2, true); view.setUint16(34, 16, true);
+    text(36, "data"); view.setUint32(40, samples * 2, true);
+    for (let i = 0; i < samples; i++) {
+        view.setInt16(44 + i * 2, Math.sin((i / rate) * 2 * Math.PI * 440) * 0x3fff, true);
+    }
+    document.getElementById("v").src = URL.createObjectURL(new Blob([buffer], { type: "audio/wav" }));
+</script>
+<script src="../web/inject.js"></script>

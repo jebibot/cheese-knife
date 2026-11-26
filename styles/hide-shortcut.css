@@ -1,4 +1,4 @@
-aside[aria-label="사이드바"] nav:last-child,
-[class^="aside_content__"] [class^="navigation_bar_section__"]:last-child {
+/* 사이드바 맨 아래 "서비스 바로가기" 묶음 */
+#sidebar [class*="_content_"] > nav:last-of-type {
   display: none !important;
 }

@@ -1,0 +1,73 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>치즈 나이프 사이드바 미리보기 시험</title>
+<!--
+    치지직 사이드바 툴팁 동작을 본뜬 시험 페이지. 실제 web/inject.js 를 올린다.
+    채널 항목에 마우스를 올리면 툴팁이 붙고, 벗어나면 즉시 떨어진다(치지직과 같음).
+    미리보기 API 는 가짜 응답으로 바꿔 끼운다.
+    여는 법: 저장소 폴더를 정적 서버로 띄우고 /tests/sidebar-harness.html 을 연다.
+-->
+<link rel="stylesheet" href="../web/main.css">
+<style>
+    body { margin: 0; background: #222; color: #fff; font-family: sans-serif; }
+    #sidebar { position: fixed; top: 60px; left: 0; width: 82px; height: 600px; background: #111; }
+    #sidebar li { list-style: none; position: relative; height: 40px; }
+    ._item_test_1 { position: relative; width: 60px; height: 36px; background: #444; }
+    ._item_link_test_1 { position: absolute; inset: 0; }
+    ._tooltip_test_1 { position: absolute; top: 50%; left: 100%; padding-left: 17px; transform: translateY(-50%); }
+    ._tooltip_inner_test_1 { width: 200px; height: 40px; background: #333; }
+    #layout-body { margin-left: 82px; height: 800px; }
+</style>
+<div id="root">
+    <div class="_glive_test_1">
+        <aside id="sidebar">
+            <div class="_content_test_1">
+                <nav>
+                    <ul>
+                        <li><div class="_item_test_1" id="item1"><a class="_item_link_test_1" href="/live/abc"></a></div></li>
+                        <li><div class="_item_test_1" id="item2"><a class="_item_link_test_1" href="/live/def"></a></div></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+        <div id="layout-body"></div>
+    </div>
+</div>
+<script type="application/json" id="knife-i18n">{"close":"닫기"}</script>
+<script>
+    window.addEventListener("message", (e) => {
+        if (e.data.type === "getConfig") {
+            window.postMessage({
+                type: "config",
+                config: { preview: true, livePreview: false, previewWidth: 400, previewDelay: 1, previewVolume: 5 },
+            }, location.origin);
+        }
+    });
+
+    // 미리보기 API 가짜 응답
+    const realFetch = window.fetch;
+    window.fetch = async (url, opts) => {
+        if (String(url).includes("/live-detail")) {
+            return new Response(JSON.stringify({
+                code: 200,
+                content: { liveImageUrl: "", openDate: "2026-11-26 10:00:00", adult: false },
+            }));
+        }
+        return realFetch(url, opts);
+    };
+
+    // 치지직처럼: 항목에 올리면 툴팁 생성, 벗어나면 즉시 제거
+    for (const item of document.querySelectorAll("._item_test_1")) {
+        item.addEventListener("mouseover", () => {
+            if (item.querySelector("._tooltip_test_1")) return;
+            const tip = document.createElement("div");
+            tip.className = "_tooltip_test_1";
+            tip.innerHTML = '<div class="_tooltip_inner_test_1"></div>';
+            item.insertBefore(tip, item.lastElementChild);
+        });
+        item.addEventListener("mouseleave", () => {
+            item.querySelector("._tooltip_test_1")?.remove();
+        });
+    }
+</script>
+<script src="../web/inject.js"></script>

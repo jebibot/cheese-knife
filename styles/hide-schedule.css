@@ -1,4 +1,5 @@
-aside[aria-label="사이드바"] nav:nth-last-of-type(3),
-[class^="aside_content__"] [class^="navigation_bar_section__"]:nth-last-child(3) {
+/* 사이드바 "다가오는 일정" 묶음: 인기 카테고리 바로 다음 nav (파트너·서비스 바로가기 제외) */
+#sidebar nav:has(a[href^="/category/"])
+  + nav:not(:has(a[href="/partner"])):not(:last-of-type) {
   display: none !important;
 }

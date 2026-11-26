@@ -1,17 +1,17 @@
-[class^="vod_player__"] {
+/* 다시보기: 영상 + 채팅 묶음 */
+[class^="_player_"]:has(> #vod-aside) {
   max-height: 100% !important;
 }
 
-[class^="_player_"],
-[class^="live_information_player__"] {
+/* 라이브: 플레이어가 화면 높이를 넘지 않게 한다 */
+[class^="_player_"]:has(#live_player_layout) {
   max-height: calc(100vh - 60px);
 }
 
-[class*="_is_large_"] [class^="_player_"],
-[class*="live_information_is_large__"] [class^="live_information_player__"] {
+main[class*="_is_large_"] [class^="_player_"]:has(#live_player_layout) {
   max-height: none;
 }
 
-[class^="live_information_contents__"] {
+main:has(#live_player_layout) > [class^="_contents_"] {
   max-height: none !important;
 }

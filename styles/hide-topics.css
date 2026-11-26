@@ -2,6 +2,7 @@ html {
   --knife-top-explore-offset: -250px;
 }
 
-[class^="topic_tab_tab_list__"] {
+/* 헤더의 토픽 탭 (홈 · 게임 · e스포츠 …) */
+#header nav[class^="_navigation_"] {
   display: none !important;
 }

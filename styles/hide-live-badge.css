@@ -1,3 +1,4 @@
-[class*="thumbnail_badge_live__"] {
+/* 썸네일 위 LIVE 배지 */
+em[class*="_live_"][class*="_is_on_"] {
   display: none !important;
 }
