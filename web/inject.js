@@ -795,7 +795,21 @@
     typeof state.deps[0] !== "string" &&
     state.deps[1] instanceof AsyncFunction;
 
-  // 팔로잉 목록 아래 "더보기" 를 한 번 누른다. 목록은 비동기로 채워지므로 잠시 기다린다.
+  // 사이드바 구역은 <ErrorBoundary name="nav-following"> 처럼 이름 붙은 경계로 감싸져 있다.
+  // 인기 카테고리·예정 방송에도 같은 "더보기" 가 있고 팔로잉(API 2번)보다 먼저 그려지므로 이름으로 고른다.
+  const isNavSection = (nav, name) => {
+    for (let f = getReactFiber(nav)?.return; f != null; f = f.return) {
+      if (f.memoizedProps?.name === name) {
+        return true;
+      }
+      if (f.stateNode instanceof Element) {
+        return false;
+      }
+    }
+    return false;
+  };
+
+  // 팔로잉 목록 아래 "더보기" 를 한 번 누른다. 목록은 로그인 확인 뒤 비동기로 채워지므로 기다린다.
   const expandedSidebars = new WeakSet();
   const expandFollowings = async (sidebar) => {
     if (
@@ -806,19 +820,14 @@
       return;
     }
     expandedSidebars.add(sidebar);
-    for (let i = 0; i < 50; i++) {
-      let group = sidebar.querySelector('a[class*="_item_link_"]');
-      while (
-        group != null &&
-        group !== sidebar &&
-        !group.querySelector('[class*="_more_button_"]')
-      ) {
-        group = group.parentElement;
-      }
-      const buttons = group?.querySelectorAll('[class*="_more_button_"]');
-      if (group !== sidebar && buttons?.length === 1) {
-        if (buttons[0].ariaExpanded === "false") {
-          buttons[0].click();
+    for (let i = 0; i < 100; i++) {
+      const nav = [...sidebar.querySelectorAll("nav")].find((n) =>
+        isNavSection(n, "nav-following")
+      );
+      const button = nav?.querySelector('[class*="_more_button_"]');
+      if (button != null) {
+        if (button.ariaExpanded === "false") {
+          button.click();
         }
         return;
       }
