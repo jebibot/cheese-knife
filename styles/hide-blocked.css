@@ -1,3 +1,6 @@
-[class*="component_item__"]:has([class*="video_card_is_block__"]):not(:has(div[style="position: absolute; left: 0px;"])) {
+/* 차단한 사용자의 방송 카드: 카드만 든 목록 칸을 통째로 숨긴다 (캐러셀처럼 절대 배치된 칸은 건드리지 않음) */
+:is(li, div):has(
+    > [class^="_container_"][class*="_is_blocked_"]:only-child
+  ):not([style*="position: absolute"]) {
   display: none;
 }

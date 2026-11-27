@@ -1,21 +1,22 @@
-main[class^="_container_"],
-[class^="live_wrapper__"],
-[class^="vod_player__"] {
+/* 라이브: section > div(_wrapper_) > main + aside#aside-chatting */
+div:has(> #aside-chatting),
+[class^="_player_"]:has(> #vod-aside) {
   flex-direction: row-reverse !important;
 }
 
-[class*="live_chatting_popup_profile_container__"] {
-  right: auto !important;
+/* 채팅 왼쪽 경계선은 오른쪽으로 옮긴다 */
+#aside-chatting:not([class*="_is_popup_chat_"])::before {
+  left: auto;
+  right: -1px;
 }
 
-[class^="vod_aside__"] {
+#vod-aside {
   margin-bottom: 0 !important;
 }
 
 @media screen and (max-aspect-ratio: 1 / 1) {
-  [class*="_is_large_"] main[class^="_container_"],
-  [class^="live_container__"][class*="live_is_large__"] [class^="live_wrapper__"],
-  [class^="vod_container__"][class*="vod_is_large__"] [class^="vod_player__"] {
+  section[class*="_is_large_"] div:has(> #aside-chatting),
+  section[class*="_is_large_"] [class^="_player_"]:has(> #vod-aside) {
     flex-direction: column-reverse !important;
   }
 }

@@ -1,3 +1,4 @@
-[class*="home_recommend_live_container__"] {
+/* 홈 맨 위 추천 라이브 */
+[data-nlog-area="chzzk_main_top_live"] {
   display: none !important;
 }

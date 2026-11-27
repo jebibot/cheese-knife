@@ -75,18 +75,103 @@
     }
   };
 
-  const getWebpackRequire = new Promise((resolve) => {
-    const id = "knife";
-    window.webpackChunkglive_fe_pc.push([
-      [id],
-      {
-        [id]: (module, exports, __webpack_require__) => {
-          resolve(__webpack_require__);
-        },
-      },
-      (req) => req(id),
-    ]);
+  const log = (...args) => console.info("[치즈 나이프]", ...args);
+
+  // 치지직이 webpack 에서 Vite(rolldown, ES 모듈)로 바뀌어 webpackChunk 전역이 사라졌다.
+  // 페이지가 이미 불러온 청크를 같은 주소로 import() 하면 같은 모듈 인스턴스를 받는다.
+  const findChunkUrl = (name) => {
+    const re = new RegExp(`/${name}-[\\w-]+\\.js(\\?.*)?$`);
+    const urls = [
+      ...Array.from(
+        document.querySelectorAll("script[src], link[href]"),
+        (e) => e.src || e.href
+      ),
+      ...performance.getEntriesByType("resource").map((e) => e.name),
+    ];
+    return urls.find((u) => re.test(u));
+  };
+
+  let playerModulePromise;
+  const loadPlayerModule = async () => {
+    const url = findChunkUrl("player-vendor");
+    if (url == null) {
+      log("player-vendor 청크를 찾지 못함");
+      return;
+    }
+    const mod = await import(url);
+    for (const value of Object.values(mod)) {
+      // rolldown 의 CommonJS 지연 초기화 래퍼(() => module.exports)만 호출한다
+      if (
+        typeof value !== "function" ||
+        value.length !== 0 ||
+        !Function.prototype.toString.call(value).includes("exports")
+      ) {
+        continue;
+      }
+      try {
+        const exports = value();
+        const player = exports?.CorePlayer ? exports : exports?.default;
+        if (player?.CorePlayer != null && player?.LiveProvider != null) {
+          return player;
+        }
+      } catch { }
+    }
+    log("CorePlayer 모듈을 찾지 못함");
+  };
+  // 실패는 기억하지 않는다. 청크가 늦게 불러와지면 다음 호출에서 다시 찾는다.
+  const getPlayerModule = () =>
+    (playerModulePromise ||= loadPlayerModule()
+      .catch((e) => log("플레이어 모듈 불러오기 실패", e))
+      .then((player) => {
+        if (player == null) {
+          playerModulePromise = null;
+        }
+        return player;
+      }));
+
+  // React 18 운영 빌드의 엘리먼트 객체 (jsx 런타임을 찾지 않고 직접 만든다)
+  const createReactElement = (type, props) => ({
+    $$typeof: Symbol.for("react.element"),
+    type,
+    key: null,
+    ref: null,
+    props,
+    _owner: null,
+    _store: {},
   });
+
+  // 요소가 나타날 때마다 한 번씩 콜백을 부른다. 치지직은 SPA 라 화면 이동마다 새 요소가 생긴다.
+  const watchers = [];
+  const scanWatchers = () => {
+    for (const { selector, seen, callback } of watchers) {
+      for (const node of document.querySelectorAll(selector)) {
+        if (seen.has(node)) {
+          continue;
+        }
+        seen.add(node);
+        try {
+          callback(node);
+        } catch (e) {
+          log(`${selector} 초기화 실패`, e);
+        }
+      }
+    }
+  };
+  let scanQueued = false;
+  new MutationObserver(() => {
+    if (scanQueued) {
+      return;
+    }
+    scanQueued = true;
+    requestAnimationFrame(() => {
+      scanQueued = false;
+      scanWatchers();
+    });
+  }).observe(document.body, { childList: true, subtree: true });
+  const onElement = (selector, callback) => {
+    watchers.push({ selector, seen: new WeakSet(), callback });
+    scanWatchers();
+  };
 
   const i18n = JSON.parse(
     document.getElementById("knife-i18n")?.textContent || "{}"
@@ -108,31 +193,13 @@
     config = c;
     if (first) {
       first = false;
-      if (c.expandFollowings) {
-        setTimeout(() => {
-          const button = document.querySelector(
-            '[class*="_more_button_"], [class*="navigation_bar_more_button__"]'
-          );
-          if (
-            button?.ariaExpanded === "false" &&
-            getReactProps(button)?.onClick?.toString()?.includes("50")
-          ) {
-            button.click();
-          }
-        }, 300);
-      }
-      if (c.compressorDefault && compressor != null) {
-        compressor.enabled = true;
+      expandFollowings(document.getElementById("sidebar"));
+      if (c.compressorDefault) {
+        compressor.setEnabled(true);
       }
     }
 
-    if (compressor != null) {
-      compressor.threshold = c.compressorThreshold;
-      compressor.knee = c.compressorKnee;
-      compressor.ratio = c.compressorRatio;
-      compressor.attack = c.compressorAttack;
-      compressor.release = c.compressorRelease;
-    }
+    compressor.setParams(c);
   };
 
   window.addEventListener("message", (e) => {
@@ -182,7 +249,26 @@
   rootObserver.observe(root, { childList: true, subtree: true });
 
   const liveInfo = {};
+  let pendingPreview;
   let currentPreview;
+  // 사이드바 툴팁은 마우스가 항목을 벗어나는 순간 사라진다. 미리보기로 마우스를 옮기는 동안
+  // 빈틈을 지나가도 닫히지 않게 잠시 기다렸다가 숨기고, 미리보기 위에 있으면 계속 띄워 둔다.
+  const PREVIEW_HIDE_DELAY = 300;
+  let previewHovered = false;
+  let hidePreviewTimer;
+  const cancelHidePreview = () => {
+    clearTimeout(hidePreviewTimer);
+    hidePreviewTimer = null;
+  };
+  const hidePreviewLater = (href) => {
+    cancelHidePreview();
+    hidePreviewTimer = setTimeout(() => {
+      hidePreviewTimer = null;
+      if (!previewHovered) {
+        hidePreview(href);
+      }
+    }, PREVIEW_HIDE_DELAY);
+  };
   let preview;
   let previewPlayer;
   let previewThumbnail;
@@ -206,6 +292,15 @@
       return;
     }
     const uid = parts[2];
+    if (
+      currentPreview === uid &&
+      preview != null &&
+      preview.style.display !== "none"
+    ) {
+      cancelHidePreview();
+      return;
+    }
+    pendingPreview = uid;
     let info = liveInfo[uid];
     if (info === undefined) {
       const res = await fetch(
@@ -236,10 +331,11 @@
     const rootRect = root.getBoundingClientRect();
     const width = Math.max(config.previewWidth, rect.width);
 
-    let Player;
-    try {
-      Player = (await getWebpackRequire)(49588);
-    } catch { }
+    const Player = await getPlayerModule();
+    if (pendingPreview !== uid) {
+      // 기다리는 동안 마우스가 떠났거나 다른 채널로 옮겨 갔다
+      return;
+    }
 
     hidePreview();
     currentPreview = uid;
@@ -247,6 +343,27 @@
       preview = document.createElement("div");
       preview.classList.add("knife-preview");
       document.body.appendChild(preview);
+      preview.addEventListener("mouseenter", () => {
+        previewHovered = true;
+        cancelHidePreview();
+      });
+      preview.addEventListener("mouseleave", () => {
+        previewHovered = false;
+        hidePreviewLater();
+      });
+      // 미리보기를 누르면 그 방송으로 간다
+      preview.addEventListener("click", () => {
+        if (currentPreview == null) {
+          return;
+        }
+        const href = `/live/${currentPreview}`;
+        hidePreview();
+        if (routeNavigator != null) {
+          routeNavigator.push(href);
+        } else {
+          location.href = href;
+        }
+      });
 
       previewThumbnail = document.createElement("img");
       preview.appendChild(previewThumbnail);
@@ -272,6 +389,7 @@
     let left;
     let right;
     let top;
+    preview.classList.toggle("knife-preview-interactive", !!tooltip);
     if (tooltip) {
       preview.style.position = "fixed";
       preview.style.marginTop = "0.25rem";
@@ -374,9 +492,6 @@
   };
 
   const hidePreview = (href) => {
-    if (preview == null) {
-      return;
-    }
     if (href != null) {
       const url = new URL(href);
       const parts = url.pathname.split("/");
@@ -384,10 +499,20 @@
         return;
       }
       const uid = parts[2];
+      if (pendingPreview === uid) {
+        pendingPreview = null;
+      }
       if (currentPreview !== uid) {
         return;
       }
+    } else {
+      pendingPreview = null;
     }
+    if (preview == null) {
+      return;
+    }
+    cancelHidePreview();
+    previewHovered = false;
     currentPreview = null;
 
     clearInterval(previewInterval);
@@ -404,7 +529,7 @@
 
   const toggleMute = async (e) => {
     e.preventDefault();
-    const player = e.target.querySelector("video");
+    const player = e.currentTarget.querySelector("video");
     if (player != null) {
       player.volume = config.previewVolume / 100;
       player.muted = !player.muted;
@@ -509,22 +634,10 @@
   let routeNavigator;
   const attachLayoutObserver = async () => {
     const init = (node) => {
-      const sidebar =
-        node.querySelector('aside[aria-label="사이드바"]') ||
-        node.querySelector('[class^="aside_content__"]');
-      if (sidebar != null) {
-        try {
-          initSidebarFeatures(sidebar);
-        } catch { }
-        try {
-          refreshSidebar(sidebar);
-        } catch { }
-      }
-
       const banner = node.className.startsWith("band_banner_container__")
         ? node
         : node.querySelector('[class^="band_banner_container__"]');
-      if (banner && !banner.querySelector("button")) {
+      if (banner && !banner.querySelector("button") && getReactFiber(banner)) {
         const button = document.createElement("button");
         button.classList.add("band_banner_button__ozNIO");
         button.innerHTML = `<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 10L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path><path d="M20.0001 10L10.0001 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg><span class="blind">닫기</span>`;
@@ -584,6 +697,9 @@
       return;
     }
     const addListeners = (item) => {
+      if (!item.href || typeof item.href !== "string") {
+        return;
+      }
       const url = new URL(item.href);
       if (url.hostname !== "chzzk.naver.com") {
         return;
@@ -657,7 +773,7 @@
           if (n.className?.startsWith?.("navigator_tooltip__") || (n.className?.includes?.("_tooltip_") && !n.className?.includes?.("_tooltip_inner_"))) {
             const href = getHref(mutation.target);
             if (href) {
-              hidePreview(href);
+              hidePreviewLater(href);
             }
           }
         }
@@ -669,26 +785,90 @@
     });
   };
 
+  // 팔로잉 목록은 useEffect(() => { fetchFollowings() }, [atom, fetchFollowings]) 로 불러온다.
+  // 첫 팔로잉 항목에서 위로 올라가며 그 effect 를 찾아 create() 를 다시 부르면 목록만 새로 받는다.
+  const AsyncFunction = (async () => { }).constructor;
+  const isFollowingsEffect = (state) =>
+    (state.tag & 8) !== 0 &&
+    state.destroy == null &&
+    state.deps?.length === 2 &&
+    typeof state.deps[0] !== "string" &&
+    state.deps[1] instanceof AsyncFunction;
+
+  // 사이드바 구역은 <ErrorBoundary name="nav-following"> 처럼 이름 붙은 경계로 감싸져 있다.
+  // 인기 카테고리·예정 방송에도 같은 "더보기" 가 있고 팔로잉(API 2번)보다 먼저 그려지므로 이름으로 고른다.
+  const isNavSection = (nav, name) => {
+    for (let f = getReactFiber(nav)?.return; f != null; f = f.return) {
+      if (f.memoizedProps?.name === name) {
+        return true;
+      }
+      if (f.stateNode instanceof Element) {
+        return false;
+      }
+    }
+    return false;
+  };
+
+  // 팔로잉 목록 아래 "더보기" 를 한 번 누른다. 목록은 로그인 확인 뒤 비동기로 채워지므로 기다린다.
+  const expandedSidebars = new WeakSet();
+  const expandFollowings = async (sidebar) => {
+    if (
+      !config.expandFollowings ||
+      sidebar == null ||
+      expandedSidebars.has(sidebar)
+    ) {
+      return;
+    }
+    expandedSidebars.add(sidebar);
+    for (let i = 0; i < 100; i++) {
+      const nav = [...sidebar.querySelectorAll("nav")].find((n) =>
+        isNavSection(n, "nav-following")
+      );
+      const button = nav?.querySelector('[class*="_more_button_"]');
+      if (button != null) {
+        if (button.ariaExpanded === "false") {
+          button.click();
+        }
+        return;
+      }
+      await new Promise((r) => setTimeout(r, 100));
+    }
+  };
+
   let refreshInterval;
   const refreshSidebar = (sidebar) => {
-    let section;
     clearInterval(refreshInterval);
     refreshInterval = setInterval(async () => {
-      if (config.updateSidebar) {
-        if (section == null) {
-          section =
-            sidebar.querySelector('[class^="navigation_bar_header__"]')
-              ?.parentNode || sidebar.querySelector("nav");
-        }
-        const sidebarEffect = await findReactState(
-          section,
-          (state) =>
-            state.tag === 8 && state.destroy == null && state.deps?.length === 2
-        );
-        sidebarEffect?.create?.();
+      if (!config.updateSidebar || document.visibilityState === "hidden") {
+        return;
       }
+      if (!sidebar.isConnected) {
+        clearInterval(refreshInterval);
+        return;
+      }
+      const item =
+        sidebar.querySelector('a[class*="_item_link_"]') ||
+        sidebar.querySelector('[class^="navigation_bar_header__"]')
+          ?.parentNode ||
+        sidebar.querySelector("nav");
+      const sidebarEffect = await findReactState(item, isFollowingsEffect);
+      if (sidebarEffect?.create == null) {
+        log("사이드바 갱신 대상을 찾지 못함");
+        return;
+      }
+      sidebarEffect.create();
     }, 30000);
   };
+
+  onElement(
+    '#sidebar, aside[aria-label="사이드바"], [class^="aside_content__"]',
+    (sidebar) => {
+      initSidebarFeatures(sidebar);
+      refreshSidebar(sidebar);
+      expandFollowings(sidebar);
+      log("사이드바 연결");
+    }
+  );
 
   const attachBodyObserver = async () => {
     const init = async (node) => {
@@ -806,7 +986,7 @@
             (t) => t.selected
           );
           const tracks = corePlayer.srcObject.data?.media?.find(
-            (m) => (m.mediaId = "LLHLS")
+            (m) => m.mediaId === "LLHLS"
           )?.encodingTrack;
           const track = tracks?.find(
             (t) => t.encodingTrackId === selected.label
@@ -877,15 +1057,305 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     await initPlayerFeatures(playerLayout, isLive);
   };
 
-  let pzpVue;
-  let compressor;
+  // 페이지 전체가 AudioContext 하나를 함께 쓴다. MediaElementSource 는 만든 컨텍스트에 묶이기 때문이다.
+  let audioCtx;
+  const getAudioContext = () => (audioCtx ||= new AudioContext());
+  const mediaSources = new WeakMap();
+  const resumeAudioOnGesture = () => {
+    const ctx = getAudioContext();
+    const resume = () => {
+      ctx
+        .resume()
+        .then(() => {
+          if (ctx.state === "running") {
+            document.removeEventListener("pointerdown", resume, true);
+            document.removeEventListener("keydown", resume, true);
+          }
+        })
+        .catch(() => { });
+    };
+    document.addEventListener("pointerdown", resume, true);
+    document.addEventListener("keydown", resume, true);
+    resume();
+  };
+  // 교차 출처 영상을 Web Audio 에 넣으면 무음이 된다. 같은 출처(MSE blob 포함)만 처리한다.
+  const canProcessAudio = (video) => {
+    const src = video.currentSrc || video.src;
+    if (!src) {
+      return false;
+    }
+    if (src.startsWith("blob:") || video.crossOrigin != null) {
+      return true;
+    }
+    try {
+      return new URL(src, location.href).origin === location.origin;
+    } catch {
+      return false;
+    }
+  };
+  const getMainVideo = (pzp) => {
+    const videos = Array.from(pzp.querySelectorAll("video"));
+    return (
+      videos.find((v) => (v.currentSrc || v.src).startsWith("blob:")) ||
+      videos.find(canProcessAudio)
+    );
+  };
+
+  // 치지직 플레이어(pzp)는 화면을 갱신할 때마다 요소의 __vue__ 를 지운다.
+  // 그래서 내부 Vue 에 기대지 않고, 플레이어와 같은 클래스를 쓴 일반 DOM 버튼을 만든다.
+  const createPlayerButton = (className, svg, onClick) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `pzp-button pzp-pc-ui-button knife-button ${className}`;
+    const tooltip = document.createElement("span");
+    tooltip.className = "pzp-button__tooltip pzp-button__tooltip--top";
+    const icon = document.createElement("span");
+    icon.className = "pzp-ui-icon";
+    button.append(tooltip, icon);
+    const control = {
+      button,
+      setLabel(text) {
+        tooltip.textContent = text;
+        button.setAttribute("aria-label", text);
+      },
+      setIcon(markup) {
+        icon.innerHTML = markup;
+      },
+    };
+    control.setIcon(svg);
+    button.addEventListener("click", (e) => {
+      e.stopPropagation();
+      onClick();
+    });
+    // 빠르게 두 번 눌러도 플레이어가 전체 화면으로 바꾸지 않게 한다
+    button.addEventListener("dblclick", (e) => e.stopPropagation());
+    return control;
+  };
+
+  const COMP_ICON_ON = `<svg class="pzp-ui-icon__svg" xmlns="http://www.w3.org/2000/svg" viewBox="-300 -300 1600 1600"><path fill="currentColor" d="M850 200C877.7 200 900 222.3 900 250V750C900 777.7 877.7 800 850 800S800 777.7 800 750V250C800 222.3 822.3 200 850 200ZM570 250C597.7 250 620 272.3 620 300V700C620 727.7 597.7 750 570 750S520 727.7 520 700V300C520 272.3 542.3 250 570 250ZM710 225C737.7 225 760 247.3 760 275V725C760 752.7 737.7 775 710 775S660 752.7 660 725V275C660 247.3 682.3 225 710 225ZM430 250C457.7 250 480 272.3 480 300V700C480 727.7 457.7 750 430 750S380 727.7 380 700V300C380 272.3 402.3 250 430 250ZM290 225C317.7 225 340 247.3 340 275V725C340 752.7 317.7 775 290 775S240 752.7 240 725V275C240 247.3 262.3 225 290 225ZM150 200C177.7 200 200 222.3 200 250V750C200 777.7 177.7 800 150 800S100 777.7 100 750V250C100 222.3 122.3 200 150 200Z"/><circle r="160" cx="900" cy="800" fill="#00ffa3"/></svg>`;
+  const COMP_ICON_OFF = `<svg class="pzp-ui-icon__svg" xmlns="http://www.w3.org/2000/svg" viewBox="-300 -300 1600 1600"><path fill="currentColor" d="M850 202.3C877.7 202.3 900 224.6 900 252.3V745.5C900 773.2 877.7 795.5 850 795.5S800 773.2 800 745.5V252.3C800 224.6 822.3 202.3 850 202.3ZM570 167.8C597.7 167.8 620 190.1 620 217.8V780C620 807.7 597.7 830 570 830S520 807.7 520 780V217.8C520 190.1 542.3 167.8 570 167.8ZM710 264.4C737.7 264.4 760 286.7 760 314.4V683.3C760 711 737.7 733.3 710 733.3S660 711 660 683.3V314.4C660 286.7 682.3 264.4 710 264.4ZM430 98.1C457.7 98.1 480 120.4 480 148.1V849.6C480 877.3 457.7 899.6 430 899.6S380 877.3 380 849.6V148.1C380 120.4 402.3 98.1 430 98.1ZM290 217.2C317.7 217.2 340 239.5 340 267.2V730.5C340 758.2 317.7 780.5 290 780.5S240 758.2 240 730.5V267.2C240 239.5 262.3 217.2 290 217.2ZM150 299.6C177.7 299.6 200 321.9 200 349.6V648.1C200 675.8 177.7 698.1 150 698.1S100 675.8 100 648.1V349.6C100 321.9 122.3 299.6 150 299.6Z"/><circle r="160" cx="900" cy="800" fill="#838285"/></svg>`;
+  const FF_ICON = `<svg class="pzp-ui-icon__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="currentColor" d="M11 10.5v15a.8.8 0 0 0 1.25.66l11-7.5a.8.8 0 0 0 0-1.32l-11-7.5A.8.8 0 0 0 11 10.5ZM24.5 10h1.5a.75.75 0 0 1 .75.75v14.5a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1-.75-.75v-14.5a.75.75 0 0 1 .75-.75Z"/></svg>`;
+
+  // 오디오 컴프레서. 상태는 페이지에 하나이고, 버튼은 플레이어가 새로 그려질 때마다 다시 붙는다.
+  const storedGain = Number(window.localStorage.getItem("knifeGain") ?? 1);
+  const compressor = {
+    enabled: false,
+    wanted: false,
+    waitingResume: false,
+    threshold: -50,
+    knee: 40,
+    ratio: 12,
+    attack: 0,
+    release: 0.25,
+    gain: storedGain >= 0 && storedGain <= 2 ? storedGain : 1,
+    pzp: null,
+    source: null,
+    comp: null,
+    gainNode: null,
+    views: new Set(),
+    render() {
+      for (const view of this.views) {
+        if (view.container.isConnected) {
+          view.update();
+        } else {
+          this.views.delete(view);
+        }
+      }
+    },
+    apply() {
+      if (this.comp != null) {
+        this.comp.threshold.value = this.threshold;
+        this.comp.knee.value = this.knee;
+        this.comp.ratio.value = this.ratio;
+        this.comp.attack.value = this.attack;
+        this.comp.release.value = this.release;
+        this.gainNode.gain.value = this.gain;
+      }
+    },
+    setParams(c) {
+      this.threshold = c.compressorThreshold ?? this.threshold;
+      this.knee = c.compressorKnee ?? this.knee;
+      this.ratio = c.compressorRatio ?? this.ratio;
+      this.attack = c.compressorAttack ?? this.attack;
+      this.release = c.compressorRelease ?? this.release;
+      this.apply();
+    },
+    setGain(gain) {
+      this.gain = gain;
+      window.localStorage.setItem("knifeGain", gain);
+      this.apply();
+      this.render();
+    },
+    attach(video) {
+      if (video == null || !canProcessAudio(video)) {
+        log("컴프레서: 처리할 수 있는 영상이 없음", video?.currentSrc);
+        return false;
+      }
+      const ctx = getAudioContext();
+      if (this.comp == null) {
+        this.comp = ctx.createDynamicsCompressor();
+        this.gainNode = ctx.createGain();
+        this.apply();
+        this.comp.connect(this.gainNode);
+        this.gainNode.connect(ctx.destination);
+      }
+      // 한 video 에는 MediaElementSource 를 한 번만 만들 수 있다
+      let source = mediaSources.get(video);
+      if (source == null) {
+        source = ctx.createMediaElementSource(video);
+        mediaSources.set(video, source);
+      }
+      if (this.source != null && this.source !== source) {
+        this.source.disconnect();
+        this.source.connect(ctx.destination);
+      }
+      source.disconnect();
+      source.connect(this.comp);
+      this.source = source;
+      return true;
+    },
+    detach() {
+      if (this.source != null) {
+        this.source.disconnect();
+        this.source.connect(getAudioContext().destination);
+        this.source = null;
+      }
+    },
+    // 지금 재생 중인 video 에 붙인다. 아직 video 가 없으면 켜진 상태로 두고 재생이 시작될 때 붙인다.
+    sync() {
+      if (!this.enabled || this.pzp == null) {
+        return;
+      }
+      const video = getMainVideo(this.pzp);
+      if (video == null || mediaSources.get(video) === this.source) {
+        return;
+      }
+      if (!this.attach(video)) {
+        this.setEnabled(false);
+      }
+    },
+    setEnabled(enabled) {
+      this.wanted = enabled;
+      if (!enabled) {
+        this.enabled = false;
+        this.detach();
+        this.render();
+        return;
+      }
+      const ctx = getAudioContext();
+      if (ctx.state === "suspended") {
+        // 자동 재생 정책: 사용자가 페이지를 한 번 누를 때까지 기다렸다가 켠다
+        if (!this.waitingResume) {
+          this.waitingResume = true;
+          const onRunning = () => {
+            if (ctx.state !== "running") {
+              return;
+            }
+            ctx.removeEventListener("statechange", onRunning);
+            this.waitingResume = false;
+            if (this.wanted) {
+              this.setEnabled(true);
+            }
+          };
+          ctx.addEventListener("statechange", onRunning);
+          resumeAudioOnGesture();
+        }
+        return;
+      }
+      this.enabled = true;
+      this.sync();
+      this.render();
+    },
+  };
+
+  const compressorPlayers = new WeakSet();
+  const attachCompressorButton = (volumeControl) => {
+    const pzp = volumeControl.closest(".pzp-pc");
+    if (pzp == null) {
+      return;
+    }
+    compressor.pzp = pzp;
+
+    const container = document.createElement("div");
+    container.className = "pzp-pc__volume-control knife-comp";
+    const control = createPlayerButton(
+      "pzp-pc__volume-button",
+      COMP_ICON_OFF,
+      () => compressor.setEnabled(!compressor.enabled)
+    );
+    const slider = document.createElement("input");
+    slider.type = "range";
+    slider.className = "knife-gain";
+    slider.min = "0";
+    slider.max = "2";
+    slider.step = "0.01";
+    slider.setAttribute("aria-label", "Gain");
+    slider.addEventListener("input", () => {
+      compressor.setGain(Number(slider.value));
+    });
+    // 슬라이더 조작이 플레이어 단축키(방향키 음량·탐색)나 클릭 동작으로 번지지 않게 한다
+    for (const type of ["keydown", "keyup", "click", "dblclick", "mousedown"]) {
+      slider.addEventListener(type, (e) => e.stopPropagation());
+    }
+    container.append(control.button, slider);
+
+    compressor.views.add({
+      container,
+      update() {
+        control.setIcon(compressor.enabled ? COMP_ICON_ON : COMP_ICON_OFF);
+        control.setLabel(
+          compressor.enabled ? i18n.disableCompressor : i18n.enableCompressor
+        );
+        slider.hidden = !compressor.enabled;
+        slider.value = `${compressor.gain}`;
+        slider.title = `${Math.round(compressor.gain * 100)}%`;
+      },
+    });
+    volumeControl.insertAdjacentElement("afterend", container);
+    compressor.render();
+
+    if (!compressorPlayers.has(pzp)) {
+      compressorPlayers.add(pzp);
+      // 광고 → 본방처럼 재생하는 video 가 바뀌면 새 video 로 옮겨 붙인다
+      pzp.addEventListener("playing", () => compressor.sync(), true);
+    }
+    if (config.compressorDefault && !compressor.wanted) {
+      compressor.setEnabled(true);
+    } else {
+      compressor.sync();
+    }
+    log("컴프레서 버튼 추가");
+  };
+
+  // 라이브: 버퍼 끝(실시간)으로 건너뛰는 버튼
+  const attachFastForwardButton = (playButton) => {
+    const pzp = playButton.closest(".pzp-pc");
+    if (pzp == null) {
+      return;
+    }
+    const control = createPlayerButton(
+      "pzp-pc__playback-switch knife-ff",
+      FF_ICON,
+      () => {
+        const video = getMainVideo(pzp) || pzp.querySelector("video");
+        if (!video?.buffered.length) {
+          return;
+        }
+        video.currentTime = video.buffered.end(video.buffered.length - 1);
+        setSeeking(false);
+      }
+    );
+    control.setLabel(i18n.fastForward);
+    playButton.insertAdjacentElement("afterend", control.button);
+  };
+
+  const initializedPlayers = new WeakSet();
   const initPlayerFeatures = async (node, isLive, tries = 0) => {
     if (node == null) {
       return;
     }
-    const pzp = node.querySelector(".pzp-pc");
-    pzpVue = pzp?.__vue__;
-    if (pzpVue == null) {
+    const pzp = node.matches?.(".pzp-pc") ? node : node.querySelector(".pzp-pc");
+    if (pzp == null) {
       if (tries > 500) {
         return;
       }
@@ -893,165 +1363,24 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         initPlayerFeatures(node, isLive, tries + 1)
       );
     }
-
-    let Vue = pzpVue;
-    while (Vue != null && !Object.hasOwn(Vue, "$mount")) {
-      Vue = Object.getPrototypeOf(Vue);
+    if (initializedPlayers.has(pzp)) {
+      return;
     }
-    Vue = Vue?.constructor;
+    initializedPlayers.add(pzp);
 
     if (isLive) {
       if (isPopup) {
-        try {
-          const liveWide = await findReactState(
-            node,
-            (state) => state.length === 3 && state[2]?.toString() === "atom7"
-          );
-          liveWide?.[1].set(liveWide[2], true);
-        } catch { }
-      }
-
-      const playButton = pzp.querySelector(".pzp-pc__playback-switch");
-      if (playButton != null) {
-        try {
-          const ffButton = new Vue({
-            template: `
-              <pzp-pc-ui-button class="pzp-pc__playback-switch knife-ff" label="${i18n.fastForward}" aria-label="${i18n.fastForward}" tooltip="${i18n.fastForward}" @click="fastForward">
-                <ui-next-media-icon></ui-next-media-icon>
-              </pzp-pc-ui-button>`,
-            methods: {
-              fastForward() {
-                const video = pzp.querySelector("video");
-                video.currentTime = video.buffered.end(
-                  video.buffered.length - 1
-                );
-                setSeeking(false);
-              },
-            },
-          });
-          ffButton.$mount();
-          playButton.insertAdjacentElement("afterend", ffButton.$el);
-        } catch { }
+        // 팝업 플레이어 안에서는 넓은 화면으로 바꿔 영상만 보이게 한다 (is_large = 넓은 화면·극장 모드)
+        setTimeout(() => {
+          const layout = document.getElementById("live_player_layout");
+          if (layout != null && !layout.classList.contains("is_large")) {
+            pzp.querySelector(".pzp-pc__viewmode-button")?.click();
+          }
+        }, 500);
       }
 
       try {
         addStatsMenu();
-      } catch { }
-    }
-
-    const volumeControl = pzp.querySelector(".pzp-pc__volume-control");
-    if (volumeControl != null) {
-      try {
-        compressor = new Vue({
-          template: `
-            <div class="pzp-pc__volume-control knife-comp">
-              <pzp-pc-ui-button class="pzp-pc__volume-button" :label="label" :aria-label="label" :tooltip="label" @click="toggle">
-                <ui-icon>
-                  <svg v-if="enabled" xmlns="http://www.w3.org/2000/svg" viewBox="-300 -300 1600 1600"><path fill="currentColor" d="M850 200C877.7 200 900 222.3 900 250V750C900 777.7 877.7 800 850 800S800 777.7 800 750V250C800 222.3 822.3 200 850 200ZM570 250C597.7 250 620 272.3 620 300V700C620 727.7 597.7 750 570 750S520 727.7 520 700V300C520 272.3 542.3 250 570 250ZM710 225C737.7 225 760 247.3 760 275V725C760 752.7 737.7 775 710 775S660 752.7 660 725V275C660 247.3 682.3 225 710 225ZM430 250C457.7 250 480 272.3 480 300V700C480 727.7 457.7 750 430 750S380 727.7 380 700V300C380 272.3 402.3 250 430 250ZM290 225C317.7 225 340 247.3 340 275V725C340 752.7 317.7 775 290 775S240 752.7 240 725V275C240 247.3 262.3 225 290 225ZM150 200C177.7 200 200 222.3 200 250V750C200 777.7 177.7 800 150 800S100 777.7 100 750V250C100 222.3 122.3 200 150 200Z"/><circle r="160" cx="900" cy="800" fill="#00ffa3"/></svg>
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="-300 -300 1600 1600"><path fill="currentColor" d="M850 202.3C877.7 202.3 900 224.6 900 252.3V745.5C900 773.2 877.7 795.5 850 795.5S800 773.2 800 745.5V252.3C800 224.6 822.3 202.3 850 202.3ZM570 167.8C597.7 167.8 620 190.1 620 217.8V780C620 807.7 597.7 830 570 830S520 807.7 520 780V217.8C520 190.1 542.3 167.8 570 167.8ZM710 264.4C737.7 264.4 760 286.7 760 314.4V683.3C760 711 737.7 733.3 710 733.3S660 711 660 683.3V314.4C660 286.7 682.3 264.4 710 264.4ZM430 98.1C457.7 98.1 480 120.4 480 148.1V849.6C480 877.3 457.7 899.6 430 899.6S380 877.3 380 849.6V148.1C380 120.4 402.3 98.1 430 98.1ZM290 217.2C317.7 217.2 340 239.5 340 267.2V730.5C340 758.2 317.7 780.5 290 780.5S240 758.2 240 730.5V267.2C240 239.5 262.3 217.2 290 217.2ZM150 299.6C177.7 299.6 200 321.9 200 349.6V648.1C200 675.8 177.7 698.1 150 698.1S100 675.8 100 648.1V349.6C100 321.9 122.3 299.6 150 299.6Z"/><circle r="160" cx="900" cy="800" fill="#838285"/></svg>
-                </ui-icon>
-              </pzp-pc-ui-button>
-              <ui-slider v-show="enabled" ref="slider" class="pzp-pc__volume-slider pzp-pc-volume-slider pzp-ui-slider--volume knife-gain-slider" :min="0" :max="2" :value="gain" role="slider" aria-label="Gain" aria-live="polite" aria-valuemin="0" :aria-valuenow="ariaValuenow" aria-valuemax="200" :aria-valuetext="ariaValuetext" @change="setGain" @dragstart="setGain">
-                <ui-progress class="pzp-ui-progress pzp-ui-progress__volume" :max="2" :value="gain"></ui-progress>
-              </ui-slider>
-            </div>`,
-          data: {
-            enabled: false,
-            threshold: config.compressorThreshold ?? -50,
-            knee: config.compressorKnee ?? 40,
-            ratio: config.compressorRatio ?? 12,
-            attack: config.compressorAttack ?? 0,
-            release: config.compressorRelease ?? 0.25,
-            gain: Number(window.localStorage.getItem("knifeGain") ?? 1),
-          },
-          methods: {
-            toggle() {
-              this.enabled = !this.enabled;
-            },
-            updateCompressor() {
-              if (this.comp != null) {
-                this.comp.threshold.value = this.threshold;
-                this.comp.knee.value = this.knee;
-                this.comp.ratio.value = this.ratio;
-                this.comp.attack.value = this.attack;
-                this.comp.release.value = this.release;
-                this.gainNode.gain.value = this.gain;
-              }
-              window.localStorage.setItem("knifeGain", this.gain);
-            },
-            setGain() {
-              this.gain = this.$refs.slider?.track.value ?? 1;
-            },
-          },
-          computed: {
-            label() {
-              return this.enabled
-                ? i18n.disableCompressor
-                : i18n.enableCompressor;
-            },
-            ariaValuenow() {
-              return Math.round(this.gain * 100);
-            },
-            ariaValuetext() {
-              return `${this.ariaValuenow}%`;
-            },
-          },
-          watch: {
-            enabled(enabled) {
-              if (enabled) {
-                const video = pzp.querySelector("video");
-                if (video == null) {
-                  this.enabled = false;
-                  return;
-                }
-                if (this.source == null) {
-                  this.ctx ||= new AudioContext();
-                  if (this.ctx.state === "suspended") {
-                    this.enabled = false;
-                    let timer;
-                    const tryEnable = () => {
-                      clearTimeout(timer);
-                      this.ctx.removeEventListener("statechange", tryEnable);
-                      if (this.ctx.state !== "suspended") {
-                        compressor.enabled = true;
-                      }
-                    };
-                    timer = setTimeout(tryEnable, 100);
-                    try {
-                      this.ctx.addEventListener("statechange", tryEnable);
-                      this.ctx.resume();
-                    } catch { }
-                    return;
-                  }
-                  this.source = this.ctx.createMediaElementSource(video);
-                  this.comp = this.ctx.createDynamicsCompressor();
-                  this.gainNode = this.ctx.createGain();
-                  this.updateCompressor();
-                  this.comp.connect(this.gainNode);
-                } else {
-                  this.source.disconnect();
-                }
-                this.source.connect(this.comp);
-                this.gainNode.connect(this.ctx.destination);
-              } else if (this.source != null) {
-                this.gainNode.disconnect();
-                this.source.disconnect();
-                this.source.connect(this.ctx.destination);
-              }
-            },
-            threshold: "updateCompressor",
-            knee: "updateCompressor",
-            ratio: "updateCompressor",
-            attack: "updateCompressor",
-            release: "updateCompressor",
-            gain: "updateCompressor",
-          },
-        });
-        if (config.compressorDefault) {
-          compressor.enabled = true;
-        }
-        compressor.$mount();
-        volumeControl.insertAdjacentElement("afterend", compressor.$el);
       } catch { }
     }
 
@@ -1080,7 +1409,6 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         const fastForwardTimeout = setTimeout(() => {
           videoContainer.style.pointerEvents = "none";
           indicator.style.display = "";
-          pzpVue.showControls = false;
 
           originalRate = corePlayer.playbackRate;
           corePlayer.playbackRate = 2;
@@ -1193,7 +1521,9 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       video == null ||
       video.duration !== Infinity ||
       video.buffered.length === 0 ||
-      pzpVue?.timeMachine
+      document
+        .getElementById("live_player_layout")
+        ?.classList.contains("timemachine_mode")
     ) {
       return;
     }
@@ -1202,11 +1532,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       if (video.currentTime - 5 < video.buffered.start(0)) {
         video.currentTime = video.buffered.start(0) + 1;
       } else {
-        if (pzpVue != null) {
-          pzpVue.$store.dispatch("seekBackward");
-        } else {
-          video.currentTime -= 5;
-        }
+        video.currentTime -= 5;
       }
       setSeeking(true);
     } else {
@@ -1217,11 +1543,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         video.currentTime = video.buffered.end(video.buffered.length - 1) - 1;
         setSeeking(false);
       } else {
-        if (pzpVue != null) {
-          pzpVue.$store.dispatch("seekForward");
-        } else {
-          video.currentTime += 5;
-        }
+        video.currentTime += 5;
         setSeeking(true);
       }
     }
@@ -1287,7 +1609,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     const wrapper = chattingContainer?.querySelector?.(
       isLive
         ? '[role="log"] [class^="_wrapper_"], [class^="live_chatting_list_wrapper__"]'
-        : '[class^="vod_chatting_list__"]'
+        : ':scope > [class^="_list_"], [class^="vod_chatting_list__"]'
     );
     if (wrapper == null) {
       return;
@@ -1305,9 +1627,8 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       for (const mutation of mutations) {
         for (const n of mutation.addedNodes) {
           if (
-            isLive
-              ? hasGeneratedClass(n, "item")
-              : n.className?.startsWith?.("vod_chatting_item__")
+            hasGeneratedClass(n, "item") ||
+            n.className?.startsWith?.("vod_chatting_item__")
           ) {
             const props = getReactProps(n);
             const message = props?.children?.props?.chatMessage;
@@ -1339,9 +1660,16 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     chatObserver.observe(wrapper, { childList: true });
   };
 
+  const initializedChats = new WeakSet();
   const initChatFeatures = async (chattingContainer, isLive, tries = 0) => {
     if (chattingContainer == null) {
       return;
+    }
+    if (tries === 0) {
+      if (initializedChats.has(chattingContainer)) {
+        return;
+      }
+      initializedChats.add(chattingContainer);
     }
     const chatController = await findReactState(
       chattingContainer,
@@ -1358,7 +1686,10 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
 
     try {
       addResizeHandle(
-        isLive ? chattingContainer : chattingContainer.parentNode
+        isLive
+          ? chattingContainer
+          : chattingContainer.closest("#vod-aside") ||
+              chattingContainer.parentNode
       );
     } catch { }
 
@@ -1390,11 +1721,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       return true;
     };
 
-    let jsx;
-    try {
-      jsx = (await getWebpackRequire)(44414).jsx;
-    } catch { }
-    if (isLive && jsx != null) {
+    if (isLive) {
       const originalBlindListener = chatController.notiBlindListener;
       chatController.notiBlindListener = function (message) {
         if (!config.showDeleted || message.blindType === "CANCEL") {
@@ -1410,7 +1737,7 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
         const originalMessage = chatController.messageList[n];
         chatController.messageList[n] = {
           ...originalMessage,
-          content: jsx("span", {
+          content: createReactElement("span", {
             className: "knife-deleted",
             children: originalMessage.content,
           }),
@@ -1540,17 +1867,35 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
     }
   });
 
+  // 라이브·영상 카드의 썸네일 링크 (CSS Modules 이름: _thumbnail_해시_줄)
+  const isCardThumbnail = (node) =>
+    node?.tagName === "A" &&
+    (node.className.startsWith?.("video_card_thumbnail__") ||
+      hasGeneratedClass(node, "thumbnail")) &&
+    /^\/(live|video)\//.test(node.pathname);
+
+  const getCardThumbnail = (node) => {
+    const link = node?.closest?.("a");
+    return isCardThumbnail(link) ? link : null;
+  };
+
   const videoInfo = {};
   document.addEventListener("mouseout", async (e) => {
-    if (e.relatedTarget?.className.startsWith?.("video_card_thumbnail__")) {
-      if (config.customPreview) {
-        showPreview(e.relatedTarget.href, e.relatedTarget);
-      } else if (config.rightClickToUnmute) {
-        addUnmuteListener(e.relatedTarget);
+    // 썸네일 안의 이미지·영상 사이를 오갈 때는 무시하고, 카드 경계를 넘을 때만 처리한다
+    const from = getCardThumbnail(e.target);
+    const to = getCardThumbnail(e.relatedTarget);
+    if (from !== to) {
+      if (from != null) {
+        removeUnmuteListener(from);
+        hidePreview(from.href);
       }
-    } else if (e.target?.className.startsWith?.("video_card_thumbnail__")) {
-      removeUnmuteListener(e.target);
-      hidePreview(e.target.href);
+      if (to != null) {
+        if (config.customPreview) {
+          showPreview(to.href, to);
+        } else if (config.rightClickToUnmute) {
+          addUnmuteListener(to);
+        }
+      }
     }
 
     if (e.relatedTarget?.className.startsWith?.("video_information_count__")) {
@@ -1602,6 +1947,31 @@ ${i18n.codec}: ${codecs ? `${codecs.video},${codecs.audio}` : i18n.unknown}`;
       }
     }
   });
+
+  // 옛 클래스명 연쇄로 못 찾는 경우를 대비해 플레이어·채팅을 직접 찾는다 (중복 초기화는 WeakSet 으로 막음)
+  onElement("#live_player_layout .pzp-pc, #player_layout .pzp-pc", (pzp) => {
+    initPlayerFeatures(pzp, pzp.closest("#live_player_layout") != null);
+  });
+  // .pzp-pc 안쪽(플레이어가 실제로 그린 뒤)의 요소에만 붙인다
+  onElement(
+    "#live_player_layout .pzp-pc .pzp-pc__volume-control:not(.knife-comp), #player_layout .pzp-pc .pzp-pc__volume-control:not(.knife-comp)",
+    attachCompressorButton
+  );
+  onElement(
+    "#live_player_layout .pzp-pc .pzp-pc__playback-switch:not(.knife-ff)",
+    attachFastForwardButton
+  );
+  onElement("#aside-chatting", (aside) => {
+    initChatFeatures(aside, true);
+  });
+  // 다시보기 채팅: 컨트롤러가 채팅 컴포넌트 안에 있어 목록(role=log)에서 위로 찾아야 한다
+  onElement('#vod-aside [role="log"]', (chatLog) => {
+    initChatFeatures(chatLog, false);
+  });
+
+  getPlayerModule().then((player) =>
+    log(`시작, 미리보기 플레이어 ${player ? "준비됨" : "없음"}`)
+  );
 
   (async () => {
     try {

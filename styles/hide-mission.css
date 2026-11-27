@@ -1,4 +1,7 @@
-[class*="live_chatting_fixed_mission_container__"],
-[class*="live_chatting_fixed_party_container__"] {
+/* 채팅창 위에 고정되는 미션 · 파티 후원 */
+[role="log"] > [class^="_fixed_"] > div:has([class*="_icon_mission_"]),
+[role="log"]
+  > [class^="_fixed_"]
+  > div:has(> button[aria-controls="party-wrapper"]) {
   display: none;
 }

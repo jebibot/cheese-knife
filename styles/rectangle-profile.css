@@ -1,22 +1,14 @@
-[class^="channel_card_profile__"],
-[class^="channel_item_thumbnail__"],
-[class^="channel_profile_thumbnail__"],
-[class^="comment_item_image__"],
-[class^="community_detail_profile__"],
-[class^="community_list_item_profile__"],
-[class^="exclusive_profile__"],
-[class^="fixed_live_profile__"],
-[class^="following_offline_profile__"],
-[class^="input_image__"],
-[class^="live_chatting_popup_profile_profile__"],
-[class^="navigator_profile__"],
-[class^="news_profile__"],
-[class^="partner_profile__"],
-[class^="profile_layer_image__"],
-[class^="schedule_item_profile__"],
-[class^="toolbar_button__"],
-[class*="toolbar_profile_button__"],
-[class^="video_card_image__"],
-[class^="video_information_thumbnail__"] {
+/*
+ * 동그란 프로필 사진을 네모로. 클래스 로컬 이름에 profile · avatar 가 든 요소와 그 안의 이미지,
+ * 방송 중 테두리(::before/::after)를 모두 각지게 한다. 사이드바 항목 줄(_type_profile_)은 제외.
+ */
+[class*="_profile_"]:not([class*="_type_profile_"]),
+[class*="_profile_"]:not([class*="_type_profile_"])::before,
+[class*="_profile_"]:not([class*="_type_profile_"])::after,
+[class*="_profile_"]:not([class*="_type_profile_"]) > img,
+[class*="_avatar_"],
+[class*="_avatar_"]::before,
+[class*="_avatar_"]::after,
+[class*="_avatar_"] > img {
   border-radius: 0 !important;
 }

@@ -1,4 +1,3 @@
-[class^="_container_"]:has(> [class^="_ranking_button_"]),
-[class^="live_chatting_ranking_container__"] {
+[class^="_container_"]:has(> [class^="_ranking_button_"]) {
   display: none !important;
 }

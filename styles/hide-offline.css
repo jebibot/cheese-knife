@@ -1,3 +1,4 @@
-[class*="navigator_type_profile__"]:not(:has([class*="navigator_is_live__"])) {
+/* 사이드바에서 방송 중이 아닌 채널 항목 */
+#sidebar li:has(> [class*="_type_profile_"]):not(:has([class*="_is_live_"])) {
   display: none !important;
 }

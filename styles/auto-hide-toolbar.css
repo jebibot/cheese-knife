@@ -2,32 +2,26 @@ html {
   --knife-top-offset: -45px;
 }
 
-[class*="_glive_"]:has(> header[aria-label="헤더"]:hover),
-[class^="layout_glive__"]:has(> [class^="header_container__"]:hover),
-[class*="_glive_"]:has(aside[aria-label="사이드바"] nav:first-child:hover),
-[class^="layout_glive__"]:has(
-    [class^="aside_content__"]
-      [class^="navigation_bar_section__"]:first-child:hover
-  ) {
+/* 헤더나 위로 올린 메뉴에 마우스를 올리면 메뉴도 함께 내려온다 */
+[class*="_glive_"]:has(#header:hover),
+[class*="_glive_"]:has(#sidebar [class*="_content_"] > nav:first-child:hover) {
   --knife-top-explore-top: -11px;
 }
 
-header[aria-label="헤더"],
-[class^="header_container__"] {
+#header {
   margin-top: -45px;
   transition: transform ease-in-out 100ms;
 }
 
-header[aria-label="헤더"]:hover,
-[class^="header_container__"]:hover {
+#header:hover {
   transform: translateY(0px) !important;
 }
 
-[class^="skin_container__"] + [class^="header_container__"]:hover {
+/* 홈 상단 스킨(이벤트 배너)이 있을 때는 그 높이만큼 더 내린다 */
+[data-nlog-area="home_top_skin"] ~ #header:hover {
   transform: translateY(160px) !important;
 }
 
-[class^="skin_container__"][class*="skin_is_scrolled__"]
-  + [class^="header_container__"]:hover {
+[data-nlog-area="home_top_skin"][class*="_is_scrolled_"] ~ #header:hover {
   transform: translateY(50px) !important;
 }

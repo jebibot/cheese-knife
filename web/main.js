@@ -11,6 +11,11 @@ const initStyleParameters = (styleParameters) => {
         `${styleParameters["chat-font-size"] / t}px`
       );
     }
+    // 채팅 기본 글꼴 14px 기준 배율 (styles/chat-font-size.css 의 zoom 에 쓴다)
+    document.documentElement.style.setProperty(
+      "--knife-chat-scale",
+      `${(14 + Number(styleParameters["chat-font-size"])) / 14}`
+    );
   }
 };
 

@@ -1,4 +1,4 @@
-aside[aria-label="사이드바"] nav:nth-last-of-type(2),
-[class^="aside_content__"] [class^="navigation_bar_section__"]:nth-last-child(2) {
+/* 사이드바 "파트너 스트리머" 묶음 */
+#sidebar nav:has(a[href="/partner"]) {
   display: none !important;
 }
